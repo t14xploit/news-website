@@ -26,9 +26,17 @@ model Article {
   summary    String
   content    String
   image      String? 
-  author     String 
+  authors     Author[] 
   views      Int       @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  categories   Category[]  
+  categories   Category[] 
+  isEditorsChoice Boolean // thinking to use checkbox that editor can mark/unmark 
+}
+
+model Author {
+  id        String     @id @default(cuid())
+  name      String
+  picture   String?     
+  articles  Article[] 
 }
