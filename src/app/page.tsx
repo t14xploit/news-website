@@ -1,3 +1,4 @@
+import ApiPlaceholder from "@/components/ApiPlaceholder";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -34,11 +35,8 @@ export default function Home() {
           </Button>
         </div>
       </div>
+<ApiPlaceholder/>
 
-      {/* Additional Content Below */}
-      <div className="text-center">
-        {/* You can add more content below as needed */}
-      </div>
     </main>
   
   );
