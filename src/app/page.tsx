@@ -1,6 +1,10 @@
 
 export default function Home() {
   return (
- <>Homepage</>
+ <>
+ <h1 className="font-instrument">
+  Welcome to Homepage
+ </h1>
+  </>
   );
 }
