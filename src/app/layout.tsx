@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Instrument_Serif, Inika } from 'next/font/google'
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
 const instrumentSerif = Instrument_Serif({
   weight: ['400'], 
@@ -30,7 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${instrumentSerif.variable} ${inika.variable}`}>
-    <body className="bg-white text-black">{children}</body>
+    <body className="min-h-screen flex flex-col bg-background text-foreground">
+      
+    <NavBar />
+    <main className="flex-1 bg-background text-foreground">{children}</main>
+    <Footer/>
+      </body>
   </html>
   );
 }
