@@ -1,6 +1,8 @@
 import { Article, Category } from "@/generated/prisma/client";
 import Link from "next/link";
 import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
+import { Clock } from "lucide-react";
 
 interface ArticleWithCategories extends Article {
   categories: Category[];
@@ -14,24 +16,38 @@ export default function SmallerArticleCard({ article }: SmallerArticleCardProps)
   const fallbackImageUrl =
     "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
 
+  const timeAgo = formatDistanceToNow(new Date(article.createdAt), { addSuffix: true });
+
   return (
     <Link
       href={`/articles/${article.id}`}
-      className="block p-4 border rounded-md hover:shadow-md transition"
+      className="block p-4 border rounded-md hover:shadow-md transition bg-card text-card-foreground"
     >
       <Image
         src={article.image || fallbackImageUrl}
         alt={article.headline}
         width={300}
         height={200}
-        className="w-full h-40 object-cover mb-2 rounded-sm"
+        className="w-full h-40 object-cover mb-3 rounded"
       />
-      <h3 className="text-lg font-semibold mb-1">{article.headline}</h3>
-      <p className="text-md text-gray-500">{new Date(article.createdAt).toLocaleDateString()}</p>
-      <p className="mt-1 text-md line-clamp-3">{article.summary}</p>
-      <div className="text-sm text-blue-600  font-bold mt-2">
-        {article.categories.map((cat) => cat.title).join(", ")}
-      </div>
+      <h3 className="text-lg font-bold leading-snug mb-1">{article.headline}</h3>
+      <p className="mb-1 text-base text-muted-foreground line-clamp-3">{article.summary}</p>
+      <hr />
+      <p className="mt-4 text-sm text-muted-foreground flex items-center gap-1">
+ 
+  <span>{timeAgo} </span>
+  <span>|</span>
+  <span className="text-blue-600 font-medium ml-2">
+  
+    {article.categories.map((cat, index) => (
+      <span  key={cat.id}>
+        {index > 0 && ", "}
+        {cat.title}
+      </span>
+    ))}
+  </span>
+</p>
+
     </Link>
   );
 }

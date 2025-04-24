@@ -1,5 +1,6 @@
 import { getArticlesForLandingPage } from "@/actions/articles";
 import ApiPlaceholder from "@/components/ApiPlaceholder";
+import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
 import MainArticleCard from "@/components/MainArticleCard";
 import SmallerArticleCard from "@/components/SmallerArticleCard";
@@ -13,7 +14,7 @@ export default async function Home() {
     'Entertainment', 'Art', 'Culture', 'Local'
   ];
 
-  const { mainArticle, smallerArticles } = await getArticlesForLandingPage();
+  const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
 
   return (
     <>
@@ -64,6 +65,10 @@ export default async function Home() {
             
           </div>
         </div>
+      </section>
+      <section>
+      <EditorsChoiceSection articles={editorsChoice} />
+
       </section>
     </>
   );
