@@ -27,9 +27,9 @@ export default function SmallerArticleCard({ article }: SmallerArticleCardProps)
         className="w-full h-40 object-cover mb-2 rounded-sm"
       />
       <h3 className="text-lg font-semibold mb-1">{article.headline}</h3>
-      <p className="text-sm text-gray-500">{new Date(article.createdAt).toLocaleDateString()}</p>
-      <p className="mt-1 text-sm line-clamp-3">{article.summary}</p>
-      <div className="text-xs text-blue-600 mt-2">
+      <p className="text-md text-gray-500">{new Date(article.createdAt).toLocaleDateString()}</p>
+      <p className="mt-1 text-md line-clamp-3">{article.summary}</p>
+      <div className="text-sm text-blue-600  font-bold mt-2">
         {article.categories.map((cat) => cat.title).join(", ")}
       </div>
     </Link>

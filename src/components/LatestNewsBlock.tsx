@@ -3,6 +3,7 @@
 import { Article } from "@/generated/prisma/client";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns"; //npm install date-fns
+import { Clock } from "lucide-react";
 
 
 interface LatestNewsBlockProps {
@@ -20,7 +21,8 @@ export default function LatestNewsBlock({ articles }: LatestNewsBlockProps) {
             <h3 className="text-lg font-bold hover:underline mb-2">{article.headline}</h3>
           </Link>
           <p className="text-md text-muted-foreground line-clamp-2">{article.summary}</p>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 flex gap-2">
+          <Clock />
             {formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}
           </p>
         </div>
