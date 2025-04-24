@@ -1,5 +1,6 @@
 import { getArticlesForLandingPage } from "@/actions/articles";
 import ApiPlaceholder from "@/components/ApiPlaceholder";
+import LatestNewsBlock from "@/components/LatestNewsBlock";
 import MainArticleCard from "@/components/MainArticleCard";
 import SmallerArticleCard from "@/components/SmallerArticleCard";
 import { Button } from "@/components/ui/button";
@@ -57,11 +58,10 @@ export default async function Home() {
           </div>
 
           {/* RIGHT SECTION - placeholder for Latest News */}
-          <div className="w-full lg:w-[30%] space-y-4">
-            <div className="p-4 border rounded-md shadow-sm">
-              <h2 className="text-xl font-semibold mb-4">Latest News</h2>
-              <p className="text-muted-foreground">Coming soon...</p>
-            </div>
+          <div className="w-full lg:w-[30%] space-y-4 h-full">
+            <LatestNewsBlock articles={smallerArticles.slice(0, 8)} />
+
+            
           </div>
         </div>
       </section>

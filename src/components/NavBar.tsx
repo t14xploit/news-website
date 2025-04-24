@@ -40,7 +40,7 @@ export default function NavBar() {
         panda<span className="text-primary">🐼NEWS</span>
       </Link>
 
-      <div className="flex gap-10 items-center font-instrument text-lg">
+      <div className="flex gap-10 items-center font-instrument text-2xl">
         <Link href="/" className="hover:underline">Home</Link>
         <Link href="/about" className="hover:underline">About</Link>
         <Link href="/contact" className="hover:underline">Contact</Link>
@@ -50,7 +50,7 @@ export default function NavBar() {
       <div className="flex items-center gap-4">
         <Link
           href="/sign-in"
-          className="px-4 py-2 rounded-md border border-border hover:bg-muted text-sm font-instrument"
+          className="px-4 py-2 rounded-md border border-border hover:bg-muted text-2xl font-instrument"
         >
           Sign In
         </Link>
