@@ -32,10 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${instrumentSerif.variable} ${inika.variable}`}>
-    <body className="min-h-screen flex flex-col bg-background text-foreground">
+    <body className="flex flex-col bg-background text-foreground">
       
     <NavBar />
-    <main className="flex-1 bg-background text-foreground">{children}</main>
+    <main className="flex-1 bg-background text-foreground">
+  <div className="max-w-screen-2xl mx-auto px-6">{children}</div>
+</main>
     <Footer/>
       </body>
   </html>

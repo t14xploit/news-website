@@ -7,55 +7,65 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 
 export default async function Home() {
-  //temp
   const categories = [
     'Sports', 'Politics', 'Technology', 'Finance', 'Education',
     'Entertainment', 'Art', 'Culture', 'Local'
   ];
+
   const { mainArticle, smallerArticles } = await getArticlesForLandingPage();
 
   return (
-<>
- 
-<main className="flex flex-col justify-between py-8 px-6 bg-background text-foreground font-intrument">
-      <div className="flex items-center gap-4 mb-6 font-instrument">
-        <Button variant="destructive" >
-          LIVE 🔴
-        </Button>
+    <>
+      <main className="flex flex-col justify-between py-8 px-6 bg-background text-foreground font-instrument">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="destructive" className="text-xl">LIVE 🔴</Button>
 
-        <div className="ml-20 flex gap-4 overflow-x-auto">
-          {categories.map((category, index) => (
-            <Link
-              key={index}
-              href={`/${category.toLowerCase()}`}
-              className="px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap"
-            >
-              {category}
-            </Link>
-          ))}
+          <div className="ml-20 flex gap-4 overflow-x-auto text-xl">
+            {categories.map((category, index) => (
+              <Link
+                key={index}
+                href={`/${category.toLowerCase()}`}
+                className="px-4 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap"
+              >
+                {category}
+              </Link>
+            ))}
+          </div>
+
+          <div className="ml-auto">
+            <Button variant="link" aria-label="Search">
+              <Search />
+            </Button>
+          </div>
         </div>
-        
-        <div className="ml-auto">
-          <Button variant="link" aria-label="Search" >
-            <Search />
-          </Button>
+
+        <ApiPlaceholder />
+      </main>
+
+      {/* Content Section */}
+      <section className="px-6 py-10  mx-auto">
+      <div className="flex flex-col lg:flex-row gap-8">
+          {/* LEFT SECTION */}
+          <div className="w-full lg:w-[70%] space-y-8">
+            {mainArticle && <MainArticleCard article={mainArticle} />}
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+              {smallerArticles.slice(0, 8).map(article => (
+                <SmallerArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT SECTION - placeholder for Latest News */}
+          <div className="w-full lg:w-[30%] space-y-4">
+            <div className="p-4 border rounded-md shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Latest News</h2>
+              <p className="text-muted-foreground">Coming soon...</p>
+            </div>
+          </div>
         </div>
-      </div>
-<ApiPlaceholder/>
-
-    </main>
-    <section>
-    <div className="space-y-8">
-      {mainArticle && <MainArticleCard article={mainArticle} />}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {smallerArticles.map(article => (
-          <SmallerArticleCard key={article.id} article={article} />
-        ))}
-      </div>
-    </div>
-    </section>
+      </section>
     </>
-  
   );
 }
+

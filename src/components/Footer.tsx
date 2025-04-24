@@ -10,8 +10,8 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background text-foreground px-6 py-10 text-sm">
-      <div className="max-w-8xl mx-auto flex flex-col gap-10 md:flex-row md:justify-between">
+    <footer className="w-full border-t border-border bg-background text-foreground px-6 py-10 text-lg">
+<div className="max-w-screen-xl mx-auto flex flex-col gap-10 md:flex-row md:justify-between">
         
         {/* Logo + Socials */}
         <div>

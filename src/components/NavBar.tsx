@@ -32,8 +32,10 @@ export default function NavBar() {
   if (!mounted) return null // prevents mismatch entirely
 
   return (
-    <nav className="w-full flex items-center justify-between px-6 py-4 border-b border-border bg-background text-foreground">
-      {/* Logo */}
+<nav className="w-full border-b border-border bg-background text-foreground">
+<div className="max-w-screen-2xl mx-auto flex items-center justify-between px-6 py-4">
+
+{/* Logo */}
       <Link href="/" className="text-2xl font-bold tracking-tight">
         panda<span className="text-primary">🐼NEWS</span>
       </Link>
@@ -61,6 +63,8 @@ export default function NavBar() {
           {isDark ? '☀️' : '🌙'}
         </button>
       </div>
+      </div>
+
     </nav>
   )
 }
