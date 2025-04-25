@@ -109,7 +109,7 @@ model SubscriptionType {
   name          String
   description   String
   features      String[]
-  price         Float
+  price         Decimal @db.Decimal(10, 2)
   subscriptions Subscription[]
 }
 
