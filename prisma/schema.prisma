@@ -54,7 +54,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-    // subscriptions Subscription[]
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String?
 
   @@map("user")
 }
@@ -102,7 +103,7 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
-
+}
 model SubscriptionType {
   id            String        @id @default(cuid())
   name          String
@@ -118,5 +119,5 @@ model Subscription {
   createdAt   DateTime         @default(now())
   expiresAt   DateTime
   type        SubscriptionType @relation(fields: [typeId], references: [id])
-
+users User[]
 }
