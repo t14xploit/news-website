@@ -12,7 +12,7 @@ import {
     title: string;
     description: string;
     features: string[];
-    price: number;
+    price: string;
     bgColor: string;
     footerColor: string;
   };

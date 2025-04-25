@@ -1,13 +1,16 @@
 import { prisma } from "@/lib/prisma";  
 import SubscriptionCard from "@/components/SubscriptionCard";
 import { ArrowBigRight } from "lucide-react";
+import { Decimal } from "@/generated/prisma/runtime/library";
 
 const colorCombos = [
   { bg: "bg-blue-600", footer: "bg-blue-100 text-blue-800" },
   { bg: "bg-yellow-500", footer: "bg-yellow-100 text-yellow-800" },
   { bg: "bg-green-600", footer: "bg-green-100 text-green-800" },
 ];
-
+const formatPrice = (price: number | Decimal) => {
+    return price ? `${price.toFixed(0)}` : "$0";
+  };
 export default async function SubscriptionSection() {
   try {
     //  for debugging
@@ -38,8 +41,7 @@ export default async function SubscriptionSection() {
                 title={plan.name}
                 description={plan.description}
                 features={plan.features}
-                price={plan.price}
-                bgColor={colors.bg}
+                price={formatPrice(plan.price)}                bgColor={colors.bg}
                 footerColor={colors.footer}
               />
             );
