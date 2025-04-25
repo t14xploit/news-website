@@ -87,7 +87,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
       </div>
 
       {/* Bottom Grid Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
         {rest.slice(0, 5).map((article) => (
           <div key={article.id} className="border rounded-md p-4 hover:shadow-md transition">
             <Image
