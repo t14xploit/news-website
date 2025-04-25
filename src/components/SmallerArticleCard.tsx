@@ -33,7 +33,7 @@ export default function SmallerArticleCard({ article }: SmallerArticleCardProps)
       <h3 className="text-lg font-bold leading-snug mb-1">{article.headline}</h3>
       <p className="mb-1 text-base text-muted-foreground line-clamp-3">{article.summary}</p>
       <hr />
-      <p className="mt-4 text-sm text-muted-foreground flex items-center gap-1">
+      <p className="mt-4 text-sm text-foreground flex items-center gap-1">
  
   <span>{timeAgo} </span>
   <span>|</span>
