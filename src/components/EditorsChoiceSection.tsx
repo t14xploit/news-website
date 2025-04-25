@@ -22,7 +22,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
     return (
       <div>
         <hr className="my-4 border-t-2 border-gray-300" />
-        <p className="text-sm text-muted-foreground mt-2 flex items-center gap-1">
+        <p className="text-sm text-foreground mt-2 flex items-center gap-1">
           <span>{timeAgo}</span>
           <span className="mx-2">|</span>
           <span className="text-blue-600 font-medium">
