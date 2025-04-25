@@ -21,6 +21,7 @@ export async function getTopAuthorsWithMostViewedArticles() {
 
   return authors.map((author) => ({
     name: author.name,
+    id: author.id,
     picture: author.picture,
     headline: author.articles[0]?.headline ?? "No headline available",
     articleSummary: author.articles[0]?.summary ?? "No summary available",
