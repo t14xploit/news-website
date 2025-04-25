@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma"; // Import Prisma
+import { prisma } from "@/lib/prisma"; 
 import { FC } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card"; // Import ShadCN Card components
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; // Import Avatar components
-import { formatDistanceToNow } from "date-fns"; // To handle "1 day ago" formatting
+import { Card, CardContent, CardHeader } from "@/components/ui/card"; 
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"; 
+import { formatDistanceToNow } from "date-fns"; 
 import { ArrowBigRight } from "lucide-react";
 
 interface AuthorPageProps {
@@ -10,23 +10,22 @@ interface AuthorPageProps {
 }
 
 const AuthorPage: FC<AuthorPageProps> = async ({ params }) => {
-  // Fetch the author by ID, including their articles
   const author = await prisma.author.findUnique({
     where: { id: params.id },
     include: {
       articles: {
         orderBy: {
-          views: "desc", // Order articles by views (you can adjust this)
+          views: "desc", 
         },
         include: {
-          authors: true, // Include authors for each article
+          authors: true, 
         },
       },
     },
   });
 
   if (!author) {
-    return <div>Author not found.</div>; // Display if the author is not found
+    return <div>Author not found.</div>; 
   }
 
   return (
