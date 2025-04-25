@@ -40,3 +40,20 @@ model Author {
   picture   String?     
   articles  Article[] 
 }
+
+model SubscriptionType {
+  id            String        @id @default(cuid())
+  name          String
+  description   String
+  features      String[]
+  price         Float
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id          String           @id @default(cuid())
+  typeId      String
+  createdAt   DateTime         @default(now())
+  expiresAt   DateTime
+  type        SubscriptionType @relation(fields: [typeId], references: [id])
+}

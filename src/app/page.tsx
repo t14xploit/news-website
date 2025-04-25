@@ -4,6 +4,7 @@ import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
 import MainArticleCard from "@/components/MainArticleCard";
 import SmallerArticleCard from "@/components/SmallerArticleCard";
+import SubscriptionSection from "@/components/SubscriptionSection";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -66,10 +67,10 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <section>
+      
       <EditorsChoiceSection articles={editorsChoice} />
-
-      </section>
+<SubscriptionSection/>
+      
     </>
   );
 }
