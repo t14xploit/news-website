@@ -28,8 +28,8 @@ export default async function SubscriptionSection() {
     console.log("Fetched Subscription Types:", subscriptionTypes);
 
     return (
-      <section className="font-inika py-10 px-4 md:px-8 mx-auto">
-        <h2 className=" flex gap-2 text-4xl font-bold mb-6 text-left">
+      <section className="font-inika py-10 mx-auto">
+        <h2 className=" flex gap-2 text-2xl font-bold mb-6 text-left">
           Choose your subscription <ArrowBigRight className="w-8 h-8 text-primary" />
         </h2>
         <div className="grid gap-6 md:grid-cols-3 justify-center">

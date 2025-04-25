@@ -17,7 +17,7 @@ export default function MainArticleCard({ article }: ArticleCardProps) {
     <Card className="w-full">
       <CardHeader>
         <Link href={`/articles/${article.id}`}>
-          <CardTitle className="text-4xl font-bold font-inika mb-4 hover:underline">
+          <CardTitle className="text-2xl font-bold font-inika  hover:underline">
             {article.headline}
           </CardTitle>
         </Link>
@@ -29,9 +29,9 @@ export default function MainArticleCard({ article }: ArticleCardProps) {
           alt={article.headline}
           width={1200}
           height={600}
-          className="w-full h-[400px] object-cover rounded-md mb-6"
+          className="w-full h-[300px] object-cover rounded-md mb-6"
         />
-        <p className="text-lg font-inika text-foreground">
+        <p className="text-md font-inika text-foreground">
           {article.content}
         </p>
       </CardContent>

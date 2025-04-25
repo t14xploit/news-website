@@ -10,12 +10,12 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-border bg-background text-foreground px-6 py-10 text-lg">
-<div className="max-w-screen-xl mx-auto flex flex-col gap-10 md:flex-row md:justify-between">
+    <footer className="w-full border-t border-border bg-background text-foreground px-6 py-10 text-sm">
+<div className="max-w-screen-lg mx-auto flex flex-col gap-10 md:flex-row md:justify-between">
         
         {/* Logo + Socials */}
         <div>
-          <h2 className="text-2xl font-bold mb-4">
+          <h2 className="text-xl font-bold mb-4">
             panda<span className="text-primary">🐼NEWS</span>
           </h2>
           <p className="mb-4 max-w-xs font-instrument">

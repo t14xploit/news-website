@@ -33,14 +33,14 @@ export default function NavBar() {
 
   return (
 <nav className="w-full border-b border-border bg-background text-foreground">
-<div className="max-w-screen-2xl mx-auto flex items-center justify-between px-6 py-4">
+<div className="max-w-screen-lg mx-auto flex items-center justify-between px-6 py-4">
 
 {/* Logo */}
-      <Link href="/" className="text-2xl font-bold tracking-tight">
+      <Link href="/" className="text-xl font-bold tracking-tight">
         panda<span className="text-primary">🐼NEWS</span>
       </Link>
 
-      <div className="flex gap-10 items-center font-instrument text-2xl">
+      <div className="flex gap-10 items-center font-instrument text-xl">
         <Link href="/" className="hover:underline">Home</Link>
         <Link href="/about" className="hover:underline">About</Link>
         <Link href="/contact" className="hover:underline">Contact</Link>
@@ -50,7 +50,7 @@ export default function NavBar() {
       <div className="flex items-center gap-4">
         <Link
           href="/sign-in"
-          className="px-4 py-2 rounded-md border border-border hover:bg-muted text-2xl font-instrument"
+          className="px-4 py-2 rounded-md border border-border hover:bg-muted text-xl font-instrument"
         >
           Sign In
         </Link>

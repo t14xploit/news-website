@@ -3,6 +3,7 @@ import ApiPlaceholder from "@/components/ApiPlaceholder";
 import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
 import MainArticleCard from "@/components/MainArticleCard";
+import MostViewed from "@/components/MostViewed";
 import SmallerArticleCard from "@/components/SmallerArticleCard";
 import SubscriptionSection from "@/components/SubscriptionSection";
 import { Button } from "@/components/ui/button";
@@ -19,11 +20,11 @@ export default async function Home() {
 
   return (
     <>
-      <main className="flex flex-col justify-between py-8 px-6 bg-background text-foreground font-instrument">
+      <main className="flex flex-col justify-between py-8  bg-background text-foreground font-instrument">
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="destructive" className="text-xl">LIVE 🔴</Button>
+          <Button variant="destructive" className="text-md">LIVE 🔴</Button>
 
-          <div className="ml-20 flex gap-4 overflow-x-auto text-xl">
+          <div className=" flex gap-2 overflow-x-auto text-lg">
             {categories.map((category, index) => (
               <Link
                 key={index}
@@ -46,13 +47,13 @@ export default async function Home() {
       </main>
 
       {/* Content Section */}
-      <section className="px-6 py-10  mx-auto">
-      <div className="flex flex-col lg:flex-row gap-8">
+      <section className="  mx-auto">
+      <div className="flex flex-col lg:flex-row gap-4">
           {/* LEFT SECTION */}
-          <div className="w-full lg:w-[70%] space-y-8">
+          <div className="w-full lg:w-[75%] ">
             {mainArticle && <MainArticleCard article={mainArticle} />}
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2">
               {smallerArticles.slice(0, 8).map(article => (
                 <SmallerArticleCard key={article.id} article={article} />
               ))}
@@ -60,7 +61,7 @@ export default async function Home() {
           </div>
 
           {/* RIGHT SECTION - placeholder for Latest News */}
-          <div className="w-full lg:w-[30%] space-y-4 h-full">
+          <div className="w-full lg:w-[25%] space-y-4 h-full">
             <LatestNewsBlock articles={smallerArticles.slice(0, 8)} />
 
             
@@ -70,7 +71,8 @@ export default async function Home() {
       
       <EditorsChoiceSection articles={editorsChoice} />
 <SubscriptionSection/>
-      
+<MostViewed />
+
     </>
   );
 }
