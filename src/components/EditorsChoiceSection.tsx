@@ -22,7 +22,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
     return (
       <div>
         <hr className="my-4 border-t-2 border-gray-300" />
-        <p className="text-sm text-foreground mt-2 flex items-center gap-1">
+        <p className="text-xs text-foreground mt-2 flex items-center gap-1">
           <span>{timeAgo}</span>
           <span className="mx-2">|</span>
           <span className="text-blue-600 font-medium">
@@ -40,15 +40,15 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
 
   return (
     <section className=" mt-6 space-y-6  pr-10 font-inika">
-      <h2 className="flex items-center gap-2 text-4xl font-bold font-inika mb-6">
+      <h2 className="flex items-center gap-2 text-2xl font-bold font-inika mb-6">
         Editor’s Choice
         <ArrowBigRight className="w-8 h-8 text-primary" />
       </h2>
 
       {/* Top Section */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-2">
         {/* Left: Main Card */}
-        <div className="flex-3 w-full lg:w-[60%] flex flex-col sm:flex-row gap-6">
+        <div className="flex-3 w-full lg:w-[60%] flex flex-col sm:flex-row gap-2">
           <Image
             src={first.image || "/placeholder.jpg"}
             alt={first.headline}
@@ -59,14 +59,14 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
           <div className="flex flex-col justify-between">
             <div>
               <Link href={`/articles/${first.id}`}>
-                <h3 className="text-2xl font-bold hover:underline">{first.headline}</h3>
+                <h3 className="text-xl font-bold hover:underline">{first.headline}</h3>
               </Link>
-              <p className="mt-3 text-base text-muted-foreground line-clamp-4">{first.summary}</p>
+              <p className="mt-3 text-sm text-muted-foreground line-clamp-4">{first.summary}</p>
               {renderMeta(first)}
             </div>
 
             {/* Nested Second Card */}
-            <div className="mt-8 flex gap-4 border-t pt-4">
+            <div className="mt-8 flex gap-2 border-t pt-4">
               <Image
                 src={second.image || "/placeholder.jpg"}
                 alt={second.headline}
@@ -76,9 +76,9 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
               />
               <div>
                 <Link href={`/articles/${second.id}`}>
-                  <h4 className="text-lg font-semibold hover:underline">{second.headline}</h4>
+                  <h4 className="text-md font-semibold hover:underline">{second.headline}</h4>
                 </Link>
-                <p className="text-base text-muted-foreground line-clamp-2">{second.summary}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2">{second.summary}</p>
                 {renderMeta(second)}
               </div>
             </div>
@@ -95,12 +95,12 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
               alt={article.headline}
               width={300}
               height={180}
-              className="w-full h-40 object-cover rounded mb-3"
+              className="w-35 h-35 object-cover rounded mb-3"
             />
             <Link href={`/articles/${article.id}`}>
-              <h4 className="text-lg font-semibold hover:underline">{article.headline}</h4>
+              <h4 className="text-md font-semibold hover:underline line-clamp-2">{article.headline}</h4>
             </Link>
-            <p className="text-base text-muted-foreground line-clamp-2">{article.summary}</p>
+            <p className="text-sm text-muted-foreground line-clamp-3">{article.summary}</p>
             {renderMeta(article)}
           </div>
         ))}
