@@ -18,11 +18,11 @@ export default function LatestNewsBlock({ articles }: LatestNewsBlockProps) {
       {articles.map((article) => (
         <div key={article.id} className="border-b pb-3 last:border-b-0 space-y-4">
           <Link href={`/articles/${article.id}`}>
-            <h3 className="text-lg font-bold hover:underline mb-2">{article.headline}</h3>
+            <h3 className="text-md font-bold hover:underline mb-2">{article.headline}</h3>
           </Link>
-          <p className="text-md text-muted-foreground line-clamp-2">{article.summary}</p>
-          <p className="text-muted-foreground mt-1 flex gap-2">
-          <Clock />
+          <p className="text-sm text-muted-foreground line-clamp-2">{article.summary}</p>
+          <p className="text-muted-foreground mt-1 flex gap-2 text-xs">
+          <Clock size={"15"}/>
             {formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}
           </p>
         </div>

@@ -39,7 +39,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
   };
 
   return (
-    <section className="my-20 space-y-12 px-6 pr-10 font-inika">
+    <section className=" mt-6 space-y-6  pr-10 font-inika">
       <h2 className="flex items-center gap-2 text-4xl font-bold font-inika mb-6">
         Editor’s Choice
         <ArrowBigRight className="w-8 h-8 text-primary" />

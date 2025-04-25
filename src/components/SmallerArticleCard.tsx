@@ -30,10 +30,10 @@ export default function SmallerArticleCard({ article }: SmallerArticleCardProps)
         height={200}
         className="w-full h-40 object-cover mb-3 rounded"
       />
-      <h3 className="text-lg font-bold leading-snug mb-1">{article.headline}</h3>
-      <p className="mb-1 text-base text-muted-foreground line-clamp-3">{article.summary}</p>
+      <h3 className="text-md font-bold leading-snug mb-1 line-clamp-2">{article.headline}</h3>
+      <p className="mb-1 text-sm text-muted-foreground line-clamp-3">{article.summary}</p>
       <hr />
-      <p className="mt-4 text-sm text-foreground flex items-center gap-1">
+      <p className="mt-4 text-xs text-foreground flex items-center gap-1">
  
   <span>{timeAgo} </span>
   <span>|</span>
