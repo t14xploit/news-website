@@ -13,9 +13,7 @@ const formatPrice = (price: number | Decimal) => {
   };
 export default async function SubscriptionSection() {
   try {
-    //  for debugging
-    console.log("Prisma client initialized:", prisma);
-
+    
     const subscriptionTypes = await prisma.subscriptionType.findMany();
 
     // If no subscription types are found
@@ -24,9 +22,7 @@ export default async function SubscriptionSection() {
       return <div>No subscription types available.</div>;
     }
 
-    // debugging
-    console.log("Fetched Subscription Types:", subscriptionTypes);
-
+    
     return (
       <section className="font-inika py-10 mx-auto">
         <h2 className=" flex gap-2 text-2xl font-bold mb-6 text-left">
