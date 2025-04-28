@@ -1,48 +1,59 @@
 import { prisma } from "@/lib/prisma";
 
-export async function getTopAuthorsWithMostViewedArticles() {
-  // Step 1: Fetch authors with ALL their articles to have enough to filter through
+// Utility function to shuffle an array (Fisher-Yates Shuffle)
+const shuffleArray = (array: any[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+
+export async function getTopAuthorsWithRandomArticles() {
+  // Step 1: Fetch authors with ALL their articles
   const authors = await prisma.author.findMany({
     orderBy: {
       articles: {
         _count: 'desc', // top authors by article count
       },
     },
-    take: 10, // get top 10 so we can filter
+    take: 10, // get top 10 authors
     include: {
       articles: {
-        orderBy: {
-          views: 'desc', // most viewed first
+        select: {
+          id: true,
+          headline: true,
+          summary: true,
+          views: true,
         },
       },
     },
   });
 
-  // Step 2: Track used article IDs to avoid repeats
-  //prev. code had experts 3 card showing the same articles which logically was true, but not what i meant for it to be.
-
-  const usedArticleIds = new Set<string>();
-
-  // Step 3: Filter to only top 3 authors with unique articles
+  // Step 2: Collect random articles from each author
   const uniqueAuthorsWithArticles = [];
 
+  // Shuffle the authors list to ensure randomness
+  shuffleArray(authors);
+
+  // Step 3: Iterate through authors and pick a random article for each
   for (const author of authors) {
-    const uniqueArticle = author.articles.find(
-      (article) => !usedArticleIds.has(article.id)
-    );
+    // Shuffle the author's articles to pick one randomly
+    shuffleArray(author.articles);
 
-    if (uniqueArticle) {
-      usedArticleIds.add(uniqueArticle.id);
-      uniqueAuthorsWithArticles.push({
-        name: author.name,
-        id: author.id,
-        picture: author.picture,
-        headline: uniqueArticle.headline ?? "No headline available",
-        articleSummary: uniqueArticle.summary ?? "No summary available",
-        articleUrl: `/articles/${uniqueArticle.id}`,
-      });
-    }
+    // Pick the first article after shuffle
+    const article = author.articles[0];
 
+    // Add the article with author info to the result
+    uniqueAuthorsWithArticles.push({
+      name: author.name,
+      id: author.id,
+      picture: author.picture,
+      headline: article.headline ?? "No headline available",
+      articleSummary: article.summary ?? "No summary available",
+      articleUrl: `/articles/${article.id}`,
+    });
+
+    // Stop after 3 unique authors with articles
     if (uniqueAuthorsWithArticles.length === 3) break;
   }
 
