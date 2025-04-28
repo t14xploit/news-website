@@ -2,6 +2,7 @@ import { FC } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { ArrowBigRight } from "lucide-react";
 
 type ExpertInsightsSectionProps = {
   authors: {
@@ -17,8 +18,9 @@ type ExpertInsightsSectionProps = {
 const ExpertInsightsSection: FC<ExpertInsightsSectionProps> = ({ authors }) => {
   return (
     <section className="py-10 bg-background text-foreground">
-      <h2 className="text-2xl font-bold text-center mb-8">Expert Insights ➪</h2>
-      <div className="flex justify-center gap-10">
+  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        Expert Insights <ArrowBigRight className="w-6 h-6 text-primary" />
+      </h2>      <div className="flex justify-center gap-10">
         {authors.map((author, index) => (
           <Card key={index} className="w-[300px] flex flex-col p-6 space-y-4">
             <div className="flex items-center space-x-4">

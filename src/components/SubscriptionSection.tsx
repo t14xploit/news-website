@@ -25,9 +25,9 @@ export default async function SubscriptionSection() {
     
     return (
       <section className="font-inika py-10 mx-auto">
-        <h2 className=" flex gap-2 text-2xl font-bold mb-6 text-left">
-          Choose your subscription <ArrowBigRight className="w-8 h-8 text-primary" />
-        </h2>
+       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        Choose your subscription <ArrowBigRight className="w-6 h-6 text-primary" />
+      </h2> 
         <div className="grid gap-6 md:grid-cols-3 justify-center">
           {subscriptionTypes.map((plan, index) => {
             const colors = colorCombos[index % colorCombos.length];
