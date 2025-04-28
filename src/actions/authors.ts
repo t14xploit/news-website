@@ -1,31 +1,50 @@
-import { prisma } from "@/lib/prisma"; 
+import { prisma } from "@/lib/prisma";
 
 export async function getTopAuthorsWithMostViewedArticles() {
-  // authors with their most viewed article
+  // Step 1: Fetch authors with ALL their articles to have enough to filter through
   const authors = await prisma.author.findMany({
-    take: 3, // Top 3 authors
     orderBy: {
       articles: {
-        _count: 'desc', // order by the number of articles each author has
+        _count: 'desc', // top authors by article count
       },
     },
+    take: 10, // get top 10 so we can filter
     include: {
       articles: {
         orderBy: {
-          views: 'desc', // order articles by views, descending
+          views: 'desc', // most viewed first
         },
-        take: 1, // get only the most viewed article for each author
       },
     },
   });
 
-  return authors.map((author) => ({
-    name: author.name,
-    id: author.id,
-    picture: author.picture,
-    headline: author.articles[0]?.headline ?? "No headline available",
-    articleSummary: author.articles[0]?.summary ?? "No summary available",
+  // Step 2: Track used article IDs to avoid repeats
+  //prev. code had experts 3 card showing the same articles which logically was true, but not what i meant for it to be.
 
-    articleUrl: `/articles/${author.articles[0]?.id}`, // link to the article page
-  }));
+  const usedArticleIds = new Set<string>();
+
+  // Step 3: Filter to only top 3 authors with unique articles
+  const uniqueAuthorsWithArticles = [];
+
+  for (const author of authors) {
+    const uniqueArticle = author.articles.find(
+      (article) => !usedArticleIds.has(article.id)
+    );
+
+    if (uniqueArticle) {
+      usedArticleIds.add(uniqueArticle.id);
+      uniqueAuthorsWithArticles.push({
+        name: author.name,
+        id: author.id,
+        picture: author.picture,
+        headline: uniqueArticle.headline ?? "No headline available",
+        articleSummary: uniqueArticle.summary ?? "No summary available",
+        articleUrl: `/articles/${uniqueArticle.id}`,
+      });
+    }
+
+    if (uniqueAuthorsWithArticles.length === 3) break;
+  }
+
+  return uniqueAuthorsWithArticles;
 }
