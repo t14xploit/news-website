@@ -1,4 +1,5 @@
 import { getArticlesForLandingPage } from "@/actions/articles";
+import { getTopAuthorsWithMostViewedArticles } from "@/actions/authors";
 import ApiPlaceholder from "@/components/ApiPlaceholder";
 import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
@@ -9,6 +10,7 @@ import SubscriptionSection from "@/components/SubscriptionSection";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import ExpertInsightsSection from "@/components/ExpertInsightsSection"; // Import the new section
 
 export default async function Home() {
   const categories = [
@@ -17,6 +19,7 @@ export default async function Home() {
   ];
 
   const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
+  const topAuthors = await getTopAuthorsWithMostViewedArticles();
 
   return (
     <>
@@ -72,6 +75,7 @@ export default async function Home() {
       <EditorsChoiceSection articles={editorsChoice} />
 <SubscriptionSection/>
 <MostViewed />
+<ExpertInsightsSection authors={topAuthors} />
 
     </>
   );
