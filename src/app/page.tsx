@@ -1,5 +1,5 @@
 import { getArticlesForLandingPage } from "@/actions/articles";
-import { getTopAuthorsWithMostViewedArticles } from "@/actions/authors";
+import { getTopAuthorsWithRandomArticles } from "@/actions/authors";
 import ApiPlaceholder from "@/components/ApiPlaceholder";
 import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
@@ -19,7 +19,7 @@ export default async function Home() {
   ];
 
   const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
-  const topAuthors = await getTopAuthorsWithMostViewedArticles();
+  const topAuthors = await getTopAuthorsWithRandomArticles();
 
   return (
     <div className="font-inika">
