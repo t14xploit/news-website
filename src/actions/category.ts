@@ -1,4 +1,3 @@
-// lib/category.ts
 import { prisma } from "@/lib/prisma";
 
 export async function fetchCategoryData(name: string) {
