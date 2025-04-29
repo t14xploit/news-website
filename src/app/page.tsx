@@ -12,17 +12,27 @@ import Link from "next/link";
 
 export default async function Home() {
   const categories = [
-    'Sports', 'Politics', 'Technology', 'Finance', 'Education',
-    'Entertainment', 'Art', 'Culture', 'Local'
+    "Sports",
+    "Politics",
+    "Technology",
+    "Finance",
+    "Education",
+    "Entertainment",
+    "Art",
+    "Culture",
+    "Local",
   ];
 
-  const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
+  const { mainArticle, smallerArticles, editorsChoice } =
+    await getArticlesForLandingPage();
 
   return (
     <>
       <main className="flex flex-col justify-between py-8  bg-background text-foreground font-instrument">
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="destructive" className="text-md">LIVE 🔴</Button>
+          <Button variant="destructive" className="text-md">
+            LIVE 🔴
+          </Button>
 
           <div className=" flex gap-2 overflow-x-auto text-lg">
             {categories.map((category, index) => (
@@ -48,13 +58,13 @@ export default async function Home() {
 
       {/* Content Section */}
       <section className="  mx-auto">
-      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* LEFT SECTION */}
           <div className="w-full lg:w-[75%] ">
             {mainArticle && <MainArticleCard article={mainArticle} />}
 
             <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2">
-              {smallerArticles.slice(0, 8).map(article => (
+              {smallerArticles.slice(0, 8).map((article) => (
                 <SmallerArticleCard key={article.id} article={article} />
               ))}
             </div>
@@ -63,17 +73,13 @@ export default async function Home() {
           {/* RIGHT SECTION - placeholder for Latest News */}
           <div className="w-full lg:w-[25%] space-y-4 h-full">
             <LatestNewsBlock articles={smallerArticles.slice(0, 8)} />
-
-            
           </div>
         </div>
       </section>
-      
-      <EditorsChoiceSection articles={editorsChoice} />
-<SubscriptionSection/>
-<MostViewed />
 
+      <EditorsChoiceSection articles={editorsChoice} />
+      <SubscriptionSection />
+      <MostViewed />
     </>
   );
 }
-
