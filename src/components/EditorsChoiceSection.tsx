@@ -40,10 +40,10 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
 
   return (
     <section className=" mt-6 space-y-6  pr-10 font-inika">
-      <h2 className="flex items-center gap-2 text-2xl font-bold font-inika mb-6">
-        Editor’s Choice
-        <ArrowBigRight className="w-8 h-8 text-primary" />
-      </h2>
+       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+       Editor’s Choice <ArrowBigRight className="w-6 h-6 text-primary" />
+            </h2> 
+      
 
       {/* Top Section */}
       <div className="flex flex-col lg:flex-row gap-2">
