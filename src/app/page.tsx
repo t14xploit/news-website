@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import ExpertInsightsSection from "@/components/ExpertInsightsSection"; 
+import { Input } from "@/components/ui/input";
 
 // Fetch categories from Prisma server action
 async function getCategories() {
@@ -45,9 +46,21 @@ export default async function Home() {
           </div>
 
           <div className="ml-auto">
-            <Button variant="link" aria-label="Search">
-              <Search />
-            </Button>
+            
+          <form 
+  action="/articles" 
+  method="get" 
+  className="relative w-40"
+>
+  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+  <Input
+    type="text"
+    name="q"
+    placeholder="Search articles..."
+    className="pl-9 pr-3 py-2 rounded-lg border text-lg w-full font-inika"
+  />
+</form>
+
           </div>
         </div>
 
