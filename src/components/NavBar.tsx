@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function NavBar() {
   return (
     <nav className="w-full border-b border-border bg-background text-foreground">
-      <div className="max-w-screen mx-auto flex items-center justify-between px-6 py-4">
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 py-4">
         
         {/* Logo */}
         <Link href="/" className="text-xl font-bold tracking-tight">

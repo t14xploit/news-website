@@ -28,7 +28,7 @@ export default async function Home() {
   const topAuthors = await getTopAuthorsWithRandomArticles();
 
   return (
-    <div className="font-inika">
+    <div className="font-inika max-w-screen-xl mx-auto">
       <main className="flex flex-col justify-between py-8 bg-background text-foreground font-instrument">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="destructive" className="text-md">LIVE 🔴</Button>
