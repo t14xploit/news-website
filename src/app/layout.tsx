@@ -36,7 +36,7 @@ export default function RootLayout({
       
     <NavBar />
     <main className="flex-1 bg-background text-foreground">
-  <div className="max-w-screen-lg mx-auto px-6">{children}</div>
+  <div className="max-w-screen mx-auto px-6">{children}</div>
 </main>
     <Footer/>
       </body>
