@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: '/api/spotprices', 
+        destination: 'https://spotprices.lexlink.se/espot', //  API URL
+      },
+    ];
+  },
 
   images: {
     remotePatterns: [
