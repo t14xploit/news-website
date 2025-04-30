@@ -1,3 +1,4 @@
+import SpotPriceCard from "@/components/SpotPriceCard";
 import WeatherCard from "@/components/WeatherCard";
 
 export default function WeatherPage() {
@@ -6,6 +7,7 @@ export default function WeatherPage() {
       <div>
         <WeatherCard />
       </div>
+      <SpotPriceCard/>
     </div>
   );
 }
