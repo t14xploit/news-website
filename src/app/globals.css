@@ -114,6 +114,35 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.glass-card {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.glass-input {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.dark .glass-card {
+  background: rgba(50, 50, 50, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

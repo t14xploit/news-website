@@ -27,7 +27,7 @@ const CategoryPage = async ({ params }: CategoryPageProps) => {
   try {
     // category data from the server action
     categoryData = await fetchCategoryData(params.name);
-  } catch (error) {
+  } catch {
     return <div className="my-6"> <Alert >
     <PawPrint className="w-6 h-6 "/>          <div>
                 <AlertTitle>Category not found</AlertTitle>

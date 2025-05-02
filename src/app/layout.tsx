@@ -7,7 +7,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import Footer from "@/components/Footer";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { ThemeProvider } from "@/components/theme/theme-provider";
+// import { ThemeProvider } from "@/components/theme/theme-provider";
 
 
 const instrumentSerif = Instrument_Serif({
