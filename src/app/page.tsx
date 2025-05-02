@@ -11,7 +11,7 @@ import SubscriptionSection from "@/components/SubscriptionSection";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import ExpertInsightsSection from "@/components/ExpertInsightsSection"; 
+import ExpertInsightsSection from "@/components/ExpertInsightsSection";
 import { Input } from "@/components/ui/input";
 
 // Fetch categories from Prisma server action
@@ -24,14 +24,17 @@ export default async function Home() {
   const categories = await getCategories();
 
   // Fetch articles and authors data
-  const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
+  const { mainArticle, smallerArticles, editorsChoice } =
+    await getArticlesForLandingPage();
   const topAuthors = await getTopAuthorsWithRandomArticles();
 
   return (
     <div className="font-inika max-w-screen-xl mx-auto">
       <main className="flex flex-col justify-between py-8 bg-background text-foreground font-instrument">
         <div className="flex items-center gap-4 mb-6">
-          <Button variant="destructive" className="text-md">LIVE 🔴</Button>
+          <Button variant="destructive" className="text-md">
+            LIVE 🔴
+          </Button>
 
           <div className="flex gap-2 overflow-x-auto text-lg mx-auto">
             {categories.map((category) => (
@@ -40,27 +43,23 @@ export default async function Home() {
                 href={`/categories/${category.title.toLowerCase()}`} // Link to dynamic category pages
                 className="px-3 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap flex-shrink-0"
               >
-                {category.title.charAt(0).toUpperCase() + category.title.slice(1)} {/* Capitalize first letter */}
+                {category.title.charAt(0).toUpperCase() +
+                  category.title.slice(1)}{" "}
+                {/* Capitalize first letter */}
               </Link>
             ))}
           </div>
 
           <div className="ml-auto">
-            
-          <form 
-  action="/articles" 
-  method="get" 
-  className="relative w-40"
->
-  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-  <Input
-    type="text"
-    name="q"
-    placeholder="Search articles..."
-    className="pl-9 pr-3 py-2 rounded-lg border text-lg w-full font-inika"
-  />
-</form>
-
+            <form action="/articles" method="get" className="relative w-40">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                type="text"
+                name="q"
+                placeholder="Search articles..."
+                className="pl-9 pr-3 py-2 rounded-lg border text-lg w-full font-inika"
+              />
+            </form>
           </div>
         </div>
 

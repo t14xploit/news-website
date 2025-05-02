@@ -33,8 +33,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${inika.variable}`}
       suppressHydrationWarning
+      className={`${instrumentSerif.variable} ${inika.variable}`}
     >
       <body className="flex flex-col bg-background text-foreground">
         <ThemeProvider

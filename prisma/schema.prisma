@@ -31,7 +31,7 @@ model Article {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   categories   Category[] 
-  isEditorsChoice Boolean // thinking to use checkbox that editor can mark/unmark 
+  isEditorsChoice Boolean // thinking to use checkbox that editor can mark
 }
 
 model Author {
