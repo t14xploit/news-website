@@ -36,7 +36,11 @@ export default function RootLayout({
 }>) {
   return (
 
-    <html lang="en" className={`${instrumentSerif.variable} ${inika.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${instrumentSerif.variable} ${inika.variable}`}
+>
     <body className="flex flex-col bg-background text-foreground">
       
     {/* <NavBar /> */}
@@ -47,6 +51,7 @@ export default function RootLayout({
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }
+
     >
       <AppSidebar
         user={{
