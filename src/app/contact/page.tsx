@@ -41,7 +41,7 @@ export default function ContactPage() {
           </div>
 
           <p className="text-sm pt-4 text-center italic">
-            We don't actually exist. But we appreciate your curiosity. 🐼
+            We don&apos;t actually exist. But we appreciate your curiosity. 🐼
           </p>
         </CardContent>
       </Card>

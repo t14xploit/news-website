@@ -15,47 +15,46 @@ datasource db {
 }
 
 model Category {
-  id        String       @id @default(cuid())
-  title      String    @unique
-  articles  Article[]
+  id       String    @id @default(cuid())
+  title    String    @unique
+  articles Article[]
 }
 
 model Article {
-  id        String       @id @default(cuid())
-  headline   String
-  summary    String
-  content    String
-  image      String? 
-  authors     Author[] 
-  views      Int       @default(0)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  categories   Category[] 
+  id              String     @id @default(cuid())
+  headline        String
+  summary         String
+  content         String
+  image           String?
+  authors         Author[]
+  views           Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  categories      Category[]
   isEditorsChoice Boolean // thinking to use checkbox that editor can mark/unmark 
 }
 
 model Author {
-  id        String     @id @default(cuid())
-  name      String
-  picture   String?     
-  articles  Article[] 
+  id       String    @id @default(cuid())
+  name     String
+  picture  String?
+  articles Article[]
 }
 
-
-
 model User {
-  id            String    @id @default(cuid())
-  role          String    @default("USER")
-  email         String    @unique
-  name          String?
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id             String        @id @default(cuid())
+  role           String        @default("USER")
+  email          String        @unique
+  name           String?
+  emailVerified  Boolean       @default(false)
+  image          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  sessions       Session[]
+  accounts       Account[]
   subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
   subscriptionId String?
+  payments       Payment[]
 
   @@map("user")
 }
@@ -88,8 +87,8 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
 }
@@ -104,20 +103,33 @@ model Verification {
 
   @@map("verification")
 }
+
 model SubscriptionType {
-  id            String        @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
   description   String
   features      String[]
-  price         Decimal @db.Decimal(10, 2)
+  price         Decimal        @db.Decimal(10, 2)
   subscriptions Subscription[]
 }
 
 model Subscription {
-  id          String           @id @default(cuid())
-  typeId      String
-  createdAt   DateTime         @default(now())
-  expiresAt   DateTime
-  type        SubscriptionType @relation(fields: [typeId], references: [id])
-users User[]
+  id        String           @id @default(cuid())
+  typeId    String
+  createdAt DateTime         @default(now())
+  expiresAt DateTime
+  type      SubscriptionType @relation(fields: [typeId], references: [id])
+  users     User[]
+  payments  Payment[]
+}
+
+model Payment {
+  id             String       @id @default(cuid())
+  userId         String
+  subscriptionId String
+  amount         Decimal      @db.Decimal(10, 2)
+  status         String       @default("pending")
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
 }
