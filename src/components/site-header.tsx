@@ -44,10 +44,7 @@ export default async function SiteHeader() {
                   </Link>
                 </>
               )}
-              <Separator
-                orientation="vertical"
-                className="mx-2 data-[orientation=vertical]:h-4"
-              />
+
               <ModeToggle />
             </div>
           </div>
