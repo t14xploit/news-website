@@ -21,7 +21,6 @@ model Category {
 }
 
 model Article {
-
   id              String     @id @default(cuid())
   headline        String
   summary         String
@@ -33,7 +32,6 @@ model Article {
   updatedAt       DateTime   @updatedAt
   categories      Category[]
   isEditorsChoice Boolean // thinking to use checkbox that editor can mark/unmark 
-
 }
 
 model Author {
