@@ -50,7 +50,7 @@ export const signUpSchema = z
 export const signInSchema = z.object({
   ...emailSchema.shape,
   password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean(),
 });
 
 export type SignUpFormValues = z.infer<typeof signUpSchema>;

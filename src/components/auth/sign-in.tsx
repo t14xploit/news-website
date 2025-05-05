@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,29 +26,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
 import { authClient } from "@/lib/auth-client";
-import {
-  signInSchema,
-  type SignInFormValues,
-} from "@/lib/validation/auth-schema";
+import { SignInFormValues, signInSchema } from "@/lib/validation/auth-schema";
 
 interface SignInProps {
-  switchToTab?: string;
   onSwitchTab?: () => void;
 }
 
-export default function SignIn({ switchToTab, onSwitchTab }: SignInProps) {
+export default function SignIn({ onSwitchTab }: SignInProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleSwitch = () => {
-    if (onSwitchTab) {
-      onSwitchTab();
-    }
-  };
 
   const form = useForm<SignInFormValues>({
-    resolver: zodResolver(signInSchema) as any,
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -176,13 +165,18 @@ export default function SignIn({ switchToTab, onSwitchTab }: SignInProps) {
                 <FormItem className="flex flex-row items-center space-x-2 space-y-0">
                   <FormControl>
                     <Checkbox
-                      id="rememberMe"
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel htmlFor="rememberMe">Remember me</FormLabel>
+                    <FormLabel
+                      htmlFor="rememberMe"
+                      className="cursor-pointer"
+                      onClick={() => field.onChange(!field.value)}
+                    >
+                      Remember me
+                    </FormLabel>
                   </div>
                 </FormItem>
               )}

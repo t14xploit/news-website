@@ -11,16 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import {
-  signUpSchema,
-  type SignUpFormValues,
-} from "@/lib/validation/auth-schema";
+import { signUpSchema } from "@/lib/validation/auth-schema";
 import {
   Form,
   FormControl,
@@ -31,24 +28,19 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { z } from "zod";
 
 interface SignUpProps {
   switchToTab?: string;
   onSwitchTab?: () => void;
 }
 
-export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
+export default function SignUp({ onSwitchTab }: SignUpProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const handleSwitch = () => {
-    if (onSwitchTab) {
-      onSwitchTab();
-    }
-  };
 
-  const form = useForm<SignUpFormValues>({
+  const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       firstName: "",
@@ -60,9 +52,19 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size should be less than 5MB");
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please upload an image file");
+        return;
+      }
+
       form.setValue("image", file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -77,7 +79,7 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
     setImagePreview(null);
   };
 
-  const onSubmit = async (data: SignUpFormValues) => {
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
       setIsSubmitting(true);
 
@@ -102,17 +104,29 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
             setIsSubmitting(false);
           },
           onError: (ctx) => {
-            toast.error(ctx.error.message);
+            toast.error(
+              ctx.error.message ?? "An error occurred during sign up"
+            );
+            if (ctx.error.status === 401) {
+              form.setError("email", {
+                type: "server",
+                message: "Invalid credentials",
+              });
+            }
           },
-          onSuccess: async () => {
+          onSuccess: () => {
             toast.success("Account created successfully");
             router.push("/");
           },
         }
       );
     } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
       console.error("Sign-up error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -135,9 +149,14 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="first-name">First name</FormLabel>
+                    <FormLabel htmlFor="firstName">First name</FormLabel>
                     <FormControl>
-                      <Input id="first-name" placeholder="Max" {...field} />
+                      <Input
+                        id="firstName"
+                        placeholder="Max"
+                        {...field}
+                        aria-describedby="firstName-error"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,9 +167,14 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="last-name">Last name</FormLabel>
+                    <FormLabel htmlFor="lastName">Last name</FormLabel>
                     <FormControl>
-                      <Input id="last-name" placeholder="Robinson" {...field} />
+                      <Input
+                        id="lastName"
+                        placeholder="Robinson"
+                        {...field}
+                        aria-describedby="lastName-error"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -170,6 +194,7 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                       type="email"
                       placeholder="m@example.com"
                       {...field}
+                      aria-describedby="email-error"
                     />
                   </FormControl>
                   <FormMessage />
@@ -188,8 +213,9 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                       id="password"
                       type="password"
                       autoComplete="new-password"
-                      placeholder="Password"
+                      placeholder="••••••••"
                       {...field}
+                      aria-describedby="password-error"
                     />
                   </FormControl>
                   <FormMessage />
@@ -202,16 +228,17 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
               name="passwordConfirmation"
               render={({ field }) => (
                 <FormItem className="grid gap-2">
-                  <FormLabel htmlFor="password_confirmation">
+                  <FormLabel htmlFor="passwordConfirmation">
                     Confirm Password
                   </FormLabel>
                   <FormControl>
                     <Input
-                      id="password_confirmation"
+                      id="passwordConfirmation"
                       type="password"
                       autoComplete="new-password"
-                      placeholder="Confirm Password"
+                      placeholder="••••••••"
                       {...field}
+                      aria-describedby="passwordConfirmation-error"
                     />
                   </FormControl>
                   <FormMessage />
@@ -227,8 +254,8 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                     <Image
                       src={imagePreview}
                       alt="Profile preview"
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                 )}
@@ -239,9 +266,18 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
                     accept="image/*"
                     onChange={handleImageChange}
                     className="w-full"
+                    aria-label="Profile image upload"
                   />
                   {imagePreview && (
-                    <X className="cursor-pointer" onClick={clearImage} />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={clearImage}
+                      aria-label="Clear image"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
                   )}
                 </div>
               </div>
@@ -249,9 +285,9 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
-                <Loader2 size={16} className="animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                "Create an account"
+                "Create account"
               )}
             </Button>
           </form>
@@ -261,13 +297,13 @@ export default function SignUp({ switchToTab, onSwitchTab }: SignUpProps) {
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
-          <button
+          <Button
+            variant="link"
+            className="p-0 h-auto font-normal"
             onClick={onSwitchTab}
-            className="text-primary hover:underline"
-            type="button"
           >
             Sign In
-          </button>
+          </Button>
         </p>
       </CardFooter>
     </Card>
