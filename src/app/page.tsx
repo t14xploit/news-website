@@ -12,12 +12,22 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ExpertInsightsSection from "@/components/ExpertInsightsSection";
 import SearchForm from "@/components/SearchForm";
-
+import CookieConsent from "@/components/CookieConsent"; 
+import { cookies } from "next/headers"
 // Fetch categories from Prisma server action
 async function getCategories() {
   return await prisma.category.findMany();
 }
+async function getCookieConsent() {
+  const cookieStore = await cookies();
+  const consentCookie = cookieStore.get("cookie_consent");
 
+  if (consentCookie?.value) {
+    return consentCookie.value; // Return the consent status ('accepted' or 'declined')
+  }
+
+  return null; // No consent yet
+}
 export default async function Home() {
   // Fetch categories from Prisma
   const categories = await getCategories();
@@ -26,7 +36,7 @@ export default async function Home() {
   const { mainArticle, smallerArticles, editorsChoice } =
     await getArticlesForLandingPage();
   const topAuthors = await getTopAuthorsWithRandomArticles();
-
+  const consent = await getCookieConsent();
   return (
     <div className="font-inika max-w-screen-xl mx-auto">
       <main className="flex flex-col justify-between py-8 bg-background text-foreground font-instrument">
@@ -38,9 +48,9 @@ export default async function Home() {
           <div className="flex gap-2 overflow-x-auto text-lg mx-auto">
             {categories.map((category) => (
               <Link
-                key={category.id}
-                href={`/categories/${category.title.toLowerCase()}`} // Link to dynamic category pages
-                className="px-3 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap flex-shrink-0"
+              key={category.id}
+              href={`/categories/${category.title.toLowerCase()}`} // Link to dynamic category pages
+              className="px-3 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap flex-shrink-0"
               >
                 {category.title.charAt(0).toUpperCase() +
                   category.title.slice(1)}{" "}
@@ -59,6 +69,7 @@ export default async function Home() {
 
       {/* Content Section */}
       <section className="mx-auto">
+            {consent === null && <CookieConsent />}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* LEFT SECTION */}
           <div className="w-full lg:w-[75%]">
@@ -82,6 +93,7 @@ export default async function Home() {
       <SubscriptionSection />
       <MostViewed />
       <ExpertInsightsSection authors={topAuthors} />
+
     </div>
   );
 }
