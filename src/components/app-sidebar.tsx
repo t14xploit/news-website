@@ -26,7 +26,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { User } from "@/generated/prisma";
-import SearchForm from '@/components/SearchForm'; 
 
 // const DASHBOARD_TITLE = "Breaking News Only +";
 
@@ -90,7 +89,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
           <SidebarMenu>
           <SidebarMenuItem className="py-2">
           <div className="relative">
-                <SearchForm />
               </div>
               {/* <SidebarMenuButton
                 asChild

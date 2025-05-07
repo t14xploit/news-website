@@ -1,47 +1,74 @@
-// src/components/SearchForm.tsx
+'use client';
 
-'use client'
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { searchArticles } from "@/actions/search"; // The server-side function
+import SmallerArticleCard from "@/components/SmallerArticleCard"; // Card component for rendering articles
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation'; // To navigate and update the URL
-import { Input } from './ui/input';
-import { Search } from 'lucide-react';
+interface Article {
+  id: string;
+  headline: string;
+  summary: string;
+  content: string;
+  image: string | null;
+  views: number;
+  createdAt: Date;
+  updatedAt: Date;
+  isEditorsChoice: boolean;
+  categories: { id: string; title: string }[];
+}
 
-export default function SearchForm() {
-  const [query, setQuery] = useState('');
-  const router = useRouter(); // Get the router to update the URL on search
+interface ArticleSearchFormProps {
+  initialArticles: Article[];
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent form from submitting the default way
-    if (query) {
-      router.push(`/articles?q=${query}`); // Navigate to the articles page with the search query in the URL
+export default function SearchForm({ initialArticles }: ArticleSearchFormProps) {
+  const [searchInput, setSearchInput] = useState("");
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSearching(true);
+    try {
+      const formData = new FormData();
+      formData.set("search", searchInput);
+
+      const filteredArticles = await searchArticles(formData); // Call server-side function
+      setArticles(filteredArticles);
+    } finally {
+      setIsSearching(false);
     }
   };
-  
-  useEffect(() => {
-    if (query) {
-      const timeoutId = setTimeout(() => {
-        router.push(`/articles?q=${query}`);
-      }, 500); 
-      return () => clearTimeout(timeoutId); 
-    }
-  }, [query, router]);
 
   return (
-    <form onSubmit={handleSubmit} className="mb-1 w-full max-w-[12rem] mr-auto">
-        <div className="relative font-inika">
-        <Search
-         className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-neutral-900"
-        />
-      <Input
-        type="text"
-        placeholder="Search articles..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)} // Update query state
-       className="border border-neutral-300 rounded-lg pl-7 pr-2 py-0.5 w-full text-sm bg-white placeholder:text-neutral-500 transition"
-        />
+    <>
+      <div className="flex flex-col">
+        <form onSubmit={handleSearch} className="flex flex-row gap-2 mt-2">
+          <Input
+            type="text"
+            name="search"
+            placeholder="Search for an article..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            disabled={isSearching}
+          />
+          <Button variant={"outline"} type="submit" disabled={isSearching}>
+            {isSearching ? "Searching..." : "Search"}
+          </Button>
+        </form>
+      </div>
 
-        </div>
-    </form>
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {articles.length > 0 ? (
+          articles.map((article) => (
+            <SmallerArticleCard key={article.id} article={article} />
+          ))
+        ) : (
+          <p>No articles found</p>
+        )}
+      </div>
+    </>
   );
 }
