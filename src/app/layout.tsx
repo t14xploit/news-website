@@ -4,7 +4,6 @@ import "./globals.css";
 // import { Instrument_Serif, Inika } from "next/font/google";
 // import NavBar from "@/components/NavBar";
 import { AppSidebar } from "@/components/app-sidebar";
-import Footer from "@/components/Footer";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SiteHeader from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -76,10 +75,6 @@ export default function RootLayout({
               </main>
             </SidebarInset>
           </SidebarProvider>
-          <main className="flex-1 text-foreground">
-            <div className="max-w-screen-lg mx-auto px-6">{children}</div>
-          </main>
-          <Footer />
         </ThemeProvider>
       </body>
     </html>
