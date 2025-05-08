@@ -25,7 +25,6 @@
 //     </div>
 //   );
 // }
-
 "use client";
 
 import { useState } from "react";
@@ -52,16 +51,10 @@ export default function AuthPage() {
           <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
         </TabsList>
         <TabsContent value="sign-in">
-          <SignIn
-            switchToTab="sign-up"
-            onSwitchTab={() => handleTabSwitch("sign-up")}
-          />
+          <SignIn onSwitchTab={() => handleTabSwitch("sign-up")} />
         </TabsContent>
         <TabsContent value="sign-up">
-          <SignUp
-            switchToTab="sign-in"
-            onSwitchTab={() => handleTabSwitch("sign-in")}
-          />
+          <SignUp onSwitchTab={() => handleTabSwitch("sign-in")} />
         </TabsContent>
       </Tabs>
     </div>

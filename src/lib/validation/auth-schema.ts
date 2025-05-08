@@ -50,8 +50,35 @@ export const signUpSchema = z
 export const signInSchema = z.object({
   ...emailSchema.shape,
   password: z.string().min(1, "Password is required"),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean(),
 });
+
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .email("Please enter a valid email address")
+    .min(5, "Email must be at least 5 characters")
+    .max(100, "Email must not exceed 100 characters"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(32, "Password must not exceed 32 characters")
+      .regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export type SignUpFormValues = z.infer<typeof signUpSchema>;
 export type SignInFormValues = z.infer<typeof signInSchema>;
+export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
