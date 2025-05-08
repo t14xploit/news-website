@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,15 +18,18 @@ import EmailVerificationSent from "@/components/auth/email-verification-sent";
 import { toast } from "sonner";
 
 export default function VerifyEmailPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email") || "";
+  const callbackURL = searchParams.get("callbackURL") || "/sign-in";
 
   const [isVerifying, setIsVerifying] = useState(!!token);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isResending, setIsResending] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [autoRedirecting, setAutoRedirecting] = useState(false);
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -42,9 +45,17 @@ export default function VerifyEmailPage() {
               setError(ctx.error.message || "Failed to verify email");
               setIsVerifying(false);
             },
-            onSuccess: () => {
+            onSuccess: (response) => {
               setIsSuccess(true);
-              setIsVerifying(true);
+              setIsVerifying(false);
+
+              if (response.data?.session) {
+                setAutoRedirecting(true);
+
+                setTimeout(() => {
+                  router.push(callbackURL);
+                }, 3000);
+              }
             },
           }
         );
@@ -60,7 +71,7 @@ export default function VerifyEmailPage() {
     } else {
       setIsVerifying(false);
     }
-  }, [token]);
+  }, [token, callbackURL, router]);
 
   const handleResendVerification = async () => {
     if (!email) {
@@ -73,7 +84,7 @@ export default function VerifyEmailPage() {
       await authClient.sendVerificationEmail(
         {
           email,
-          callbackURL: "/sign-in",
+          callbackURL: callbackURL || "/sign-in",
         },
         {
           onError: (ctx) => {
@@ -147,11 +158,18 @@ export default function VerifyEmailPage() {
             <p className="text-center text-sm text-muted-foreground">
               You can now access all features of our platform.
             </p>
+            {autoRedirecting && (
+              <p className="text-center text-sm mt-2 text-muted-foreground animate-pulse">
+                You&apos;re being signed in automatically...
+              </p>
+            )}
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button asChild>
-              <Link href="/sign-in">Sign In</Link>
-            </Button>
+            {!autoRedirecting && (
+              <Button asChild>
+                <Link href="/sign-in">Sign In</Link>
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </div>
@@ -209,7 +227,7 @@ export default function VerifyEmailPage() {
                 )}
               </Button>
             )}
-            <Button asChild>
+            <Button asChild className="w-full">
               <Link href="/sign-in">Return to Sign In</Link>
             </Button>
           </CardFooter>
