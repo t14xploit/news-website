@@ -3,10 +3,12 @@ import "./globals.css";
 
 // import { Instrument_Serif, Inika } from "next/font/google";
 // import NavBar from "@/components/NavBar";
+
 // import { AppSidebar } from "@/components/app-sidebar";
 import Footer from "@/components/Footer";
 import { SidebarInset } from "@/components/ui/sidebar";
 // import SiteHeader from "@/components/site-header";
+
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import SiteHeader from "@/components/sidebar-nav/site-header";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
@@ -58,6 +60,7 @@ export default function RootLayout({
                 <Footer />
               </main>
             </SidebarInset>
+
           </ClientSidebarWrapper>
         <ClientSidebarWrapper>
           <SidebarInset>
@@ -77,4 +80,5 @@ export default function RootLayout({
     </body>
   </html>
 )
-}
+
+  );
