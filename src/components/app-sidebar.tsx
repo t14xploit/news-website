@@ -26,7 +26,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { User } from "@/generated/prisma";
-import SearchForm from '@/components/SearchForm'; 
+import SearchForm from "@/components/SearchForm";
 
 // const DASHBOARD_TITLE = "Breaking News Only +";
 
@@ -56,7 +56,7 @@ const data = {
       title: "Subscriptions",
       isCollapsible: true,
       items: [
-        { title: "Manage Plan", url: "/subscriptions", icon: IconCreditCard,},
+        { title: "Manage Plan", url: "/subscriptions", icon: IconCreditCard },
       ],
     },
     {
@@ -85,14 +85,14 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
   }
 
   return (
-      <Sidebar collapsible="offcanvas" className="w-64" {...props}>
-        <SidebarHeader className="border-b">
-          <SidebarMenu>
+    <Sidebar collapsible="offcanvas" className="w-64" {...props}>
+      <SidebarHeader className="border-b">
+        <SidebarMenu>
           <SidebarMenuItem className="py-2">
-          <div className="relative">
-                <SearchForm />
-              </div>
-              {/* <SidebarMenuButton
+            <div className="relative">
+              <SearchForm />
+            </div>
+            {/* <SidebarMenuButton
                 asChild
                 className="data-[slot=sidebar-menu-button]:!p-1.5"
               >
@@ -103,16 +103,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                   </span>
                 </Link>
               </SidebarMenuButton> */}
-      </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-        <SidebarContent className="p-2">
-          <NavMain items={data.navMain} />
-          <NavSecondary items={data.navSecondary} className="mt-auto" />
-        </SidebarContent>
-        <SidebarFooter className="p-2 border-t">
-          <NavUser user={user} />
-        </SidebarFooter>
-      </Sidebar>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent collapsible="offcanvas" className="w-64" {...props}>
+        <NavMain items={data.navMain} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
+      </SidebarContent>
+      <SidebarFooter className="p-2 border-t">
+        <NavUser user={user} />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

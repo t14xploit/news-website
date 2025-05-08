@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,14 +28,23 @@ import {
 } from "@/components/ui/form";
 import { authClient } from "@/lib/auth-client";
 import { SignInFormValues, signInSchema } from "@/lib/validation/auth-schema";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface SignInProps {
   onSwitchTab?: () => void;
 }
 
+interface VerificationEmailResponse {
+  status: boolean;
+  previewUrl?: string;
+}
+
 export default function SignIn({ onSwitchTab }: SignInProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -46,16 +55,45 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
     },
   });
 
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail) return;
+
+    try {
+      setIsResendingVerification(true);
+
+      const response = await authClient.sendVerificationEmail({
+        email: unverifiedEmail,
+        callbackURL: "/verify-email",
+      });
+
+      const responseData = response as unknown as {
+        data?: VerificationEmailResponse;
+      };
+      if (responseData.data?.previewUrl) {
+        setPreviewUrl(responseData.data.previewUrl);
+      }
+
+      toast.success("Verification email sent! Please check your inbox.");
+    } catch (error) {
+      console.error("Failed to resend verification email:", error);
+      toast.error("Failed to send verification email. Please try again.");
+    } finally {
+      setIsResendingVerification(false);
+    }
+  };
+
   const onSubmit = async (data: SignInFormValues) => {
     try {
       setIsSubmitting(true);
+      setUnverifiedEmail(null);
+      setPreviewUrl(null);
 
       await authClient.signIn.email(
         {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          callbackURL: "/",
+          callbackURL: "/sign-in",
         },
         {
           onRequest: () => {
@@ -76,18 +114,21 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               });
               toast.error("Invalid email or password. Please try again.");
             } else if (ctx.error.status === 403) {
+              setUnverifiedEmail(data.email);
               form.setError("email", {
                 type: "server",
                 message: "Please verify your email before signing in",
               });
               toast.error("Please verify your email before signing in.");
+
+              handleResendVerification();
             } else {
               toast.error(ctx.error.message || "Failed to sign in");
             }
           },
           onSuccess: () => {
             toast.success("Signed in successfully!");
-            router.push("/");
+            router.push("/sign-in");
           },
         }
       );
@@ -108,6 +149,56 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {unverifiedEmail && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>
+              <div className="flex flex-col space-y-3">
+                <p className="text-sm">
+                  Your email address{" "}
+                  <span className="font-medium">{unverifiedEmail}</span> is not
+                  verified. Please verify your email before signing in.
+                </p>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleResendVerification}
+                    disabled={isResendingVerification}
+                    className="w-full"
+                  >
+                    {isResendingVerification ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Resend verification email"
+                    )}
+                  </Button>
+
+                  {previewUrl && (
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      <a
+                        href={previewUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Mail className="mr-2 h-4 w-4" />
+                        Open E-mailbox
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
             <FormField

@@ -74,12 +74,12 @@ export default function RootLayout({
                   </div>
                 </div>
               </main>
+              <Footer />
             </SidebarInset>
           </SidebarProvider>
-          <main className="flex-1 text-foreground">
+          {/* <main className="flex-1 text-foreground">
             <div className="max-w-screen-lg mx-auto px-6">{children}</div>
-          </main>
-          <Footer />
+          </main> */}
         </ThemeProvider>
       </body>
     </html>

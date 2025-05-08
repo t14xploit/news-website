@@ -16,7 +16,6 @@ import Image from "next/image";
 import { Loader2, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { signUpSchema } from "@/lib/validation/auth-schema";
 import {
   Form,
@@ -29,16 +28,24 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import EmailVerificationSent from "./email-verification-sent";
 
 interface SignUpProps {
-  switchToTab?: string;
   onSwitchTab?: () => void;
+}
+
+interface SignUpResponseData {
+  previewUrl?: string;
 }
 
 export default function SignUp({ onSwitchTab }: SignUpProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
+  const [emailPreviewUrl, setEmailPreviewUrl] = useState<string | undefined>(
+    undefined
+  );
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -82,8 +89,8 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
       setIsSubmitting(true);
-
       let imageBase64 = "";
+
       if (data.image) {
         imageBase64 = await convertImageToBase64(data.image);
       }
@@ -114,9 +121,20 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
               });
             }
           },
-          onSuccess: () => {
-            toast.success("Account created successfully");
-            router.push("/");
+          onSuccess: (ctx) => {
+            toast.success(
+              "Account created successfully! Please verify your email."
+            );
+            setUserEmail(form.getValues("email"));
+
+            const responseData = ctx.data as SignUpResponseData | undefined;
+            setEmailPreviewUrl(responseData?.previewUrl);
+
+            setVerificationSent(true);
+
+            if (!responseData?.previewUrl) {
+              sendVerificationEmail(data.email);
+            }
           },
         }
       );
@@ -131,6 +149,27 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       setIsSubmitting(false);
     }
   };
+
+  const sendVerificationEmail = async (email: string) => {
+    try {
+      const response = await authClient.sendVerificationEmail({
+        email,
+        callbackURL: "/",
+      });
+
+      if (response.data && "previewUrl" in response.data) {
+        setEmailPreviewUrl(response.data.previewUrl as string);
+      }
+    } catch (error) {
+      console.error("Failed to send verification email:", error);
+    }
+  };
+
+  if (verificationSent) {
+    return (
+      <EmailVerificationSent email={userEmail} previewUrl={emailPreviewUrl} />
+    );
+  }
 
   return (
     <Card className="z-50 rounded-md">
@@ -181,7 +220,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 )}
               />
             </div>
-
             <FormField
               control={form.control}
               name="email"
@@ -201,7 +239,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="password"
@@ -222,7 +259,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="passwordConfirmation"
@@ -245,7 +281,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 </FormItem>
               )}
             />
-
             <div className="grid gap-2">
               <Label htmlFor="image">Profile Image (optional)</Label>
               <div className="flex items-end gap-4">
@@ -282,7 +317,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 </div>
               </div>
             </div>
-
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -293,7 +327,6 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
           </form>
         </Form>
       </CardContent>
-
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
           Already have an account?{" "}

@@ -13,7 +13,7 @@ export async function getTopAuthorsWithRandomArticles() {
   const authors = await prisma.author.findMany({
     orderBy: {
       articles: {
-        _count: 'desc', // top authors by article count
+        _count: "desc", // top authors by article count
       },
     },
     take: 10, // get top 10 authors
