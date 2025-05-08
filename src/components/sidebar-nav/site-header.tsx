@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { usePathname } from "next/navigation"
+import { usePathname } from "next/navigation";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,9 +8,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
+} from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,49 +18,52 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Link from "next/link"
-import { ModeToggle } from "../theme/mode-toggle"
+} from "@/components/ui/dropdown-menu";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import { ModeToggle } from "../theme/mode-toggle";
+import { authClient } from "@/lib/auth-client";
+import SignOutButton from "../auth/sign-out-button";
 
 export default function SiteHeader() {
-  const pathname = usePathname()
+  const { data: session } = authClient.useSession();
+  const pathname = usePathname();
 
-  const breadcrumbRoutes = ["/dashboard", "/building-your-application"]
+  const breadcrumbRoutes = ["/dashboard", "/building-your-application"];
 
   const getBreadcrumbs = () => {
     if (!breadcrumbRoutes.some((route) => pathname.startsWith(route))) {
-      return null 
+      return null;
     }
 
-    const pathParts = pathname.split("/").filter((part) => part)
-    const breadcrumbs = []
+    const pathParts = pathname.split("/").filter((part) => part);
+    const breadcrumbs = [];
 
     breadcrumbs.push({
       label: "Home",
       href: "/",
       isCurrent: pathname === "/",
-    })
+    });
 
-    let currentPath = ""
+    let currentPath = "";
     pathParts.forEach((part) => {
-      currentPath += `/${part}`
+      currentPath += `/${part}`;
       const label = part
         .split("-")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+        .join(" ");
       breadcrumbs.push({
         label,
         href: currentPath,
         isCurrent: currentPath === pathname,
-      })
-    })
+      });
+    });
 
-    return breadcrumbs
-  }
+    return breadcrumbs;
+  };
 
-  const breadcrumbs = getBreadcrumbs()
+  const breadcrumbs = getBreadcrumbs();
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4">
@@ -90,7 +93,22 @@ export default function SiteHeader() {
           </Breadcrumb>
         )}
       </div>
-      <div className="ml-auto flex items-center gap-2">
+      <div className="flex items-center gap-4 ml-auto">
+        {session ? (
+          <>
+            <span className="text-sm mr-2">
+              Hi, {session.user.name || session.user.email}
+            </span>
+            <SignOutButton />
+          </>
+        ) : (
+          <Link
+            href="/sign-in"
+            className={buttonVariants({ variant: "secondary" })}
+          >
+            Sign In
+          </Link>
+        )}
         <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,5 +130,5 @@ export default function SiteHeader() {
         </DropdownMenu>
       </div>
     </header>
-  )
+  );
 }
