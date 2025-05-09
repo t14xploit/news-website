@@ -63,7 +63,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
 
       const response = await authClient.sendVerificationEmail({
         email: unverifiedEmail,
-        callbackURL: "/verify-email",
+
+        callbackURL: `${window.location.origin}/verify-email`,
       });
 
       // Response contains a preview URL Nodemailer
@@ -95,7 +96,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          callbackURL: "/sign-in",
+          callbackURL: "/",
         },
         {
           onRequest: () => {

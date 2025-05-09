@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/", "/profile"],
+  matcher: ["/dashboard", "/profile"],
 };
 
 // import { NextRequest, NextResponse } from "next/server";
