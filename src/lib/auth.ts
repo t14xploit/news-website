@@ -26,10 +26,10 @@ export const auth = betterAuth({
   // Verify email
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
-      const verificationUrl = new URL(url);
-      if (!verificationUrl.searchParams.has("callbackURL")) {
-        verificationUrl.searchParams.append("callbackURL", "/");
-      }
+      // const verificationUrl = new URL(url);
+      // if (!verificationUrl.searchParams.has("callbackURL")) {
+      //   verificationUrl.searchParams.append("callbackURL", "/");
+      // }
 
       const emailResponse = await sendEmail({
         to: user.email,
@@ -37,7 +37,7 @@ export const auth = betterAuth({
         html: `
           <h1>Verify your email</h1>
           <p>Click the link below to verify your email address:</p>
-          <a href="${verificationUrl.toString()}">${verificationUrl.toString()}</a>
+          <a href="${url}">${url}</a>
         `,
       });
 
@@ -131,7 +131,6 @@ export const auth = betterAuth({
     },
   },
 
-  // Advanced cookie settings
   advanced: {
     useSecureCookies: IS_PRODUCTION,
     cookies: {

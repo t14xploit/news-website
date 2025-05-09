@@ -4,7 +4,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2, Mail, AlertCircle } from "lucide-react";
+import { Loader2, Mail, AlertCircle, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -160,7 +160,7 @@ export default function ForgotPasswordPage() {
 
   if (isEmailSent) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
+      <div className="flex justify-center items-center ">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-success">
@@ -185,7 +185,7 @@ export default function ForgotPasswordPage() {
             {previewUrl && (
               <Button asChild variant="outline" className="w-full">
                 <a href={previewUrl} target="_blank" rel="noopener noreferrer">
-                  <Mail className="mr-2 h-4 w-4" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   Open E-mailbox
                 </a>
               </Button>
