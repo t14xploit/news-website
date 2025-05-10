@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 //  shuffle an array (Fisher-Yates Shuffle)
-const shuffleArray = (array: any[]) => {
+const shuffleArray = (array: unknown[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -61,8 +61,8 @@ export async function getTopAuthorsWithRandomArticles() {
     // Mark this author as selected
     selectedAuthors.add(author.id);
 
-    // Stop after 3 unique authors with articles
-    if (uniqueAuthorsWithArticles.length === 3) break;
+    // Stop after 4 unique authors with articles
+    if (uniqueAuthorsWithArticles.length === 4) break;
   }
 
   return uniqueAuthorsWithArticles;
