@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getArticlesForLandingPage } from "@/actions/articles";
 import { getTopAuthorsWithRandomArticles } from "@/actions/authors";
-import ApiPlaceholder from "@/components/ApiPlaceholder";
 import EditorsChoiceSection from "@/components/EditorsChoiceSection";
 import LatestNewsBlock from "@/components/LatestNewsBlock";
 import MainArticleCard from "@/components/MainArticleCard";
@@ -14,6 +13,8 @@ import ExpertInsightsSection from "@/components/ExpertInsightsSection";
 import SearchForm from "@/components/SearchForm";
 import CookieConsent from "@/components/CookieConsent"; 
 import { cookies } from "next/headers"
+import WeatherCard from "@/components/api/WeatherCard";
+import SpotPriceCard from "@/components/api/SpotPriceCard";
 // Fetch categories from Prisma server action
 async function getCategories() {
   return await prisma.category.findMany();
@@ -64,8 +65,15 @@ export default async function Home() {
           </div>
         </div>
 
-        <ApiPlaceholder />
-      </main>
+        <div className="flex flex-col lg:flex-row gap-4 mb-6">
+  <div className="w-full lg:w-3/4">
+    <SpotPriceCard />
+  </div>
+  <div className="w-full lg:w-1/4">
+    <WeatherCard />
+  </div>
+</div>
+     </main>
 
       {/* Content Section */}
       <section className="mx-auto">
