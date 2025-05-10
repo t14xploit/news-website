@@ -1,5 +1,5 @@
-import SpotPriceCard from "@/components/SpotPriceCard";
-import WeatherCard from "@/components/WeatherCard";
+import SpotPriceCard from "@/components/api/SpotPriceCard";
+import WeatherCard from "@/components/api/WeatherCard";
 
 export default function WeatherPage() {
   return (

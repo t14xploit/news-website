@@ -107,21 +107,21 @@ export default function WeatherCard() {
         const date = new Date(currentWeather.validTime);
 
         return (
-            <Card className="w-full max-w-md mx-auto shadow-lg border rounded-xl">
-                <CardHeader className="flex justify-between items-center p-6">
+            <Card className="w-full max-w-xs mx-auto shadow-lg border rounded-xl">
+                <CardHeader className="flex justify-between items-center ">
                     {/* Left: Temp & Emoji */}
                     <div className="text-center">
-                        <div className="text-5xl font-bold text-foreground">
+                        <div className="text-4xl font-bold text-foreground">
                             {Math.round(currentWeather.temp)}°C
                         </div>
-                        <div className="text-4xl mt-2">
+                        <div className="text-2xl mt-2">
                             {getWeatherEmoji(currentWeather.summary)}
                         </div>
                     </div>
 
                     {/* Right: Date, City, Summary */}
                     <div className="text-right">
-                        <CardTitle className="text-lg font-semibold text-foreground">
+                        <CardTitle className="text-sm font-semibold text-foreground">
                             {date.toLocaleDateString(undefined, {
                                 weekday: "long",
                                 day: "2-digit",
@@ -132,14 +132,14 @@ export default function WeatherCard() {
                             <MapPin className="w-4 h-4 mr-1" />
                             {city}
                         </p>
-                        <p className="mt-2 text-base font-medium text-foreground">
+                        <p className="mt-2 text-sm font-medium text-foreground">
                             {currentWeather.summary}
                         </p>
                     </div>
                 </CardHeader>
 
-                <CardContent className="p-6">
-                    <div className="text-sm text-muted-foreground">
+                <CardContent >
+                    <div className="text-xs text-muted-foreground">
                         Wind: {currentWeather.windSpeed} m/s | Pressure:{" "}
                         {currentWeather.airPressure} hPa
                     </div>
