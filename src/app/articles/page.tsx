@@ -23,7 +23,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
   }
 
   return (
-    <div className="p-4 font-inika">
+    <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Articles</h1>
       <SearchForm initialArticles={articles} />
     </div>

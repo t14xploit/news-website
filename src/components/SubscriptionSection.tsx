@@ -22,7 +22,7 @@ const formatPrice = (price: number | Decimal) => {
       }
   
       return (
-        <section className="font-inika py-10 mx-auto">
+        <section className="py-10 mx-auto">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
             Choose your subscription <ArrowBigRight className="w-6 h-6 text-primary" />
           </h2>

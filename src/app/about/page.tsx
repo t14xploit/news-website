@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <main className="px-4 py-12 font-inika">
+    <main className="px-4 py-12">
       <Card>
         <CardHeader>
           <CardTitle>

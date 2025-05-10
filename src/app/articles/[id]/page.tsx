@@ -17,7 +17,7 @@ export default async function ArticlePage({ params }: { params: { id: string } }
   if (!article) return <div>Article not found.</div>;
 
   return (
-    <div className="space-y-4 my-4 font-inika">
+    <div className="space-y-4 my-4">
       <h1 className="text-3xl font-bold">{article.headline}</h1>
 
       {/* Meta info: Authors, date, views */}

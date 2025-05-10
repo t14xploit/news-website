@@ -48,7 +48,7 @@ console.log(error)
   }
 
   return (
-    <div className="container space-y-6 my-6 font-inika">
+    <div className="container space-y-6 my-6">
       <h2 className="text-2xl font-semibold flex items-center">
         Articles in {categoryData.title}
         <ArrowBigRight className="w-6 h-6 text-foreground ml-2" />

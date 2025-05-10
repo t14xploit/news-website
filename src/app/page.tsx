@@ -42,8 +42,8 @@ export default async function Home() {
   const consent = await getCookieConsent();
 
   return (
-    <div className="font-inika max-w-screen-xl mx-auto">
-      <main className="flex flex-col justify-between py-8 bg-background text-foreground font-instrument">
+    <div className=" max-w-screen-xl mx-auto">
+      <main className="flex flex-col justify-between py-8 bg-background text-foreground">
 
         {/* Header with Categories and Search */}
         <div className="mb-6">

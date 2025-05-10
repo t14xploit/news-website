@@ -9,7 +9,7 @@ export default async function MostViewed() {
   });
 
   return (
-    <section className="py-10 font-inika">
+    <section className="py-10">
       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
         Most viewed <ArrowBigRight className="w-6 h-6 text-primary" />
       </h2>

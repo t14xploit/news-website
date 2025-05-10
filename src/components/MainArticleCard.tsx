@@ -31,7 +31,7 @@ export default function MainArticleCard({ article }: ArticleCardProps) {
           height={600}
           className="w-full h-48 sm:h-64 md:h-80 lg:h-[300px] object-cover mb-4"
         />
-        <p className="text-md font-inika text-foreground">{article.content}</p>
+        <p className="text-md text-foreground">{article.content}</p>
       </CardContent>
     </Card>
   );
