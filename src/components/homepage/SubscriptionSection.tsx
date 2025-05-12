@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";  
-import SubscriptionCard from "@/components/SubscriptionCard";
+import SubscriptionCard from "@/components/homepage/SubscriptionCard";
 import { ArrowBigRight } from "lucide-react";
 import { Decimal } from "@/generated/prisma/runtime/library";
 

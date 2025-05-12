@@ -1,8 +1,8 @@
 "use client";
 
 import { setCookieConsent } from "@/actions/cookieConsent"; // Import the action function
-import { Button } from "./ui/button";
-import { Card, CardContent, CardFooter } from "./ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 const CookieConsent = () => {
   const handleAccept = async () => {

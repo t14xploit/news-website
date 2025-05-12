@@ -3,7 +3,7 @@
 import { Article } from "@/generated/prisma/client";
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardHeader, CardContent, CardTitle } from "./ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 
 interface ArticleCardProps {
   article: Article;

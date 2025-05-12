@@ -1,25 +1,22 @@
-import { prisma } from "@/lib/prisma";
 import { getArticlesForLandingPage } from "@/actions/articles";
 import { getTopAuthorsWithRandomArticles } from "@/actions/authors";
-import EditorsChoiceSection from "@/components/EditorsChoiceSection";
-import LatestNewsBlock from "@/components/LatestNewsBlock";
-import MainArticleCard from "@/components/MainArticleCard";
-import MostViewed from "@/components/MostViewed";
-import SmallerArticleCard from "@/components/SmallerArticleCard";
-import SubscriptionSection from "@/components/SubscriptionSection";
-import { Button } from "@/components/ui/button";
+import EditorsChoiceSection from "@/components/homepage/EditorsChoiceSection";
+import LatestNewsBlock from "@/components/homepage/LatestNewsBlock";
+import MainArticleCard from "@/components/homepage/MainArticleCard";
+import MostViewed from "@/components/homepage/MostViewed";
+import SmallerArticleCard from "@/components/homepage/SmallerArticleCard";
+import SubscriptionSection from "@/components/homepage/SubscriptionSection";
 import Link from "next/link";
-import ExpertInsightsSection from "@/components/ExpertInsightsSection";
-import SearchForm from "@/components/SearchForm";
-import CookieConsent from "@/components/CookieConsent";
+import ExpertInsightsSection from "@/components/homepage/ExpertInsightsSection";
+import CookieConsent from "@/components/homepage/CookieConsent";
 import { cookies } from "next/headers";
 import WeatherCard from "@/components/api/WeatherCard";
 import SpotPriceCard from "@/components/api/SpotPriceCard";
 
 // Fetch categories from Prisma server action
-async function getCategories() {
-  return await prisma.category.findMany();
-}
+// async function getCategories() {
+//   return await prisma.category.findMany();
+// }
 
 async function getCookieConsent() {
   const cookieStore = await cookies();
@@ -34,7 +31,7 @@ async function getCookieConsent() {
 
 export default async function Home() {
   // Fetch categories from Prisma
-  const categories = await getCategories();
+  // const categories = await getCategories();
 
   // Fetch articles and authors data
   const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
@@ -47,48 +44,25 @@ export default async function Home() {
 
         {/* Header with Categories and Search */}
         <div className="mb-6">
-          {/* Top Row for all screens */}
-          <div className="flex flex-col md:flex-row md:items-center md:gap-4 w-full mb-4">
-            {/* LIVE Button */}
-            <div className="w-full md:w-auto mb-4 md:mb-0">
-              <Button variant="destructive" className="w-full md:w-auto text-md">
-                LIVE 🔴
-              </Button>
-            </div>
+       {/* Navigation Links to Page Sections */}
+<div className="sticky top-0 z-10 bg-background py-2 mb-4 border-b border-muted shadow-sm">
+  <div className="flex gap-4 overflow-x-auto px-4 md:px-0 text-sm">
+    <Link href="#editors-choice" className="hover:underline whitespace-nowrap">
+      Editor&apos;s Choice
+    </Link>
+    <Link href="#subscription" className="hover:underline whitespace-nowrap">
+      Subscribe
+    </Link>
+    <Link href="#most-viewed" className="hover:underline whitespace-nowrap">
+      Most Viewed
+    </Link>
+    <Link href="#expert-insights" className="hover:underline whitespace-nowrap">
+      Expert Insights
+    </Link>
+  </div>
+</div>
 
-
-            {/* Large screens: categories in one line */}
-            <div className="hidden md:flex flex-wrap gap-2 flex-grow">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/categories/${category.title.toLowerCase()}`}
-                  className="px-3 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap"
-                >
-                  {category.title.charAt(0).toUpperCase() + category.title.slice(1)}
-                </Link>
-              ))}
-            </div>
-
-            {/* Search Form */}
-            <div className="w-full md:w-auto md:ml-auto">
-              <SearchForm showResults={false} />
-            </div>
           </div>
-
-          {/* Small screens: categories as 2-column grid */}
-          <div className="grid grid-cols-2 gap-2 md:hidden w-full">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/categories/${category.title.toLowerCase()}`}
-                className="px-3 py-2 rounded-lg hover:bg-muted hover:text-primary transition whitespace-nowrap"
-              >
-                {category.title.charAt(0).toUpperCase() + category.title.slice(1)}
-              </Link>
-            ))}
-          </div>
-        </div>
 
 
 
@@ -101,12 +75,12 @@ export default async function Home() {
           <div className="w-full lg:w-[25%]">
             <WeatherCard />
           </div>
+          {consent === null && <CookieConsent />}
         </div>
 
 
         {/* Content Section */}
-        <section className="mx-auto mt-8">
-          {consent === null && <CookieConsent />}
+        <section id="latest-news" className="mx-auto mt-8">
 
           <div className="flex flex-col lg:flex-row gap-4">
             {/* LEFT SECTION */}
@@ -129,10 +103,21 @@ export default async function Home() {
         </section>
 
         {/* Other Sections */}
-        <EditorsChoiceSection articles={editorsChoice} />
-        <SubscriptionSection />
-        <MostViewed />
-        <ExpertInsightsSection authors={topAuthors} />
+        <section id="editors-choice">
+  <EditorsChoiceSection articles={editorsChoice} />
+</section>
+
+<section id="subscription">
+  <SubscriptionSection />
+</section>
+
+<section id="most-viewed">
+  <MostViewed />
+</section>
+
+<section id="expert-insights">
+  <ExpertInsightsSection authors={topAuthors} />
+</section>
 
       </main>
     </div>
