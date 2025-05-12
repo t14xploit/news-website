@@ -1,6 +1,5 @@
 "use server";
 
-import { PlanType } from "@/components/subscribe/plan-context";
 import { prisma } from "@/lib/prisma";
 import { PaymentFormData } from "@/lib/validation/payment-schema";
 
@@ -8,16 +7,16 @@ interface ProcessPaymentResult {
   success: boolean;
   plan: string;
   price: number;
-  userId?: string;
   error?: string;
 }
 
 export async function processPayment(
   data: PaymentFormData,
-  selectedPlan: { id: string; name: PlanType; price: number }
+  selectedPlan: { id: string; name: string; price: number }
 ): Promise<ProcessPaymentResult> {
   try {
     const cleanedCardNumber = data.cardNumber.replace(/\s/g, "");
+
     if (cleanedCardNumber.length !== 16) {
       throw new Error(
         "Card number must be exactly 16 digits (excluding spaces)"
@@ -36,8 +35,8 @@ export async function processPayment(
       update: {},
       create: {
         id: userId,
-        email: `${userId}@ufo.io`,
-        name: "Alien",
+        email: `${userId}@example.com`,
+        name: "Anonymous User",
       },
     });
 
@@ -80,7 +79,6 @@ export async function processPayment(
       success: true,
       plan: selectedPlan.name,
       price: selectedPlan.price,
-      userId: userId,
     };
   } catch (error) {
     console.error(

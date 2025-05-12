@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { EllipsisVertical, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus } from "lucide-react"
 
 import {
   DropdownMenu,
@@ -46,7 +46,7 @@ export function TeamSwitcher({
                 <span className="truncate font-semibold">{activeTeam.name}</span>
                 <span className="truncate text-xs">{activeTeam.plan}</span>
               </div>
-              <EllipsisVertical className="ml-auto" />
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
