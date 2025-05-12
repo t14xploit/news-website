@@ -1,3 +1,4 @@
+import * as React from "react";
 import { getArticlesForLandingPage } from "@/actions/articles";
 import { getTopAuthorsWithRandomArticles } from "@/actions/authors";
 import EditorsChoiceSection from "@/components/homepage/EditorsChoiceSection";
@@ -11,12 +12,14 @@ import CookieConsent from "@/components/homepage/CookieConsent";
 import { cookies } from "next/headers";
 import WeatherCard from "@/components/api/WeatherCard";
 import SpotPriceCard from "@/components/api/SpotPriceCard";
-import Nav from "@/components/homepage/nav/Nav";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FaFire, FaRegEye, FaRegStar } from "react-icons/fa";
+import { BsEnvelopeCheck, BsPeople } from "react-icons/bs";
+import { GiNewspaper } from "react-icons/gi";
 
-// Fetch categories from Prisma server action
-// async function getCategories() {
-//   return await prisma.category.findMany();
-// }
+// Memoizing the cards to prevent unnecessary re-renders
+const MemoizedWeatherCard = React.memo(WeatherCard);
+const MemoizedSpotPriceCard = React.memo(SpotPriceCard);
 
 async function getCookieConsent() {
   const cookieStore = await cookies();
@@ -30,82 +33,106 @@ async function getCookieConsent() {
 }
 
 export default async function Home() {
-  // Fetch categories from Prisma
-  // const categories = await getCategories();
-
   // Fetch articles and authors data
   const { mainArticle, smallerArticles, editorsChoice } = await getArticlesForLandingPage();
   const topAuthors = await getTopAuthorsWithRandomArticles();
   const consent = await getCookieConsent();
 
   return (
-    <div className=" max-w-screen-xl mx-auto">
-      <main className="flex flex-col justify-between py-8 bg-background text-foreground">
+    <div className="max-w-screen-xl mx-auto">
+      <main className="flex flex-col justify-between bg-background text-foreground">
+        {consent === null && <CookieConsent />}
 
-        {/* Header with Categories and Search */}
-        <div className="mb-6">
-       {/* Navigation Links to Page Sections */}
-<div className="sticky top-0 z-10  py-2">
- <Nav/>
-</div>
+       
 
-          </div>
-
-
-
-
-        {/* Weather & Spot Price Cards */}
-        <div className="flex flex-col lg:flex-row gap-4 w-full">
-          <div className="w-full lg:w-[75%]">
-            <SpotPriceCard />
-          </div>
-          <div className="w-full lg:w-[25%]">
-            <WeatherCard />
-          </div>
-          {consent === null && <CookieConsent />}
-        </div>
-
-
-        {/* Content Section */}
-        <section id="latest-news" className="mx-auto mt-8">
-
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* LEFT SECTION */}
-            <div className="w-full lg:w-[75%]">
-              {mainArticle && <MainArticleCard article={mainArticle} />}
-
-              {/* Smaller Article Cards Grid */}
-              <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-                {smallerArticles.slice(0, 8).map((article) => (
-                  <SmallerArticleCard key={article.id} article={article} />
-                ))}
+        <Tabs defaultValue="latest-news">
+          <TabsList className="flex gap-6">
+            <TabsTrigger value="latest-news" className="text-lg font-semibold">
+              <div className="flex w-full items-center justify-center gap-2">
+                <FaFire className="text-orange-500" size={24} />
+                Latest News
               </div>
-            </div>
-
-            {/* RIGHT SECTION - Latest News */}
-            <div className="w-full lg:w-[25%] space-y-4 h-full">
-              <LatestNewsBlock articles={smallerArticles.slice(0, 8)} />
-            </div>
+            </TabsTrigger>
+            <TabsTrigger value="editors-choice" className="text-lg font-semibold flex gap-2">
+              <div className="flex gap-2 w-full items-center justify-center">
+                <FaRegStar className="text-purple-600" size={24} />
+                Editor&apos;s Choice
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="subscription" className="text-lg font-semibold">
+              <div className="flex gap-2 w-full items-center justify-center">
+                <BsEnvelopeCheck className="text-blue-600" size={24} />
+                Subscription
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="most-viewed" className="text-lg font-semibold">
+              <div className="flex gap-2 w-full items-center justify-center">
+                <FaRegEye className="text-emerald-600" size={24} />
+                Most Viewed
+              </div>
+            </TabsTrigger>
+            <TabsTrigger value="expert-insights" className="text-lg font-semibold">
+              <div className="flex gap-2 w-full items-center justify-center">
+                <BsPeople className="text-amber-300" size={24} />
+                Expert Insights
+              </div>
+            </TabsTrigger>
+          </TabsList>
+ {/* Weather and SpotPrice Cards  */}
+ <div className="flex flex-col lg:flex-row gap-4 w-full">
+          <div className="w-full lg:w-[75%]">
+            <MemoizedSpotPriceCard />
           </div>
-        </section>
+          <div className="w-full lg:w-[23%]">
+            <MemoizedWeatherCard />
+          </div>
+        </div>
+          {/* Tab Content */}
+          <TabsContent value="latest-news">
+            <section className="mt-8">
+                <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+                        <GiNewspaper/> Latest News 
+                        </h2>
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="w-full lg:w-[75%]">
+                  {mainArticle && <MainArticleCard article={mainArticle} />}
+                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {smallerArticles.slice(0, 8).map((article) => (
+                      <SmallerArticleCard key={article.id} article={article} />
+                    ))}
+                  </div>
+                </div>
+                <div className="w-full lg:w-[23%] space-y-4">
+                  <LatestNewsBlock articles={smallerArticles.slice(0, 8)} />
+                </div>
+              </div>
+            </section>
+          </TabsContent>
 
-        {/* Other Sections */}
-        <section id="editors-choice">
-  <EditorsChoiceSection articles={editorsChoice} />
-</section>
+          <TabsContent value="editors-choice">
+            <section className="mt-8">
+              <EditorsChoiceSection articles={editorsChoice} />
+            </section>
+          </TabsContent>
 
-<section id="subscription">
-  <SubscriptionSection />
-</section>
+          <TabsContent value="subscription">
+            <section className="mt-8">
+              <SubscriptionSection />
+            </section>
+          </TabsContent>
 
-<section id="most-viewed">
-  <MostViewed />
-</section>
+          <TabsContent value="most-viewed">
+            <section className="mt-8">
+              <MostViewed />
+            </section>
+          </TabsContent>
 
-<section id="expert-insights">
-  <ExpertInsightsSection authors={topAuthors} />
-</section>
-
+          <TabsContent value="expert-insights">
+            <section className="mt-8">
+              <ExpertInsightsSection authors={topAuthors} />
+            </section>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

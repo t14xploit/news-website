@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";  
 import SubscriptionCard from "@/components/homepage/SubscriptionCard";
-import { ArrowBigRight } from "lucide-react";
 import { Decimal } from "@/generated/prisma/runtime/library";
+import { GiNewspaper } from "react-icons/gi";
 
 const colorCombos = [
   { bg: "bg-blue-600", footer: "bg-blue-100 text-blue-800" },
@@ -22,9 +22,9 @@ const formatPrice = (price: number | Decimal) => {
       }
   
       return (
-        <section className="py-10 mx-auto">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            Choose your subscription <ArrowBigRight className="w-6 h-6 text-primary" />
+        <section className="mx-auto">
+          <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+          <GiNewspaper/> Subscription 
           </h2>
   
           {/* Adjust the grid layout for responsive design */}

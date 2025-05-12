@@ -107,7 +107,7 @@ export default function WeatherCard() {
         const date = new Date(currentWeather.validTime);
 
         return (
-<Card className="w-full h-full shadow-lg border rounded-xl">
+<Card className="w-full h-full shadow-none border-none rounded-xl">
 <CardHeader className="flex justify-between items-center ">
                     {/* Left: Temp & Emoji */}
                     <div className="text-center">

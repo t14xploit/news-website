@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowBigRight } from "lucide-react";
+import { GiNewspaper } from "react-icons/gi";
 
 type ExpertInsightsSectionProps = {
   authors: {
@@ -18,8 +18,8 @@ type ExpertInsightsSectionProps = {
 const ExpertInsightsSection: FC<ExpertInsightsSectionProps> = ({ authors }) => {
   return (
     <section className=" bg-background text-foreground">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        Expert Insights <ArrowBigRight className="w-6 h-6 text-primary" />
+      <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+       <GiNewspaper/> Expert Insights 
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {authors.map((author, index) => (

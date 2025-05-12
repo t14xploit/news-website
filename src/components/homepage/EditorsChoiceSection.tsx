@@ -4,7 +4,7 @@ import { Article, Category } from "@/generated/prisma/client";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowBigRight } from "lucide-react";
+import { GiNewspaper } from "react-icons/gi";
 
 interface EditorsChoiceProps {
   articles: (Article & { categories: Category[] })[];
@@ -39,9 +39,10 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
   };
 
   return (
-    <section className="mt-6 space-y-6">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        Editor’s Choice <ArrowBigRight className="w-6 h-6 text-primary" />
+    <section className="my-4 space-y-6">
+      <h2 className="text-4xl font-bold  flex items-center gap-2">
+      <GiNewspaper />
+      Editor’s Choice 
       </h2>
 
       {/* Top Section - First and Second Articles */}
