@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import Footer from "@/components/Footer";
+
 import { SidebarInset } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import SiteHeader from "@/components/sidebar-nav/site-header";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
 import { PlanProvider } from "@/components/subscribe/plan-context";
+
 import { Toaster } from "sonner";
+
 
 export const metadata: Metadata = {
   title: "PandaNEWS",
@@ -20,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+
       <body>
         <ThemeProvider
           attribute="class"
@@ -47,3 +52,4 @@ export default function RootLayout({
     </html>
   );
 }
+
