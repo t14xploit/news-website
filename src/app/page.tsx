@@ -6,12 +6,12 @@ import MainArticleCard from "@/components/homepage/MainArticleCard";
 import MostViewed from "@/components/homepage/MostViewed";
 import SmallerArticleCard from "@/components/homepage/SmallerArticleCard";
 import SubscriptionSection from "@/components/homepage/SubscriptionSection";
-import Link from "next/link";
 import ExpertInsightsSection from "@/components/homepage/ExpertInsightsSection";
 import CookieConsent from "@/components/homepage/CookieConsent";
 import { cookies } from "next/headers";
 import WeatherCard from "@/components/api/WeatherCard";
 import SpotPriceCard from "@/components/api/SpotPriceCard";
+import Nav from "@/components/homepage/nav/Nav";
 
 // Fetch categories from Prisma server action
 // async function getCategories() {
@@ -45,21 +45,8 @@ export default async function Home() {
         {/* Header with Categories and Search */}
         <div className="mb-6">
        {/* Navigation Links to Page Sections */}
-<div className="sticky top-0 z-10 bg-background py-2 mb-4 border-b border-muted shadow-sm">
-  <div className="flex gap-4 overflow-x-auto px-4 md:px-0 text-sm">
-    <Link href="#editors-choice" className="hover:underline whitespace-nowrap">
-      Editor&apos;s Choice
-    </Link>
-    <Link href="#subscription" className="hover:underline whitespace-nowrap">
-      Subscribe
-    </Link>
-    <Link href="#most-viewed" className="hover:underline whitespace-nowrap">
-      Most Viewed
-    </Link>
-    <Link href="#expert-insights" className="hover:underline whitespace-nowrap">
-      Expert Insights
-    </Link>
-  </div>
+<div className="sticky top-0 z-10  py-2">
+ <Nav/>
 </div>
 
           </div>
