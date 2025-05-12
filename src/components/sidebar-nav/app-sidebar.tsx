@@ -2,24 +2,26 @@
 
 import type * as React from "react"
 import {
-  FileText,
+  AudioWaveform,
+  Command,
+  CreditCard,
+  Eye,
   Flame,
+  GalleryVerticalEnd,
   Home,
   Info,
-  Menu,
-  Sparkles,
   Star,
+  Waypoints,
 } from "lucide-react"
 import { NavMain } from "./nav-main"
 // import { NavProjects } from "./nav-projects"
 import { NavUser } from "./nav-user"
-// import { TeamSwitcher } from "./team-switcher"
+import { TeamSwitcher } from "./team-switcher"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
 import { NavSecondary } from "./nav-secondary"
-// import { NavSubscriptions } from "./nav-subscriptions"
-import { usePlan, PlanType } from "../subscribe/plan-context"
+import { NavSubscriptions } from "./nav-subscriptions"
+import { usePlan } from "../subscribe/plan-context"
 import { NavMainBottom } from "./nav-bottom"
-import { PlanSwitcher } from "./plan-switcher"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { currentPlan, setCurrentPlan } = usePlan()
@@ -30,43 +32,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       email: "ninja@ufo.io",
       avatar: "/avatars/user.png",
     },
-    PlanSwitcher: [
-        {
-            title: "Basic" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Basic",
-        },
-        {
-            title: "Premium" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Premium",
-        },
-        {
-            title: "Pro" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Pro",
-        },
+    teams: [
+      {
+        name: "Acme Inc",
+        logo: GalleryVerticalEnd,
+        plan: "Enterprise",
+      },
+      {
+        name: "Acme Corp.",
+        logo: AudioWaveform,
+        plan: "Startup",
+      },
+      {
+        name: "Evil Corp.",
+        logo: Command,
+        plan: "Free",
+      },
     ],
-    // teams: [
-    //   {
-    //     name: "Acme Inc",
-    //     logo: GalleryVerticalEnd,
-    //     plan: "Enterprise",
-    //   },
-    //   {
-    //     name: "Acme Corp.",
-    //     logo: AudioWaveform,
-    //     plan: "Startup",
-    //   },
-    //   {
-    //     name: "Evil Corp.",
-    //     logo: Command,
-    //     plan: "Free",
-    //   },
-    // ],
     NavSecondary: [
       {
         title: "Home",
@@ -88,7 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         title: "Explore",
         url: "#",
-        icon: Menu, //Eye,
+        icon: Eye,
         isActive: true,
         items: [
           {
@@ -118,36 +100,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ],
       },
     ],
-    // NavSubscriptions: [
-    //   {
-    //     title: "Subscription",
-    //     url: "app/subscribe",
-    //     icon: CreditCard,
-    //     isActive: false,
-    //     items: [
-    //     //   {
-    //     //     title: `Manage plan: ${currentPlan}`,
-    //     //     url: "#",
-    //     //     isActive: false,
-    //     //   },
-    //       {
-    //         title: "Basic",
-    //         url: "#",
-    //         isActive: currentPlan === "Basic",
-    //       },
-    //       {
-    //         title: "Premium",
-    //         url: "#",
-    //         isActive: currentPlan === "Premium",
-    //       },
-    //       {
-    //         title: "Pro",
-    //         url: "#",
-    //         isActive: currentPlan === "Pro",
-    //       },
-    //     ],
-    //   },
-    // ],
+    NavSubscriptions: [
+      {
+        title: "Subscription",
+        url: "app/subscribe",
+        icon: CreditCard,
+        isActive: false,
+        items: [
+        //   {
+        //     title: `Manage plan: ${currentPlan}`,
+        //     url: "#",
+        //     isActive: false,
+        //   },
+          {
+            title: "Basic",
+            url: "#",
+            isActive: currentPlan === "Basic",
+          },
+          {
+            title: "Premium",
+            url: "#",
+            isActive: currentPlan === "Premium",
+          },
+          {
+            title: "Pro",
+            url: "#",
+            isActive: currentPlan === "Pro",
+          },
+        ],
+      },
+    ],
      navMainBottom: [
       {
         title: "Info",
@@ -168,7 +150,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {
             title: "Legal",
             url: "#",
-            icon: FileText,    //Waypoints, //ShieldHalf
+            icon: Waypoints, //ShieldHalf
             isActive: true,
             items: [
               {
@@ -205,22 +187,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-         <NavUser user={data.user} />
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.NavSecondary} />
         <NavMain items={data.navMain} />
-        {/* <NavSubscriptions items={data.NavSubscriptions} currentPlan={currentPlan} setCurrentPlan={setCurrentPlan} /> */}
-        <NavMainBottom items={data.navMainBottom} 
-        className="mt-auto"/>
+        <NavSubscriptions items={data.NavSubscriptions} currentPlan={currentPlan} setCurrentPlan={setCurrentPlan} />
+        <NavMainBottom items={data.navMainBottom} />
       </SidebarContent>
       <SidebarFooter>
-      <PlanSwitcher
-          items={data.PlanSwitcher}
-          currentPlan={currentPlan}
-          setCurrentPlan={setCurrentPlan}
-        />
-        {/* <TeamSwitcher teams={data.teams} /> */}
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

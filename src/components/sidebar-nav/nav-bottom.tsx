@@ -17,7 +17,6 @@ import {
 
 export function NavMainBottom({
   items,
-  ...props
 }: {
   items: {
     title: string
@@ -29,13 +28,13 @@ export function NavMainBottom({
       url: string
     }[]
   }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}) {
   return (
-    <SidebarGroup {...props}> 
+    <SidebarGroup>
       <SidebarGroupLabel>Charter</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={false} className="group/collapsible">
+          <Collapsible key={item.title} asChild defaultOpen={item.isActive} className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
