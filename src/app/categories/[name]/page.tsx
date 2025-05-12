@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowBigRight, PawPrint } from "lucide-react";
 import { fetchCategoryData } from "@/actions/category";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Link from "next/link";
 
 type Params = Promise<{ name: string }>;
 
@@ -48,7 +49,7 @@ console.log(error)
   }
 
   return (
-    <div className="container space-y-6 my-6 font-inika">
+    <div className="container space-y-6 my-6">
       <h2 className="text-2xl font-semibold flex items-center">
         Articles in {categoryData.title}
         <ArrowBigRight className="w-6 h-6 text-foreground ml-2" />
@@ -69,7 +70,9 @@ console.log(error)
           {categoryData.articles.map((article) => (
             <Card key={article.id} className="p-4 space-y-2 shadow-lg hover:shadow-xl transition-all">
               <CardHeader className="space-y-1">
-                <h3 className="text-xl font-bold line-clamp-1">{article.headline}</h3>
+              <Link href={`/articles/${article.id}`}>
+                <h3 className="text-xl font-bold line-clamp-1 hover:underline">{article.headline}</h3>
+               </Link>
                 <p className="text-sm text-muted-foreground">
                   {formatDistanceToNow(new Date(article.createdAt), { addSuffix: true })}
                 </p>
@@ -81,7 +84,9 @@ console.log(error)
                   <div className="flex flex-wrap space-x-2">
                     {article.authors.map((author, index) => (
                       <span key={author.id} className="text-sm text-primary">
-                        {author.name}
+                        <Link href={`/authors/${author.id}`} className="hover:underline">
+                         {author.name}
+                        </Link>
                         {index < article.authors.length - 1 ? ", " : ""}
                       </span>
                     ))}

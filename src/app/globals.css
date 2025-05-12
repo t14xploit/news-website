@@ -153,10 +153,3 @@
     @apply bg-background text-foreground;
   }
 }
-.font-instrument {
-  font-family: var(--font-instrument-serif);
-}
-
-.font-inika {
-  font-family: var(--font-inika);
-}

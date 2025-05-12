@@ -72,7 +72,7 @@ export default function SearchForm({
             disabled={isSearching}
             className={`${
               !showResults ? "pl-10" : "pl-4"
-            } pr-3 py-2 rounded-lg border text-lg w-full font-inika`}
+            } pr-3 py-2 rounded-lg border text-lg w-full`}
           />
         </div>
 

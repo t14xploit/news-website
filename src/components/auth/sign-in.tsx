@@ -51,7 +51,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: false,
+      rememberMe: true,
     },
   });
 
@@ -63,12 +63,15 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
 
       const response = await authClient.sendVerificationEmail({
         email: unverifiedEmail,
-        callbackURL: "/verify-email",
+
+        callbackURL: `${window.location.origin}/verify-email`,
       });
 
+      // Response contains a preview URL Nodemailer
       const responseData = response as unknown as {
         data?: VerificationEmailResponse;
       };
+
       if (responseData.data?.previewUrl) {
         setPreviewUrl(responseData.data.previewUrl);
       }
@@ -93,7 +96,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          callbackURL: "/sign-in",
+          callbackURL: "/",
         },
         {
           onRequest: () => {
@@ -114,6 +117,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               });
               toast.error("Invalid email or password. Please try again.");
             } else if (ctx.error.status === 403) {
+              // Email not verified -  403 - email verification is required
               setUnverifiedEmail(data.email);
               form.setError("email", {
                 type: "server",
@@ -122,6 +126,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               toast.error("Please verify your email before signing in.");
 
               handleResendVerification();
+            } else if (ctx.error.code) {
+              toast.error(`Error: ${ctx.error.code}`);
             } else {
               toast.error(ctx.error.message || "Failed to sign in");
             }

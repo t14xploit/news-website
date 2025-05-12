@@ -1,11 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,6 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -23,49 +25,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
-import { z } from "zod";
-import { authClient } from "@/lib/auth-client";
-
-const formSchema = z
-  .object({
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .max(32, "Password must not exceed 32 characters")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
-      ),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-type FormValues = z.infer<typeof formSchema>;
+import { sendEmailFromClient } from "@/lib/email/email-client";
+import {
+  resetPasswordSchema,
+  ResetPasswordFormValues,
+} from "@/lib/validation/auth-schema";
 
 export default function ResetPasswordPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-
+  const router = useRouter();
   const searchParams = useSearchParams();
-  //   const router = useRouter();
   const token = searchParams.get("token");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState(false);
 
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: "",
       confirmPassword: "",
     },
   });
 
-  // We don't need to verify the token separately as Better Auth will handle this
-
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: ResetPasswordFormValues) => {
     if (!token) {
       toast.error("Reset token is missing");
       return;
@@ -76,84 +57,74 @@ export default function ResetPasswordPage() {
 
       await authClient.resetPassword(
         {
-          token,
           newPassword: data.password,
+          token,
         },
         {
-          onRequest: () => {
-            setIsSubmitting(true);
-          },
-          onResponse: () => {
-            setIsSubmitting(false);
+          onSuccess: async (response) => {
+            setResetSuccess(true);
+            toast.success("Password reset successfully");
+
+            const email = response?.data?.email;
+            if (email) {
+              try {
+                await sendEmailFromClient({
+                  to: email,
+                  subject: "Your password has been reset",
+                  html: `
+                    <h1>Password Reset Successful</h1>
+                    <p>Your password for PandaNEWS has been successfully reset.</p>
+                    <p>If you did not request this change, please contact our support team immediately.</p>
+                  `,
+                });
+              } catch (emailError) {
+                console.error("Failed to send confirmation email:", emailError);
+              }
+            }
           },
           onError: (ctx) => {
-            toast.error(ctx.error.message || "Failed to reset password");
-          },
-          onSuccess: () => {
-            setIsSuccess(true);
-            toast.success("Password reset successfully!");
-            // setTimeout(() => {
-            //   router.push("/sign-in");
-            // }, 2000);
+            toast.error(
+              ctx.error.message ||
+                "Failed to reset password. The token may have expired."
+            );
           },
         }
       );
     } catch (error) {
-      console.error("Password reset error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isSuccess) {
+  if (resetSuccess) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl">
-              Password Reset Successfully
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Your password has been updated.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              You will be redirected to the sign in page shortly.
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button asChild>
-              <Link href="/sign-in">Sign In Now</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
+      <Card className="max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle>Password Reset Successful</CardTitle>
+          <CardDescription>
+            Your password has been reset successfully.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>You can now sign in with your new password.</p>
+        </CardContent>
+        <CardFooter>
+          <Button className="w-full" onClick={() => router.push("/sign-in")}>
+            Go to Sign In
+          </Button>
+        </CardFooter>
+      </Card>
     );
   }
 
-  // No need for token validation state since Better Auth will handle invalid tokens
-  // If the token is invalid, the resetPassword call will fail with an error
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
-      <Card className="max-w-md w-full">
+    <div className="w-full max-w-md mx-auto py-6">
+      <Card className="z-50 rounded-md">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
           <CardDescription className="text-xs md:text-sm">
@@ -161,66 +132,72 @@ export default function ResetPasswordPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="password">Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="••••••••"
-                        autoComplete="new-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="confirmPassword">
-                      Confirm Password
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="••••••••"
-                        autoComplete="new-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  "Reset Password"
-                )}
-              </Button>
-            </form>
-          </Form>
+          {!token ? (
+            <div className="text-center text-red-500">
+              Invalid or expired reset token. Please request a new password
+              reset.
+            </div>
+          ) : (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="grid gap-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel htmlFor="password">New Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          id="password"
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="••••••••"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel htmlFor="confirmPassword">
+                        Confirm New Password
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="••••••••"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    "Reset Password"
+                  )}
+                </Button>
+              </form>
+            </Form>
+          )}
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
-            Remember your password?{" "}
-            <Link href="/sign-in" className="text-primary hover:underline">
-              Sign In
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );

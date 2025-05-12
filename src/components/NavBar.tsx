@@ -20,7 +20,7 @@ export default async function NavBar() {
         </Link>
 
         {/* Navigation links */}
-        <div className="flex gap-10 items-center font-instrument text-xl">
+        <div className="flex gap-10 items-center text-xl">
           <Link href="/" className="hover:underline">
             Home
           </Link>

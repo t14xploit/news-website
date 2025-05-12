@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,21 +16,55 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 import EmailVerificationSent from "@/components/auth/email-verification-sent";
 import { toast } from "sonner";
+import { sendEmailFromClient } from "@/lib/email/email-client";
+
+interface VerificationStatus {
+  attempted: boolean;
+  success: boolean;
+  error: string | null;
+  loading: boolean;
+  isResending: boolean;
+  previewUrl: string | false | null;
+  userNotFound: boolean;
+}
+
+interface SessionStatus {
+  isLoading: boolean;
+  isVerified: boolean;
+  email: string | null;
+}
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const email = searchParams.get("email") || "";
+  const callbackURL = searchParams.get("callbackURL") || "/sign-in";
 
-  const [isVerifying, setIsVerifying] = useState(!!token);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isResending, setIsResending] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [verificationStatus, setVerificationStatus] =
+    useState<VerificationStatus>({
+      attempted: false,
+      success: false,
+      error: null,
+      loading: !!token,
+      isResending: false,
+      previewUrl: null,
+      userNotFound: false,
+    });
+
+  const [sessionStatus, setSessionStatus] = useState<SessionStatus>({
+    isLoading: true,
+    isVerified: false,
+    email: null,
+  });
 
   useEffect(() => {
     const verifyEmail = async () => {
       if (!token) {
+        setVerificationStatus((prev) => ({
+          ...prev,
+          loading: false,
+          attempted: true,
+        }));
         return;
       }
 
@@ -38,29 +72,138 @@ export default function VerifyEmailPage() {
         await authClient.verifyEmail(
           { query: { token } },
           {
-            onError: (ctx) => {
-              setError(ctx.error.message || "Failed to verify email");
-              setIsVerifying(false);
+            onSuccess: async (response) => {
+              const userEmail = response.data?.user?.email || email;
+
+              setVerificationStatus({
+                loading: false,
+                attempted: true,
+                success: true,
+                error: null,
+                isResending: false,
+                previewUrl: null,
+                userNotFound: false,
+              });
+
+              toast.success("Email verified successfully!");
+
+              if (userEmail) {
+                try {
+                  await sendEmailFromClient({
+                    to: userEmail,
+                    subject: "Email Verification Successful",
+                    html: `
+                      <h1>Email Verification Successful</h1>
+                      <p>Your email address for PandaNEWS has been successfully verified.</p>
+                      <p>You can now enjoy full access to our platform.</p>
+                    `,
+                  });
+                } catch (emailError) {
+                  console.error(
+                    "Failed to send confirmation email:",
+                    emailError
+                  );
+                }
+              }
             },
-            onSuccess: () => {
-              setIsSuccess(true);
-              setIsVerifying(true);
+            onError: (ctx) => {
+              const errorMessage =
+                ctx.error.message || "Failed to verify email";
+
+              const isUserNotFound =
+                ctx.error.code === "USER_NOT_FOUND" ||
+                errorMessage.toLowerCase().includes("not found") ||
+                ctx.error.status === 404;
+
+              setVerificationStatus({
+                loading: false,
+                attempted: true,
+                success: false,
+                error: errorMessage,
+                isResending: false,
+                previewUrl: null,
+                userNotFound: isUserNotFound,
+              });
+
+              if (isUserNotFound) {
+                toast.error("User not found. Please check your email address.");
+              } else {
+                toast.error(errorMessage);
+              }
             },
           }
         );
       } catch (error) {
         console.error("Email verification error:", error);
-        setError("An unexpected error occurred. Please try again.");
-        setIsVerifying(false);
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred. Please try again.";
+
+        setVerificationStatus({
+          loading: false,
+          attempted: true,
+          success: false,
+          error: errorMessage,
+          isResending: false,
+          previewUrl: null,
+          userNotFound: false,
+        });
+
+        toast.error(errorMessage);
       }
     };
 
     if (token) {
       verifyEmail();
-    } else {
-      setIsVerifying(false);
     }
-  }, [token]);
+  }, [token, email]);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await authClient.getSession(
+          {
+            query: { disableCookieCache: true },
+          },
+          {
+            onSuccess: (response) => {
+              setSessionStatus({
+                isLoading: false,
+                isVerified: response.data?.user?.emailVerified || false,
+                email: response.data?.user?.email || null,
+              });
+
+              if (response.data?.user?.emailVerified) {
+                setVerificationStatus((prev) => ({
+                  ...prev,
+                  success: true,
+                  loading: false,
+                  attempted: true,
+                }));
+              }
+            },
+            onError: () => {
+              setSessionStatus({
+                isLoading: false,
+                isVerified: false,
+                email: null,
+              });
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Session check error:", error);
+        setSessionStatus({
+          isLoading: false,
+          isVerified: false,
+          email: null,
+        });
+      }
+    };
+
+    checkSession();
+  }, [verificationStatus.success]);
 
   const handleResendVerification = async () => {
     if (!email) {
@@ -69,37 +212,67 @@ export default function VerifyEmailPage() {
     }
 
     try {
-      setIsResending(true);
+      setVerificationStatus((prev) => ({ ...prev, isResending: true }));
+
       await authClient.sendVerificationEmail(
         {
           email,
-          callbackURL: "/sign-in",
+          callbackURL: callbackURL || "/verify-email",
         },
         {
-          onError: (ctx) => {
-            toast.error(
-              ctx.error.message || "Failed to resend verification email"
-            );
-          },
           onSuccess: (response) => {
-            if (response.data?.previewUrl) {
-              setPreviewUrl(response.data.previewUrl);
-            }
+            const previewUrl = response.data?.previewUrl ?? null;
+
+            setVerificationStatus((prev) => ({
+              ...prev,
+              isResending: false,
+              previewUrl,
+              userNotFound: false,
+            }));
+
             toast.success("Verification email sent successfully!");
+          },
+          onError: (ctx) => {
+            if (
+              ctx.error.code === "USER_NOT_FOUND" ||
+              ctx.error.message?.toLowerCase().includes("not found") ||
+              ctx.error.status === 404
+            ) {
+              setVerificationStatus((prev) => ({
+                ...prev,
+                isResending: false,
+                userNotFound: true,
+              }));
+            } else {
+              toast.error(
+                ctx.error.message || "Failed to resend verification email"
+              );
+              setVerificationStatus((prev) => ({
+                ...prev,
+                isResending: false,
+              }));
+            }
           },
         }
       );
     } catch (error) {
       console.error("Resend verification error:", error);
       toast.error("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsResending(false);
+
+      setVerificationStatus((prev) => ({
+        ...prev,
+        isResending: false,
+      }));
     }
   };
 
-  if (isVerifying) {
+  if (verificationStatus.userNotFound) {
+    return <EmailVerificationSent email={email} />;
+  }
+
+  if (verificationStatus.loading || sessionStatus.isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl">
@@ -117,40 +290,31 @@ export default function VerifyEmailPage() {
     );
   }
 
-  if (isSuccess) {
+  if (verificationStatus.success || sessionStatus.isVerified) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle className="text-lg md:text-xl">Email Verified</CardTitle>
+            <CardTitle className="text-lg md:text-xl text-success">
+              Email Verified Successfully!
+            </CardTitle>
             <CardDescription className="text-xs md:text-sm">
-              Your email address has been successfully verified
+              Thank you for confirming your email. You&apos;re fully connected
+              now.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <CheckCircle className="h-6 w-6" />
             </div>
             <p className="text-center text-sm text-muted-foreground">
-              You can now access all features of our platform.
+              You&apos;ve successfully verified your email address and can now
+              access all features of PandaNEWS.
             </p>
           </CardContent>
           <CardFooter className="flex justify-center">
-            <Button asChild>
-              <Link href="/sign-in">Sign In</Link>
+            <Button asChild className="w-full">
+              <Link href="/">Continue to Home</Link>
             </Button>
           </CardFooter>
         </Card>
@@ -158,37 +322,26 @@ export default function VerifyEmailPage() {
     );
   }
 
-  if (error) {
+  if (verificationStatus.error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-muted/40 p-4">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-destructive">
               Verification Failed
             </CardTitle>
             <CardDescription className="text-xs md:text-sm">
-              {error || "We couldn't verify your email address"}
+              {verificationStatus.error ||
+                "We couldn't verify your email address"}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-8">
             <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <XCircle className="h-6 w-6" />
             </div>
             <p className="text-center text-sm text-muted-foreground">
-              The verification link may have expired or is invalid.
+              The verification link may have expired or is invalid. Please
+              request a new verification link.
             </p>
           </CardContent>
           <CardFooter className="flex justify-center gap-4 flex-col">
@@ -197,9 +350,9 @@ export default function VerifyEmailPage() {
                 variant="outline"
                 className="w-full"
                 onClick={handleResendVerification}
-                disabled={isResending}
+                disabled={verificationStatus.isResending}
               >
-                {isResending ? (
+                {verificationStatus.isResending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Sending...
@@ -209,7 +362,7 @@ export default function VerifyEmailPage() {
                 )}
               </Button>
             )}
-            <Button asChild>
+            <Button asChild className="w-full">
               <Link href="/sign-in">Return to Sign In</Link>
             </Button>
           </CardFooter>
@@ -221,7 +374,7 @@ export default function VerifyEmailPage() {
   return (
     <EmailVerificationSent
       email={email}
-      previewUrl={previewUrl}
+      previewUrl={verificationStatus.previewUrl}
       onResend={handleResendVerification}
     />
   );

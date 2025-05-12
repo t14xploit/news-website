@@ -101,7 +101,7 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
           password: data.password,
           name: `${data.firstName} ${data.lastName}`,
           image: imageBase64,
-          callbackURL: "/",
+          callbackURL: "/verify-email",
         },
         {
           onRequest: () => {
@@ -154,7 +154,7 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
     try {
       const response = await authClient.sendVerificationEmail({
         email,
-        callbackURL: "/",
+        callbackURL: "/verify-email",
       });
 
       if (response.data && "previewUrl" in response.data) {

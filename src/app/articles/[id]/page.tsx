@@ -1,26 +1,40 @@
 import { prisma } from "@/lib/prisma";
 import ArticleViewTracker from "@/components/ArticleViewTracker";
 import Image from "next/image";
-import { CalendarDays, Eye } from "lucide-react"; // optional: icons from lucide or use your own
+import { CalendarDays, Eye } from "lucide-react";
+import Link from "next/link";
 
-export default async function ArticlePage({ params }: { params: { id: string } }) {
+type Params = Promise<{
+  id: string;
+}>;
+
+interface ArticlePageProps {
+  params: Params;
+}
+
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const resolvedParams = await params;
+  const articleId = resolvedParams.id;
+
   const article = await prisma.article.findUnique({
-    where: { id: params.id },
+    where: { id: articleId },
     include: {
-      authors: true, // Get associated authors
+      authors: true,
     },
   });
+
+  if (!article) {
+    return <div>Article not found.</div>;
+  }
 
   const fallbackImageUrl =
     "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
 
-  if (!article) return <div>Article not found.</div>;
-
   return (
-    <div className="space-y-4 my-4 font-inika">
+    <div className="space-y-4 my-4">
       <h1 className="text-3xl font-bold">{article.headline}</h1>
 
-      {/* Meta info: Authors, date, views */}
+      {/* Meta info */}
       <div className="flex items-center gap-6 text-sm text-gray-500 flex-wrap">
         {article.authors.map((author) => (
           <div key={author.id} className="flex items-center gap-2">
@@ -31,7 +45,9 @@ export default async function ArticlePage({ params }: { params: { id: string } }
               height={500}
               className="rounded-full w-10 h-10 object-cover"
             />
-            <span>{author.name}</span>
+            <Link href={`/authors/${author.id}`}>
+            <span className="hover:underline">{author.name}</span>
+            </Link>
           </div>
         ))}
 
@@ -46,7 +62,7 @@ export default async function ArticlePage({ params }: { params: { id: string } }
         </div>
       </div>
 
-      {/* img and summary */}
+      {/* Image and summary */}
       <div className="flex gap-4 items-center text-center">
         <Image
           src={article.image && article.image !== "" ? article.image : fallbackImageUrl}
@@ -58,10 +74,10 @@ export default async function ArticlePage({ params }: { params: { id: string } }
         <p className="text-gray-600">{article.summary}</p>
       </div>
 
-      {/* Article content */}
+      {/* Full content */}
       <div className="mt-4">{article.content}</div>
 
-      {/* Increment view count */}
+      {/* View tracker */}
       <ArticleViewTracker articleId={article.id} />
     </div>
   );

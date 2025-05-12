@@ -18,7 +18,7 @@ export default function Footer() {
           <h2 className="text-xl font-bold mb-4">
             panda<span className="text-primary">🐼NEWS</span>
           </h2>
-          <p className="mb-4 max-w-xs font-instrument">
+          <p className="mb-4 max-w-xs">
             Curated stories, expert opinions, and updates from around the world.
           </p>
           <div className="flex gap-4 mt-12">
@@ -39,7 +39,7 @@ export default function Footer() {
 
         {/* Links */}
         <div className="grid grid-cols-2 gap-8 sm:gap-16">
-          <div className="space-y-2 font-instrument">
+          <div className="space-y-2">
             <h4 className="font-semibold mb-2">Info</h4>
             <Link href="/about" className="block hover:underline">About Us</Link>
             <Link href="/contact" className="block hover:underline">Contact</Link>
@@ -48,7 +48,7 @@ export default function Footer() {
             <Link href="/subscription" className="block hover:underline">Subscriptions</Link>
           </div>
 
-          <div className="space-y-2 font-instrument">
+          <div className="space-y-2">
             <h4 className="font-semibold mb-2">Explore</h4>
             <Link href="/editors-choice" className="block hover:underline">Editor’s Choice</Link>
             <Link href="/top-news" className="block hover:underline">Top News</Link>
@@ -60,7 +60,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="mt-10 text-center text-muted-foreground font-instrument">
+      <div className="mt-10 text-center text-muted-foreground">
         © {new Date().getFullYear()} panda🐼NEWS. All rights reserved.
       </div>
     </footer>

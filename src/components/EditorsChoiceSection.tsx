@@ -39,55 +39,57 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
   };
 
   return (
-    <section className=" mt-6 space-y-6  pr-10 font-inika">
-       <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-       Editor’s Choice <ArrowBigRight className="w-6 h-6 text-primary" />
-            </h2> 
-      
+    <section className="mt-6 space-y-6">
+      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+        Editor’s Choice <ArrowBigRight className="w-6 h-6 text-primary" />
+      </h2>
 
-      {/* Top Section */}
-      <div className="flex flex-col lg:flex-row gap-2">
-        {/* Left: Main Card */}
-        <div className="flex-3 w-full lg:w-[60%] flex flex-col sm:flex-row gap-2">
+      {/* Top Section - First and Second Articles */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left: Part 1 - Main Article Image */}
+        <div className="w-full lg:w-1/3 flex justify-center">
           <Image
             src={first.image || "/placeholder.jpg"}
             alt={first.headline}
             width={500}
             height={350}
-            className="w-[90%] sm:w-[50%] h-auto object-cover rounded-md"
+            className="w-full h-auto object-cover rounded-md"
           />
-          <div className="flex flex-col justify-between">
-            <div>
-              <Link href={`/articles/${first.id}`}>
-                <h3 className="text-xl font-bold hover:underline">{first.headline}</h3>
-              </Link>
-              <p className="mt-3 text-sm text-muted-foreground line-clamp-4">{first.summary}</p>
-              {renderMeta(first)}
-            </div>
+        </div>
 
-            {/* Nested Second Card */}
-            <div className="mt-8 flex gap-2 border-t pt-4">
-              <Image
-                src={second.image || "/placeholder.jpg"}
-                alt={second.headline}
-                width={160}
-                height={100}
-                className="rounded-md object-cover w-[200px] h-[200px]"
-              />
-              <div>
-                <Link href={`/articles/${second.id}`}>
-                  <h4 className="text-md font-semibold hover:underline">{second.headline}</h4>
-                </Link>
-                <p className="text-sm text-muted-foreground line-clamp-2">{second.summary}</p>
-                {renderMeta(second)}
-              </div>
+        {/* Right: Part 2 (Article 1 content) + Part 3 (Article 2 card) */}
+        <div className="w-full lg:w-2/3 flex flex-col gap-6">
+          {/* Part 2: First Article Content */}
+          <div>
+            <Link href={`/articles/${first.id}`}>
+              <h3 className="text-xl font-bold hover:underline">{first.headline}</h3>
+            </Link>
+            <p className="mt-3 text-sm text-muted-foreground line-clamp-4">{first.summary}</p>
+            {renderMeta(first)}
+          </div>
+
+          {/* Part 3: Second Article Card */}
+          <div className="flex gap-4 border-t pt-4 lg:border-t-0 lg:p-0">
+            <Image
+              src={second.image || "/placeholder.jpg"}
+              alt={second.headline}
+              width={160}
+              height={100}
+              className="rounded-md object-cover w-[150px] h-[150px]"
+            />
+            <div>
+              <Link href={`/articles/${second.id}`}>
+                <h4 className="text-md font-semibold hover:underline">{second.headline}</h4>
+              </Link>
+              <p className="text-sm text-muted-foreground line-clamp-2">{second.summary}</p>
+              {renderMeta(second)}
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Grid Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {rest.slice(0, 5).map((article) => (
           <div key={article.id} className="border rounded-md p-4 hover:shadow-md transition">
             <Image
@@ -95,7 +97,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
               alt={article.headline}
               width={300}
               height={180}
-              className="w-35 h-35 object-cover rounded mb-3"
+              className="w-full h-[200px] object-cover rounded mb-3"
             />
             <Link href={`/articles/${article.id}`}>
               <h4 className="text-md font-semibold hover:underline line-clamp-2">{article.headline}</h4>
