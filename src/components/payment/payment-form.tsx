@@ -8,18 +8,26 @@ import {
   PaymentFormData,
 } from "@/lib/validation/payment-schema"
 import CardPreview from "./card-preview"
-import { usePlan } from "../subscribe/plan-context"
+// import { usePlan } from "../subscribe/plan-context"
 
+type PlanType = "Basic" | "Premium" | "Pro"
+
+interface ProcessPaymentResult {
+  success: boolean
+  plan: string
+  price: number
+  error?: string
+}
 interface PaymentFormProps {
-  onSubmit: (data: PaymentFormData) => void
-  selectedPlan: { name: string; price: number }
+  onSubmit: (data: PaymentFormData) => Promise<ProcessPaymentResult>
+  selectedPlan: { name: PlanType; price: number }
 }
 
 export default function PaymentForm({
   onSubmit,
   selectedPlan,
 }: PaymentFormProps) {
-  const { setCurrentPlan } = usePlan()
+  // const { setCurrentPlan } = usePlan()
 
   const {
     register,
@@ -52,9 +60,12 @@ export default function PaymentForm({
     e.target.value = value
   }
 
-  const handleFormSubmit = (data: PaymentFormData) => {
-    onSubmit(data)
-    setCurrentPlan(selectedPlan.name)
+  const handleFormSubmit = async (data: PaymentFormData) => {
+   await onSubmit(data)
+    // const result = await onSubmit(data)
+    // if (result.success) {
+    //   setCurrentPlan(selectedPlan.name)
+    // }
   }
 
   return (
