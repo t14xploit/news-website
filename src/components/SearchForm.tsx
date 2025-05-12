@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { searchArticles } from "@/actions/search";
-import SmallerArticleCard from "@/components/SmallerArticleCard";
+import SmallerArticleCard from "@/components/homepage/SmallerArticleCard";
 import { Search } from "lucide-react"; // import the icon
 
 interface Article {
