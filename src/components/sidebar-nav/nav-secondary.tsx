@@ -2,6 +2,7 @@
 
 import type * as React from "react"
 import type { LucideIcon } from "lucide-react"
+import Link from "next/link"
 
 import {
   SidebarGroup,
@@ -23,14 +24,27 @@ export function NavSecondary({
 }) {
   return (
     <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className={item.url === "#" ? "cursor-default" : ""}
+              >
+                {item.url === "#" ? (
+                  <div className="flex items-center gap-2">
+                    {item.icon && <item.icon className="h-5 w-5" />}
+                    <span>{item.title}</span>
+                  </div>
+                ) : (
+                  <Link href={item.url} className="flex items-center gap-2">
+                    {item.icon && <item.icon className="h-5 w-5" />}
+                    <span>{item.title}</span>
+                  </Link>
+                )}
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

@@ -3,12 +3,13 @@
 import type * as React from "react"
 import {
   FileText,
-  Flame,
   Home,
   Info,
   Menu,
+  Newspaper,
+  Radio,
   Sparkles,
-  Star,
+  Users,
 } from "lucide-react"
 import { NavMain } from "./nav-main"
 // import { NavProjects } from "./nav-projects"
@@ -28,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     user: {
       name: "Alien",
       email: "ninja@ufo.io",
-      avatar: "/avatars/user.png",
+      avatar: "/alien/alien_1.jpg",
     },
     PlanSwitcher: [
         {
@@ -74,14 +75,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: Home,
       },
       {
-        title: "Latest News",
-        url: "#",
-        icon: Flame,
+        title: "Articles",
+        url: "/articles",
+        icon: Newspaper,
       },
       {
-        title: "Editor's Choice",
+        title: "Authors",
+        url: "/authors",
+        icon: Users,
+      },
+       {
+        title: "Live",
         url: "#",
-        icon: Star,
+        icon: Radio,
       },
     ],
     navMain: [
@@ -93,27 +99,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: "Local",
-            url: "#",
+            url: "/categories/local",
           },
           {
             title: "Sweden",
-            url: "#",
+            url: "/categories/sweden",
           },
           {
             title: "World",
-            url: "#",
+            url: "/categories/world",
           },
           {
             title: "Economy",
-            url: "#",
+            url: "categories/economy",
           },
           {
             title: "Sports",
-            url: "#",
+            url: "categories/sports",
           },
           {
             title: "Business",
-            url: "#",
+            url: "cqategories/business",
           },
         ],
       },
@@ -157,11 +163,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           {
             title: "About Us",
-            url: "app/about",
+            url: "/about",
           },
           {
             title: "Contact Us",
-            url: "app/contact",
+            url: "/contact",
           },
         ],
         },

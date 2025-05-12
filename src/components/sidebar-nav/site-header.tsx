@@ -114,7 +114,7 @@ export default function SiteHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/avatars/shadcn.png" alt="shadcn" />
+                <AvatarImage src="/alien/alien_11.jpg" alt="Alien" />
                 <AvatarFallback>SW</AvatarFallback>
               </Avatar>
             </Button>
