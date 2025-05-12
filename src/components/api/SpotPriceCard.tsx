@@ -31,14 +31,14 @@ export default function SpotPriceCard() {
   if (!spotPrices) return <div>Loading...</div>;
 
   const regions: { [key: string]: string } = {
-    SE1: "Southern Sweden (e.g., Stockholm)",
+    SE1: "South Sweden (e.g., Stockholm)",
     SE2: "Middle Sweden (e.g., Uppsala)",
     SE3: "Central Sweden (e.g., Gävle)",
-    SE4: "Northern Sweden (e.g., Luleå)",
+    SE4: "North Sweden (e.g., Luleå)",
   };
 
   return (
-    <Card className="text-sm">
+    <Card className="text-sm border-none shadow-none">
       <CardContent className="overflow-x-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {["SE1", "SE2", "SE3", "SE4"].map((region) => {

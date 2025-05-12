@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import { ArrowBigRight } from "lucide-react";
 import Link from "next/link";
+import { GiNewspaper } from "react-icons/gi";
 
 export default async function MostViewed() {
   const articles = await prisma.article.findMany({
@@ -9,9 +9,9 @@ export default async function MostViewed() {
   });
 
   return (
-    <section className="py-10">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        Most viewed <ArrowBigRight className="w-6 h-6 text-primary" />
+    <section>
+      <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+        <GiNewspaper/> Most viewed 
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-6">

@@ -1,9 +1,8 @@
-"use client";
-
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-
 import { cn } from "@/lib/utils";
+import WeatherCard from "@/components/api/WeatherCard";
+import SpotPriceCard from "@/components/api/SpotPriceCard";
 
 function Tabs({
   className,
@@ -25,10 +24,7 @@ function TabsList({
   return (
     <TabsPrimitive.List
       data-slot="tabs-list"
-      className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
-        className
-      )}
+      className={cn("flex flex-wrap justify-center", className)}
       {...props}
     />
   );
@@ -42,7 +38,10 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input-fore/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex flex-col items-center justify-center bg-muted w-48 h-20 hover:shadow-lg transition cursor-pointer rounded-lg border p-4",
+        "text-sm font-medium hover:underline text-center gap-2",
+        // Active tab styles
+        "data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:border-2 data-[state=active]:border-muted-foreground",
         className
       )}
       {...props}
@@ -63,4 +62,8 @@ function TabsContent({
   );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+// Memoizing the SpotPriceCard and WeatherCard components to avoid re-rendering
+const MemoizedWeatherCard = React.memo(WeatherCard);
+const MemoizedSpotPriceCard = React.memo(SpotPriceCard);
+
+export { Tabs, TabsList, TabsTrigger, TabsContent, MemoizedWeatherCard, MemoizedSpotPriceCard };
