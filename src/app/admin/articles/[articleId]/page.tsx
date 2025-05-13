@@ -5,6 +5,8 @@ import { ClearQueryParamOnLoad } from "./clear-query-param";
 import Image from "next/image";
 import { Edit, XCircleIcon } from "lucide-react";
 import Link from "next/link";
+import DeleteArticleButton from "@/components/admin/articles/DeleteArticleButton";
+import { Button } from "@/components/ui/button";
 
 export default async function ArticlePage({
   params,
@@ -49,12 +51,19 @@ export default async function ArticlePage({
               Not Editor&apos;s Choice
             </span>
           )}
+          <div>
+
               <Link
           href={`/admin/articles/${article.id}/edit`}
           className="inline-flex items-center px-4 py-2 rounded-md"
           >
+            <Button variant={"link"} className="cursor-pointer">
+
            <Edit/>
+            </Button>
         </Link>
+        <DeleteArticleButton articleId={article.id} />
+            </div>
           </div>
         </div>
         <p className="text-muted-foreground">{article.summary}</p>
