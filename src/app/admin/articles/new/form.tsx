@@ -24,6 +24,7 @@ export default function CreateArticleForm() {
         headline: "",
         summary: "",
         content: "",
+        image:"",
       },
       errorMessage: "",
       success: false,
@@ -71,6 +72,11 @@ export default function CreateArticleForm() {
           <Label htmlFor="content">Content</Label>
           <Textarea id="content" name="content" placeholder="Enter the content" rows={10} required />
         </div>
+        <div className="space-y-1.5">
+                    <Label 
+                    htmlFor="image">Image URL:</Label>
+                    <Input type="text"  name="image" id="image" />  
+                </div>
 
         <div className="space-y-1.5">
           <Label>Categories</Label>

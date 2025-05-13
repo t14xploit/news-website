@@ -7,6 +7,7 @@ const createArticleSchema = z.object({
   headline: z.string().min(1),
   summary: z.string().min(1),
   content: z.string().min(1),
+  image: z.union([z.string().url(), z.literal("")]),
   categories: z.array(z.string().min(1)).min(1),
   isEditorsChoice: z.string().optional(),
 });
@@ -38,7 +39,7 @@ export async function createArticle(
     };
   }
 
-  const { headline, summary, content, categories, isEditorsChoice } = result.data;
+  const { headline, summary, content,image,  categories, isEditorsChoice } = result.data;
 
   try {
     const created = await prisma.article.create({
@@ -46,6 +47,7 @@ export async function createArticle(
           headline,
           summary,
           content,
+          image: image || null,
           isEditorsChoice: isEditorsChoice === "on",
           categories: {
             connectOrCreate: categories.map((title) => ({
@@ -66,7 +68,7 @@ export async function createArticle(
     return {
       success: true,
       articleId: created.id,
-      values: { headline: "", summary: "", content: "" },
+      values: { headline: "", summary: "", content: "", image:"" },
       errorMessage: "",
     };
 } catch (err) {
