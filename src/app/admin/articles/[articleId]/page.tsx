@@ -42,7 +42,7 @@ export default async function ArticlePage({
          <div>
        
           {article.isEditorsChoice ? (
-            <span className="text-sm font-medium text-green-700 border border-green-600 px-2 py-2 rounded">
+            <span className="text-sm font-medium text-green-500 border border-green-600 px-2 py-2 rounded">
               Editor&apos;s Choice
             </span>
           ) : (
