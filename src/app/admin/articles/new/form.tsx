@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { createArticle, searchCategories } from "./actions";
+import { createArticle, searchAuthors, searchCategories } from "./actions";
 import MultipleSelector, { Option } from "@/components/multiple-selector";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useActionState } from "react";
@@ -14,9 +14,11 @@ import { useActionState } from "react";
 export default function CreateArticleForm() {
   const router = useRouter();
   const [selectedCategories, setSelectedCategories] = useState<Option[]>([]);
+  const [selectedAuthors, setSelectedAuthors] = useState<Option[]>([]);
 
   const [state, formAction, isPending] = useActionState(
-    createArticle.bind(null, selectedCategories.map((c) => c.value)),
+    createArticle.bind(null, selectedCategories.map((c) => c.value),
+    selectedAuthors.map((a) => a.value)),
     {
       values: {
         headline: "",
@@ -43,7 +45,14 @@ export default function CreateArticleForm() {
       label: cat.title,
     }));
   }
-
+  async function handleAuthorSearch(query: string) {
+    const authors = await searchAuthors(query);
+    return authors.map((author: { name: string }) => ({
+      value: author.name,
+      label: author.name,
+    }));
+  }
+  
   return (
     <div className="container mx-auto my-12 space-y-6">
       <h1 className="text-4xl font-bold">Create Article</h1>
@@ -79,6 +88,23 @@ export default function CreateArticleForm() {
             }
           />
         </div>
+        <div className="space-y-1.5">
+  <Label>Authors</Label>
+  <MultipleSelector
+    onSearch={handleAuthorSearch}
+    value={selectedAuthors}
+    onChange={setSelectedAuthors}
+    creatable
+    placeholder="Type or select authors..."
+    loadingIndicator={
+      <p className="py-2 text-center text-lg leading-10 text-muted-foreground">loading...</p>
+    }
+    emptyIndicator={
+      <p className="w-full text-center text-lg leading-10 text-muted-foreground">no authors found.</p>
+    }
+  />
+</div>
+
 
         <div>
           <Label htmlFor="isEditorsChoice">Editor&apos;s Choice</Label>

@@ -12,10 +12,12 @@ const createArticleSchema = z.object({
 });
 
 export async function createArticle(
-  selectedCategories: string[],
-  _prevState: unknown,
-  formData: FormData
-) {
+    selectedCategories: string[],
+    selectedAuthorNames: string[],
+    _prevState: unknown,
+    formData: FormData
+  )
+   {
   const obj = Object.fromEntries(formData.entries());
 
   const result = await createArticleSchema.safeParseAsync({
@@ -40,19 +42,26 @@ export async function createArticle(
 
   try {
     const created = await prisma.article.create({
-      data: {
-        headline,
-        summary,
-        content,
-        isEditorsChoice: isEditorsChoice === "on",
-        categories: {
-          connectOrCreate: categories.map((title) => ({
-            where: { title },
-            create: { title },
-          })),
+        data: {
+          headline,
+          summary,
+          content,
+          isEditorsChoice: isEditorsChoice === "on",
+          categories: {
+            connectOrCreate: categories.map((title) => ({
+              where: { title },
+              create: { title },
+            })),
+          },
+          authors: {
+            connectOrCreate: selectedAuthorNames.map((name) => ({
+              where: { name },
+              create: { name },
+            })),
+          },
         },
-      },
-    });
+      });
+      
 
     return {
       success: true,
@@ -60,8 +69,22 @@ export async function createArticle(
       values: { headline: "", summary: "", content: "" },
       errorMessage: "",
     };
-  } catch (err) {
-    console.error(err);
+} catch (err) {
+    console.error("Create article failed");
+  
+    // PrismaClientKnownRequestError has metadata
+    if (err instanceof Error) {
+      console.error("Message:", err.message);
+  
+      try {
+        console.error("Full error:", JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+      } catch (jsonErr) {
+        console.error("Could not stringify error", jsonErr);
+      }
+    } else {
+      console.error("Non-standard error:", err);
+    }
+  
     return {
       success: false,
       articleId: "",
@@ -69,6 +92,7 @@ export async function createArticle(
       errorMessage: "A database error occurred.",
     };
   }
+  
 }
 
 export async function searchCategories(query: string) {
@@ -82,3 +106,15 @@ export async function searchCategories(query: string) {
     take: 10,
   });
 }
+export async function searchAuthors(query: string) {
+    return prisma.author.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: "insensitive",
+        },
+      },
+      take: 10,
+    });
+  }
+  
