@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
 
   if (resetSuccess) {
     return (
-      <Card className="max-w-md mx-auto">
+      <Card className="w-full max-w-md mx-auto py-6">
         <CardHeader>
           <CardTitle>Password Reset Successful</CardTitle>
           <CardDescription>
@@ -114,8 +114,8 @@ export default function ResetPasswordPage() {
           <p>You can now sign in with your new password.</p>
         </CardContent>
         <CardFooter>
-          <Button className="w-full" onClick={() => router.push("/sign-in")}>
-            Go to Sign In
+          <Button className="w-full" onClick={() => router.push("/")}>
+            Continue to Home
           </Button>
         </CardFooter>
       </Card>

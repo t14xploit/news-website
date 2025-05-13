@@ -80,7 +80,6 @@ export default function ForgotPasswordPage() {
               ctx.error.message || "Failed to send reset email";
             const errorCode = ctx.error.code || "";
 
-            // Check if error is about user not found
             if (
               errorMessage.includes("not found") ||
               errorCode === "USER_NOT_FOUND" ||
@@ -122,7 +121,7 @@ export default function ForgotPasswordPage() {
 
   if (userNotFound) {
     return (
-      <div className="flex justify-center items-center ">
+      <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-destructive">
@@ -160,7 +159,7 @@ export default function ForgotPasswordPage() {
 
   if (isEmailSent) {
     return (
-      <div className="flex justify-center items-center ">
+      <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-success">
@@ -206,7 +205,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex justify-center items-center  p-4">
+    <div className="w-full max-w-md mx-auto py-6">
       <Card className="max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Forgot Password</CardTitle>

@@ -83,24 +83,24 @@
 }
 
 .dark {
-  --background: oklch(0.18 0.003 285.823);
+  --background: #141517;
   --foreground: oklch(0.95 0 0);
 
-  --card: oklch(0.22 0.004 285.885);
+  --card: #1f2023;
   --card-foreground: oklch(0.95 0 0);
-  --popover: oklch(0.22 0.004 285.885);
+  --popover: #1f2023;
   --popover-foreground: oklch(0.95 0 0);
 
   --primary: oklch(0.86 0.003 286.32);
-  --primary-foreground: oklch(0.22 0.004 285.885);
+  --primary-foreground: #1f2023;
 
-  --secondary: oklch(0.28 0.005 286.033);
+  --secondary: #2a2b2f;
   --secondary-foreground: oklch(0.95 0 0);
 
-  --muted: oklch(0.28 0.005 286.033);
-  --muted-foreground: oklch(0.68 0.013 286.067);
+  --muted: #1f2023;
+  --muted-foreground: oklch(0.72 0.013 286.067);
 
-  --accent: oklch(0.28 0.005 286.033);
+  --accent: #2a2b2f;
   --accent-foreground: oklch(0.95 0 0);
 
   --destructive: oklch(0.72 0.13 20);
@@ -111,17 +111,17 @@
 
   --ring: oklch(0.55 0.015 285.938);
 
-  --chart-1: oklch(0.52 0.22 264.376);
-  --chart-2: oklch(0.7 0.16 162.48);
-  --chart-3: oklch(0.77 0.17 70.08);
-  --chart-4: oklch(0.65 0.24 303.9);
-  --chart-5: oklch(0.67 0.23 16.439);
+  --chart-1: oklch(0.58 0.22 264.376);
+  --chart-2: oklch(0.73 0.16 162.48);
+  --chart-3: oklch(0.79 0.17 70.08);
+  --chart-4: oklch(0.68 0.24 303.9);
+  --chart-5: oklch(0.7 0.23 16.439);
 
-  --sidebar: oklch(0.22 0.004 285.885);
+  --sidebar: #1f2023;
   --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.52 0.22 264.376);
+  --sidebar-primary: oklch(0.58 0.22 264.376);
   --sidebar-primary-foreground: oklch(0.95 0 0);
-  --sidebar-accent: oklch(0.28 0.005 286.033);
+  --sidebar-accent: #2a2b2f;
   --sidebar-accent-foreground: oklch(0.95 0 0);
   --sidebar-border: oklch(0.95 0 0 / 8%);
   --sidebar-ring: oklch(0.55 0.015 285.938);
@@ -161,5 +161,19 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .dark input {
+    background-color: var(--input);
+    color: var(--foreground);
+    border-color: var(--border);
+  }
+
+  .dark input:focus-visible {
+    border-color: var(--ring);
+    ring-color: var(--ring);
+    ring-opacity: 50%;
   }
 }

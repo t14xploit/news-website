@@ -74,8 +74,8 @@ export default function EmailVerificationSent({
   };
 
   return (
-    <div className="flex justify-center items-center p-4">
-      <Card className="max-w-md w-full">
+    <div className="w-full max-w-md mx-auto ">
+      <Card>
         <CardHeader>
           <CardTitle className="text-lg md:text-xl text-success">
             Check Your Email
