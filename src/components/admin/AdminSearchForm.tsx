@@ -54,8 +54,8 @@ export default function AdminSearchForm({ initialArticles }: Props) {
 
       <div className="overflow-auto border rounded">
         <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 text-left font-semibold">
-            <tr>
+        <thead className="text-left font-semibold bg-gray-100 dark:bg-gray-800">
+        <tr>
               <th className="p-2">Headline</th>
               <th className="p-2">Categories</th>
               <th className="p-2">Created</th>
