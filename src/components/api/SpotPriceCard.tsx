@@ -38,7 +38,7 @@ export default function SpotPriceCard() {
   };
 
   return (
-    <Card className="text-sm border-none shadow-none">
+    <Card className="text-sm bg-background border-none shadow-none">
       <CardContent className="overflow-x-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {["SE1", "SE2", "SE3", "SE4"].map((region) => {

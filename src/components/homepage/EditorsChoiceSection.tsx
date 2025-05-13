@@ -28,8 +28,15 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
           <span className="text-blue-600 font-medium">
             {article.categories.map((cat, index) => (
               <span key={cat.id}>
+                 <Link
+              key={cat.id}
+              href={`/categories/${cat.title}`} 
+              className="hover:underline"
+            >
+
                 {index > 0 && ", "}
                 {cat.title}
+            </Link>
               </span>
             ))}
           </span>
@@ -40,9 +47,9 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
 
   return (
     <section className="my-4 space-y-6">
-      <h2 className="text-4xl font-bold  flex items-center gap-2">
+      <h2 className="text-4xl py-4 border-b font-bold  flex items-center gap-2">
       <GiNewspaper />
-      Editor’s Choice 
+      Editor&apos;s Choice 
       </h2>
 
       {/* Top Section - First and Second Articles */}

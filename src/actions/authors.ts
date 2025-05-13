@@ -61,8 +61,8 @@ export async function getTopAuthorsWithRandomArticles() {
     // Mark this author as selected
     selectedAuthors.add(author.id);
 
-    // Stop after 4 unique authors with articles
-    if (uniqueAuthorsWithArticles.length === 4) break;
+    // Stop after 8 unique authors with articles
+    if (uniqueAuthorsWithArticles.length === 8) break;
   }
 
   return uniqueAuthorsWithArticles;

@@ -19,7 +19,7 @@ export default function SmallerArticleCard({ article }: SmallerArticleCardProps)
   return (
     <Link
       href={`/articles/${article.id}`}
-      className="block p-4 border rounded-md hover:shadow-md transition bg-card text-card-foreground"
+      className="block p-4 border bg-background rounded-md hover:shadow-md transition text-card-foreground"
     >
       <Image
         src={article.image || fallbackImageUrl}

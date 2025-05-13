@@ -14,7 +14,7 @@ export default function MainArticleCard({ article }: ArticleCardProps) {
     "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
 
   return (
-    <Card className="w-full mb-6 sm:mb-8 md:mb-10">
+    <Card className="w-full border-none mb-6 sm:mb-8 md:mb-10 bg-background">
       <CardHeader>
         <Link href={`/articles/${article.id}`}>
           <CardTitle className="text-2xl font-bold hover:underline">

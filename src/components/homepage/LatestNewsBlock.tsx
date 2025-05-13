@@ -11,7 +11,7 @@ interface LatestNewsBlockProps {
 
 export default function LatestNewsBlock({ articles }: LatestNewsBlockProps) {
   return (
-    <div className="p-4 border rounded-md shadow-sm space-y-4 overflow-y-auto w-full sm:w-3/4 md:w-full lg:w-full">
+    <div className="p-4 border-none rounded-md shadow-sm space-y-4 overflow-y-auto w-full sm:w-3/4 md:w-full lg:w-full">
       {/* <h2 className="text-2xl sm:text-xl md:text-2xl lg:text-2xl text-center font-semibold mb-4 text-red-600">
         Latest News
       </h2> */}

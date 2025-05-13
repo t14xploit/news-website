@@ -9,8 +9,8 @@ export default async function MostViewed() {
   });
 
   return (
-    <section>
-      <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+<section className="min-h-[70vh]">
+<h2 className="text-4xl py-4 border-b font-bold my-6 flex items-center gap-2">
         <GiNewspaper/> Most viewed 
       </h2>
 

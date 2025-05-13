@@ -18,12 +18,12 @@ type ExpertInsightsSectionProps = {
 const ExpertInsightsSection: FC<ExpertInsightsSectionProps> = ({ authors }) => {
   return (
     <section className=" bg-background text-foreground">
-      <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+      <h2 className="text-4xl border-b py-4 font-bold my-6 flex items-center gap-2">
        <GiNewspaper/> Expert Insights 
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {authors.map((author, index) => (
-          <Card key={index} className="flex flex-col p-6 ">
+          <Card key={index} className="flex  bg-background flex-col p-6 ">
             <div className="flex items-center space-x-4">
               <Avatar className="w-16 h-16">
                 {author.picture ? (

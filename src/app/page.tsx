@@ -90,7 +90,7 @@ export default async function Home() {
           {/* Tab Content */}
           <TabsContent value="latest-news">
             <section className="mt-8">
-                <h2 className="text-4xl font-bold my-6 flex items-center gap-2">
+                <h2 className="text-4xl font-bold my-6 flex items-center gap-2 py-3 border-b">
                         <GiNewspaper/> Latest News 
                         </h2>
               <div className="flex flex-col lg:flex-row gap-4">
