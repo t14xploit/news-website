@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Edit, PlusCircle, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 type Params = Promise<{ 
 
     authorId: string; 
@@ -67,23 +67,18 @@ export default async function AuthorPage(props:Props) {
 
         <div className="flex items-center space-x-2">
           <Link href={`/admin/authors/${author.id}/edit`}>
-            <Button variant="outline" size="sm">
+            <Button variant="link" size="sm">
               <Edit className="w-4 h-4 mr-1" />
-              Edit
+            
             </Button>
           </Link>
 
-          <Link href={`/admin/authors/${author.id}/assign`}>
-            <Button variant="outline" size="sm">
-              <PlusCircle className="w-4 h-4 mr-1" />
-              Assign Articles
-            </Button>
-          </Link>
+        
 
           {/* TODO: Add real delete button */}
-          <Button variant="destructive" size="sm">
+          <Button variant="link"className="  text-red-500" size="sm">
             <Trash2 className="w-4 h-4 mr-1" />
-            Delete
+            
           </Button>
         </div>
       </div>
