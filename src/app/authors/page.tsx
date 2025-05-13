@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { searchAuthors } from "@/actions/searchAuthors"; 
 import SearchForm from "./form"; 
+import { GiNewspaper } from "react-icons/gi";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,8 +28,9 @@ export default async function AuthorsPage({ searchParams }: PageProps) {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Authors</h1>
-      <SearchForm initialAuthors={authors} /> 
+      <h2 className="text-4xl font-bold my-6 flex items-center gap-2 py-3 border-b">
+                        <GiNewspaper/> Authors
+                        </h2>      <SearchForm initialAuthors={authors} /> 
     </div>
   );
 }
