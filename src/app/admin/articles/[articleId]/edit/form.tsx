@@ -11,7 +11,6 @@ import MultipleSelector, { Option } from "@/components/multiple-selector";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useActionState } from "react";
 
-// Define types for props and category/author search results
 type Category = { title: string };
 type Author = { name: string };
 
@@ -35,11 +34,16 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
   const [selectedAuthors, setSelectedAuthors] = useState<Option[]>([]);
 
   const [state, formAction, isPending] = useActionState(
-    editArticle.bind(
-      null, 
-      selectedCategories.map((c) => c.value),
-      selectedAuthors.map((a) => a.value)
-    ),
+    async (state: unknown, payload: unknown) => {
+      const formData = payload as FormData;
+      return await editArticle(
+        selectedCategories.map((c) => c.value),
+        selectedAuthors.map((a) => a.value),
+        article.id,  
+        state,
+        formData
+      );
+    },
     {
       values: {
         headline: article.headline,
@@ -56,7 +60,6 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
 
   useEffect(() => {
     if (article) {
-      // Initialize the selected categories and authors
       setSelectedCategories(
         article.categories.map((category) => ({ value: category.title, label: category.title }))
       );
@@ -72,7 +75,6 @@ export default function EditArticleForm({ article }: EditArticleFormProps) {
     }
   }, [state, router]);
 
-  // Define the search methods for categories and authors
   async function handleCategorySearch(query: string) {
     const categories = await searchCategories(query);
     return categories.map((cat: Category) => ({

@@ -15,10 +15,13 @@ const editArticleSchema = z.object({
 export async function editArticle(
   selectedCategories: string[],
   selectedAuthorNames: string[],
+  articleId: string,
   _prevState: unknown,
   formData: FormData
 ) {
   const obj = Object.fromEntries(formData.entries());
+
+  // Validate input data
   const result = await editArticleSchema.safeParseAsync({
     ...obj,
     categories: selectedCategories,
@@ -40,7 +43,9 @@ export async function editArticle(
   const { headline, summary, content, image, categories, isEditorsChoice } = result.data;
 
   try {
-    const created = await prisma.article.create({
+    // Update article in the database
+    const updated = await prisma.article.update({
+      where: { id: articleId },
       data: {
         headline,
         summary,
@@ -64,12 +69,23 @@ export async function editArticle(
 
     return {
       success: true,
-      articleId: created.id,
+      articleId: updated.id,
       values: { headline: "", summary: "", content: "", image: "" },
       errorMessage: "",
     };
   } catch (err) {
-    console.error("Create article failed",err);
+    console.error("Update article failed");
+
+    if (err instanceof Error) {
+      console.error("Message:", err.message);
+      try {
+        console.error("Full error:", JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+      } catch (jsonErr) {
+        console.error("Could not stringify error", jsonErr);
+      }
+    } else {
+      console.error("Non-standard error:", err);
+    }
 
     return {
       success: false,
@@ -79,7 +95,6 @@ export async function editArticle(
     };
   }
 }
-
 export async function searchCategories(query: string) {
   return prisma.category.findMany({
     where: {
