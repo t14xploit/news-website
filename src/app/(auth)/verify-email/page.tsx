@@ -272,10 +272,10 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.loading || sessionStatus.isLoading) {
     return (
-      <div className="flex justify-center items-center p-4">
+      <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle className="text-lg md:text-xl">
+            <CardTitle className="text-lg md:text-xl ">
               Verifying Your Email
             </CardTitle>
             <CardDescription className="text-xs md:text-sm">
@@ -292,7 +292,7 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.success || sessionStatus.isVerified) {
     return (
-      <div className="flex justify-center items-center p-4">
+      <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-success">
@@ -324,7 +324,7 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.error) {
     return (
-      <div className="flex justify-center items-center p-4">
+      <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-destructive">
