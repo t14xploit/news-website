@@ -55,8 +55,7 @@ export default function CreateArticleForm() {
   }
   
   return (
-    <div className="container mx-auto my-12 space-y-6">
-      <h1 className="text-4xl font-bold">Create Article</h1>
+    <div className="container mx-auto my-12 space-y-6 max-w-2xl">
       <form className="space-y-4" action={formAction}>
         <div className="space-y-1.5">
           <Label htmlFor="headline">Headline</Label>

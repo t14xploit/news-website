@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ClearQueryParamOnLoad } from "./clear-query-param";
 import Image from "next/image";
+import { XCircleIcon } from "lucide-react";
 
 export default async function ArticlePage({
   params,
@@ -34,9 +35,14 @@ export default async function ArticlePage({
       <div className="space-y-2 border rounded-md p-4 bg-muted">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">{article.headline}</h1>
-          {article.isEditorsChoice && (
+          {article.isEditorsChoice ? (
             <span className="text-sm font-medium text-green-700 border border-green-600 px-2 py-1 rounded">
               Editor&apos;s Choice
+            </span>
+          ) : (
+            <span className="text-sm font-medium text-red-600 flex items-center">
+              <XCircleIcon className="w-5 h-5 mr-2 text-red-600" />
+              Not Editor&apos;s Choice
             </span>
           )}
         </div>
