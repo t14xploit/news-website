@@ -80,8 +80,8 @@ export default function AdminSearchForm({ initialArticles }: Props) {
                     Edit
                   </Link>
                   <Link
-                    href={`/articles/${article.id}`}
-                    className="text-muted hover:underline"
+                    href={`/admin/articles/${article.id}`}
+                    className="text-muted-foreground hover:underline"
                     target="_blank"
                   >
                     View

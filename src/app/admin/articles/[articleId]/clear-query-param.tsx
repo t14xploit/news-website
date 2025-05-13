@@ -11,7 +11,7 @@ export function ClearQueryParamOnLoad() {
     if (searchParams.get("created")) {
       const url = new URL(window.location.href);
       url.searchParams.delete("created");
-      router.replace(url.pathname); // Replaces without reloading
+      router.replace(url.pathname); 
     }
   }, [router, searchParams]);
 
