@@ -12,7 +12,7 @@ import CookieConsent from "@/components/homepage/CookieConsent";
 import { cookies } from "next/headers";
 import WeatherCard from "@/components/api/WeatherCard";
 import SpotPriceCard from "@/components/api/SpotPriceCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/homepage/Tabs";
 import { FaFire, FaRegEye, FaRegStar } from "react-icons/fa";
 import { BsEnvelopeCheck, BsPeople } from "react-icons/bs";
 import { GiNewspaper } from "react-icons/gi";
