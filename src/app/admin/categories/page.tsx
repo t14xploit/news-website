@@ -16,7 +16,7 @@ export default async function CategoriesPage() {
       <div className="flex justify-between items-center pb-4 border-b">
         <h1 className="text-2xl font-semibold">Categories</h1>
         <Button asChild>
-          <Link href="/admin/categories/new" className="bg-blue-600 text-white py-2 px-4 rounded-md text-sm">
+          <Link href="/admin/categories/new" className=" py-2 px-4 rounded-md text-sm">
             + Add Category
           </Link>
         </Button>
