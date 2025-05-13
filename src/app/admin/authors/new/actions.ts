@@ -36,7 +36,7 @@ export async function createAuthor(prevState: unknown, formData: FormData) {
   await prisma.author.create({
     data: {
       name,
-      picture: image, // match your model field
+      picture: image, 
     },
   });
 

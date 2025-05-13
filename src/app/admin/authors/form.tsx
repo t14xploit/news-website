@@ -81,7 +81,7 @@ export default function AdminAuthorSearch({
                   <tr key={author.id} className="border-t hover:bg-muted">
                     <td className="p-2">
                       <Link
-                        href={`/authors/${author.id}`}
+                        href={`/admin/authors/${author.id}`}
                         className="text-blue-600 hover:underline"
                       >
                         {author.name}
@@ -91,7 +91,7 @@ export default function AdminAuthorSearch({
                       {author.articles.map((article) => (
                         <div key={article.id}>
                           <Link
-                            href={`/articles/${article.id}`}
+                            href={`/admin/articles/${article.id}`}
                             className="hover:underline text-muted-foreground"
                           >
                             {article.headline}
