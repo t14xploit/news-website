@@ -1,15 +1,19 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
 import { z } from "zod";
+import { redirect } from "next/navigation";
 
 const authorSchema = z.object({
   name: z.string().min(2, "Author name must be at least 2 characters"),
   image: z.union([z.string().url(), z.literal("")]),
 });
 
-export async function createAuthor(prevState: unknown, formData: FormData) {
+export async function createAuthor(
+  articleIds: string[], // coming from `bind()`
+  prevState: unknown,
+  formData: FormData
+) {
   const obj = Object.fromEntries(formData.entries());
   const result = authorSchema.safeParse(obj);
 
@@ -36,9 +40,23 @@ export async function createAuthor(prevState: unknown, formData: FormData) {
   await prisma.author.create({
     data: {
       name,
-      picture: image, 
+      picture: image,
+      articles: {
+        connect: articleIds.map((id) => ({ id })),
+      },
     },
   });
 
   redirect("/admin/authors");
+}
+export async function searchArticles(query: string) {
+  return prisma.article.findMany({
+    where: {
+      headline: {
+        contains: query,
+        mode: "insensitive",
+      },
+    },
+    take: 10,
+  });
 }
