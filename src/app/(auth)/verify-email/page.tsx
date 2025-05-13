@@ -94,7 +94,7 @@ export default function VerifyEmailPage() {
                     subject: "Email Verification Successful",
                     html: `
                       <h1>Email Verification Successful</h1>
-                      <p>Your email address for PandaNEWS has been successfully verified.</p>
+                      <p>Your email address for UFO News has been successfully verified.</p>
                       <p>You can now enjoy full access to our platform.</p>
                     `,
                   });
@@ -309,7 +309,7 @@ export default function VerifyEmailPage() {
             </div>
             <p className="text-center text-sm text-muted-foreground">
               You&apos;ve successfully verified your email address and can now
-              access all features of PandaNEWS.
+              access all features of UFO News.
             </p>
           </CardContent>
           <CardFooter className="flex justify-center">

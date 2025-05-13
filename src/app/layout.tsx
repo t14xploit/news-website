@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 
 
 export const metadata: Metadata = {
-  title: "PandaNEWS",
+  title: "UFO News",
   description: "Curated news, editorials, and more",
 };
 
