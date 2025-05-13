@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ClearQueryParamOnLoad } from "./clear-query-param";
 import Image from "next/image";
-import { XCircleIcon } from "lucide-react";
+import { Edit, XCircleIcon } from "lucide-react";
+import Link from "next/link";
 
 export default async function ArticlePage({
   params,
@@ -33,10 +34,13 @@ export default async function ArticlePage({
 
       {/* Main Article Info */}
       <div className="space-y-2 border rounded-md p-4 bg-muted">
+    
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">{article.headline}</h1>
+         <div>
+       
           {article.isEditorsChoice ? (
-            <span className="text-sm font-medium text-green-700 border border-green-600 px-2 py-1 rounded">
+            <span className="text-sm font-medium text-green-700 border border-green-600 px-2 py-2 rounded">
               Editor&apos;s Choice
             </span>
           ) : (
@@ -45,6 +49,13 @@ export default async function ArticlePage({
               Not Editor&apos;s Choice
             </span>
           )}
+              <Link
+          href={`/admin/articles/${article.id}/edit`}
+          className="inline-flex items-center px-4 py-2 rounded-md"
+          >
+           <Edit/>
+        </Link>
+          </div>
         </div>
         <p className="text-muted-foreground">{article.summary}</p>
       </div>
