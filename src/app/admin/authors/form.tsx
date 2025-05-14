@@ -73,6 +73,8 @@ export default function AdminAuthorSearch({
               <tr>
                 <th className="p-2 font-semibold">Author</th>
                 <th className="p-2 font-semibold">Articles</th>
+                <th className="p-2 font-semibold">Actions</th>
+
               </tr>
             </thead>
             <tbody>
@@ -99,6 +101,21 @@ export default function AdminAuthorSearch({
                         </div>
                       ))}
                     </td>
+                       <td className="p-2 space-x-2">
+                                      <Link
+                                        href={`/admin/authors/${author.id}/edit`}
+                                        className="text-blue-600 hover:underline"
+                                      >
+                                        Edit
+                                      </Link>
+                                      <Link
+                                        href={`/admin/authors/${author.id}`}
+                                        className="text-muted-foreground hover:underline"
+                                        target="_blank"
+                                      >
+                                        View
+                                      </Link>
+                                    </td>
                   </tr>
                 ))
               ) : (

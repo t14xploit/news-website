@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit } from "lucide-react";
+import DeleteAuthorButton from "@/components/admin/authors/DeleteAuthorButton";
 type Params = Promise<{ 
 
     authorId: string; 
@@ -75,11 +76,7 @@ export default async function AuthorPage(props:Props) {
 
         
 
-          {/* TODO: Add real delete button */}
-          <Button variant="link"className="  text-red-500" size="sm">
-            <Trash2 className="w-4 h-4 mr-1" />
-            
-          </Button>
+          <DeleteAuthorButton authorId={author.id} />
         </div>
       </div>
 
