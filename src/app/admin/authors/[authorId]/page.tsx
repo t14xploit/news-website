@@ -91,7 +91,7 @@ export default async function AuthorPage(props:Props) {
             {author.articles.map((article) => (
               <li
                 key={article.id}
-                className="flex items-center justify-between border p-3 rounded"
+                className="flex items-center justify-between "
               >
                 <div>
                   <Link
@@ -104,11 +104,7 @@ export default async function AuthorPage(props:Props) {
                     {new Date(article.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <Link href={`/admin/articles/${article.id}/edit`}>
-                  <Button size="sm" variant="outline">
-                    Edit
-                  </Button>
-                </Link>
+              
               </li>
             ))}
           </ul>
