@@ -63,6 +63,15 @@ export default function AdminAuthorSearch({
         <Button type="submit" variant="outline" disabled={isSearching}>
           {isSearching ? "Searching..." : "Search"}
         </Button>
+           <Link
+                  href="/admin/authors/new"
+                >
+                  <Button variant={"outline"}>
+        
+                  + Add Author
+                  </Button>
+                </Link>
+          
       </form>
 
       {/* Results */}

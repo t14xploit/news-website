@@ -12,7 +12,7 @@ export default function CreateCategoryForm() {
     message: "",
   });
   return (
-    <div className="max-w-xl p-6 border-2 rounded-lg shadow-lg">
+    <div className="max-w-xl p-6  rounded-lg shadow-lg">
 
     <form action={formAction}>
       {state.message && <p>{state.message}</p>}
@@ -27,7 +27,7 @@ export default function CreateCategoryForm() {
           required
         />
       </div>
-      <Button type="submit" disabled={isPending}>
+      <Button  variant={"outline"} type="submit" disabled={isPending}>
         {" "}
         {isPending ? "Submitting" : "Submit"}
       </Button>
