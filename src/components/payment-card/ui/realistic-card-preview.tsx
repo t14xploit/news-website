@@ -90,7 +90,6 @@ export function RealisticCardPreview({
       </Button>
 
       <div className={cn("relative w-full h-full transition-transform duration-700 transform-style-3d", isFlipped ? "rotate-y-180" : "")}>
-        {/* Front of the card */}
         <div className={cn("absolute w-full h-full backface-hidden rounded-xl p-6 flex flex-col border border-gray-700/30 shadow-xl", isFlipped ? "pointer-events-none" : "")}>
           <div className={cn("absolute inset-0 backdrop-blur-md rounded-xl", getCardBgClass(), "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30")} />
           <div className="absolute inset-0 rounded-xl overflow-hidden">
