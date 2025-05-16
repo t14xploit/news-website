@@ -1,29 +1,46 @@
-"use server"
+"use server";
 
-import { prisma } from "@/lib/prisma"
-import { PlanType } from "@/components/subscribe/plan-context"
+import { prisma } from "@/lib/prisma";
+import { PlanType } from "@/components/subscribe/plan-context";
+import { plans } from "@/lib/subscribe/plans";
 
 export async function selectSubscription(planId: string, userId: string) {
   try {
-    console.log(`Selecting plan with ID: ${planId} for user: ${userId}`);
+    console.log(`Selecting plan with ID: ${planId} for user: ${userId} at 03:11 PM CEST, May 14, 2025`);
 
-    const subscriptionType = await prisma.subscriptionType.findUnique({
-      where: { id: planId },
-    });
-    if (!subscriptionType) {
-      throw new Error(`Subscription type with ID ${planId} not found`);
+    const plan = plans.find((p) => p.id === planId);
+    if (!plan) {
+      throw new Error(`Invalid plan ID: ${planId}. Must be one of: ${plans.map((p) => p.id).join(", ")}`);
     }
 
-    await prisma.user.upsert({
-      where: { id: userId },
+    const subscriptionType = await prisma.subscriptionType.upsert({
+      where: { id: planId },
       update: {},
       create: {
-        id: userId,
-        email: `${userId}@ufo.io`,
-        name: "Alien",
+        id: planId,
+        name: plan.name,
+        description: plan.description,
+        price: plan.price,
+        features: plan.features,
       },
     });
 
+    let user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: `${userId}@ufo.io`,
+          name: "",
+          role: "USER",
+          emailVerified: false,
+        },
+      });
+      console.log(`Created new user with ID: ${userId}`);
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -63,6 +80,7 @@ export async function selectSubscription(planId: string, userId: string) {
       planId,
       planName: subscriptionType.name as PlanType,
       userId,
+      subscriptionId: subscription.id, // Return subscription ID
     };
   } catch (error) {
     console.error("Failed to select subscription:", error);
@@ -73,8 +91,17 @@ export async function selectSubscription(planId: string, userId: string) {
   }
 }
 
-export async function getActiveSubscription(userId: string): Promise<PlanType | ""> {
+export async function getActiveSubscription(userId: string): Promise<{ plan: PlanType | ""; subscriptionId: string | null }> {
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      console.log(`No user found with ID: ${userId}, returning empty plan`);
+      return { plan: "", subscriptionId: null };
+    }
+
     const subscription = await prisma.subscription.findFirst({
       where: {
         users: { some: { id: userId } },
@@ -82,10 +109,21 @@ export async function getActiveSubscription(userId: string): Promise<PlanType | 
       },
       include: { type: true },
     });
-    console.log("Fetched active subscription for user", userId, ":", subscription?.type.name || "none");
-    return subscription?.type.name as PlanType || "";
+
+    console.log(
+      "Fetched active subscription for user",
+      userId,
+      ":",
+      subscription?.type.name || "none",
+      "with ID:",
+      subscription?.id || "none"
+    );
+    return {
+      plan: subscription?.type.name as PlanType || "",
+      subscriptionId: subscription?.id || null,
+    };
   } catch (error) {
     console.error("Failed to fetch active subscription:", error);
-    return "";
+    return { plan: "", subscriptionId: null };
   }
 }
