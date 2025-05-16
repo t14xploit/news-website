@@ -109,7 +109,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
             if (ctx.error.status === 401) {
               form.setError("email", {
                 type: "server",
-                message: "Invalid email or password",
+                message:
+                  "We couldn’t find an account with that email. Check the address or Sign Up for a new account.",
               });
               form.setError("password", {
                 type: "server",
