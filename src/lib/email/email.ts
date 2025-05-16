@@ -1,4 +1,4 @@
-import "server-only";
+// import "server-only";
 import nodemailer from "nodemailer";
 
 let testAccount: nodemailer.TestAccount | null = null;
@@ -32,7 +32,7 @@ export async function sendEmail({
   });
 
   const info = await transporter.sendMail({
-    from: '"Panda🐼NEWS" <noreply@panda-news.com>',
+    from: '"OpenNews" <noreply@open-news.com>',
     to,
     subject,
     html,

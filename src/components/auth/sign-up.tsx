@@ -117,7 +117,8 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
             if (ctx.error.status === 401) {
               form.setError("email", {
                 type: "server",
-                message: "Invalid credentials",
+                message:
+                  "We couldn’t find an account with that email. Check the address or Sign Up for a new account.",
               });
             }
           },

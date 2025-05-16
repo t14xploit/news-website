@@ -10,10 +10,11 @@ import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wr
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
 
-
 export const metadata: Metadata = {
-  title: "UFO News",
-  description: "Curated news, editorials, and more",
+  title: "OpenNews",
+  description:
+    "Transparent, real-time news and human-centric insights that keep you connected.",
+
 };
 
 export default function RootLayout({
@@ -30,7 +31,6 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-
       <body>
         <ThemeProvider
           attribute="class"
@@ -58,4 +58,3 @@ export default function RootLayout({
     </html>
   );
 }
-
