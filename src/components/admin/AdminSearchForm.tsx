@@ -47,15 +47,23 @@ export default function AdminSearchForm({ initialArticles }: Props) {
           onChange={(e) => setSearchInput(e.target.value)}
           className="w-full"
         />
-        <Button type="submit" disabled={isSearching}>
+        <Button variant={"outline"} type="submit" disabled={isSearching}>
           Search
         </Button>
+                   <Link
+                          href="/admin/articles/new"
+                        >
+                          <Button variant={"outline"}>
+                
+                          + Add Article
+                          </Button>
+                        </Link>
       </form>
 
       <div className="overflow-auto border rounded">
         <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 text-left font-semibold">
-            <tr>
+        <thead className="text-left font-semibold bg-gray-100 dark:bg-gray-800">
+        <tr>
               <th className="p-2">Headline</th>
               <th className="p-2">Categories</th>
               <th className="p-2">Created</th>
@@ -64,7 +72,7 @@ export default function AdminSearchForm({ initialArticles }: Props) {
           </thead>
           <tbody>
             {articles.map((article) => (
-              <tr key={article.id} className="border-t hover:bg-gray-50">
+              <tr key={article.id} className="border-t">
                 <td className="p-2">{article.headline}</td>
                 <td className="p-2">
                   {article.categories.map((c) => c.title).join(", ")}

@@ -8,15 +8,23 @@ import Link from "next/link";
 import DeleteArticleButton from "@/components/admin/articles/DeleteArticleButton";
 import { Button } from "@/components/ui/button";
 
-export default async function ArticlePage({
-  params,
-  searchParams,
-}: {
-  params: { articleId: string };
-  searchParams: { created?: string };
-}) {
+type Params = Promise<{
+  articleId: string;
+}>;
+
+type Props = {
+  params: Params;
+  searchParams: {
+    created?: string;
+  };
+};
+
+export default async function ArticlePage({ params, searchParams }: Props) {
+  const { articleId } = await params;
+  const resolvedSearchParams = await searchParams;
+
   const article = await prisma.article.findUnique({
-    where: { id: params.articleId },
+    where: { id: articleId },
     include: { categories: true, authors: true },
   });
 
@@ -24,7 +32,7 @@ export default async function ArticlePage({
 
   return (
     <div className="space-y-4">
-      {searchParams.created === "1" && (
+      {resolvedSearchParams.created === "1" && (
         <>
           <Alert variant="default">
             <AlertTitle>Success</AlertTitle>
@@ -36,33 +44,29 @@ export default async function ArticlePage({
 
       {/* Main Article Info */}
       <div className="space-y-2 border rounded-md p-4 bg-muted">
-    
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold">{article.headline}</h1>
-         <div>
-       
-          {article.isEditorsChoice ? (
-            <span className="text-sm font-medium text-green-700 border border-green-600 px-2 py-2 rounded">
-              Editor&apos;s Choice
-            </span>
-          ) : (
-            <span className="text-sm font-medium text-red-600 flex items-center">
-              <XCircleIcon className="w-5 h-5 mr-2 text-red-600" />
-              Not Editor&apos;s Choice
-            </span>
-          )}
           <div>
-
+            {article.isEditorsChoice ? (
+              <span className="text-sm font-medium text-green-500 border border-green-600 px-2 py-2 rounded">
+                Editor&apos;s Choice
+              </span>
+            ) : (
+              <span className="text-sm font-medium text-red-600 flex items-center">
+                <XCircleIcon className="w-5 h-5 mr-2 text-red-600" />
+                Not Editor&apos;s Choice
+              </span>
+            )}
+            <div>
               <Link
-          href={`/admin/articles/${article.id}/edit`}
-          className="inline-flex items-center px-4 py-2 rounded-md"
-          >
-            <Button variant={"link"} className="cursor-pointer">
-
-           <Edit/>
-            </Button>
-        </Link>
-        <DeleteArticleButton articleId={article.id} />
+                href={`/admin/articles/${article.id}/edit`}
+                className="inline-flex items-center px-4 py-2 rounded-md"
+              >
+                <Button variant="link" className="cursor-pointer">
+                  <Edit />
+                </Button>
+              </Link>
+              <DeleteArticleButton articleId={article.id} />
             </div>
           </div>
         </div>
@@ -102,8 +106,8 @@ export default async function ArticlePage({
       {article.image && (
         <div className="mt-4">
           <Image
-          height={200}
-          width={200}
+            height={200}
+            width={200}
             src={article.image}
             alt={article.headline}
             className="max-h-64 object-cover rounded border"

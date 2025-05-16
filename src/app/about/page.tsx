@@ -1,16 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowBigRight } from "lucide-react";
 import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <main className="px-4 py-12">
-      <Card>
+    <main className="px-4">
+      <Card className="border-none">
         <CardHeader>
           <CardTitle>
-          <h2 className="text-2xl font-bold  flex items-center gap-2">
-          About Panda🐼NEWS <ArrowBigRight className="w-6 h-6 text-primary" />
-      </h2> </CardTitle>
+            <h2 className="text-2xl border-b py-4 font-bold flex items-center gap-2">
+            🛸 About UFO News
+            </h2>
+          </CardTitle>
         </CardHeader>
         <CardContent className="text-muted-foreground">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
@@ -18,21 +18,21 @@ export default function AboutPage() {
               <Image
                 width={500}
                 height={500}
-                src="https://media.giphy.com/media/TObbUke0z8Mo/giphy.gif"
-                alt="Sliding Panda"
+                src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3RodmNqa2t4MTRlMDhlbm1sZGJvMnFmbHYxd2cxNTF0dXhrazA1NSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/r88w2d7tHqazFwNEGN/giphy.gif" 
+                alt="Flying Saucer"
                 className="w-full h-auto max-h-72 rounded-lg shadow object-cover"
               />
             </div>
 
             <div className="w-full md:w-1/2 space-y-4">
               <p>
-                At <strong>PandaNEWS</strong>, we believe the world deserves better news. We deliver clear, trustworthy, and real-time updates with a focus on what truly matters.
+                At <strong>UFO News</strong>, we believe the world deserves better news—especially when it comes to the unknown. We bring you the latest reports on UFO sightings, extraterrestrial encounters, and cosmic discoveries from across the globe.
               </p>
               <p>
-                Whether it’s breaking stories, global trends, or local updates — we keep you informed with calm clarity and zero fluff. Just the news, like pandas prefer it: peaceful and focused.
+                Whether it’s breaking news on alien phenomena, government disclosures, or UFO sightings in your neighborhood — we keep you informed with clarity and excitement. No fluff, just the truth… and maybe a little mystery. 🛸
               </p>
               <p>
-                Founded in 2025 by a group of curious minds and caffeine enthusiasts, PandaNEWS is independent, reader-first, and always evolving. Thanks for joining the bamboo grove of smart news readers. 🌿
+                Founded in 2025 by a group of sky-watchers, stargazers, and truth-seekers, UFO News is dedicated to exploring the great unknown while bringing reliable, cutting-edge updates to our ever-curious audience. Thanks for joining us on this journey beyond the stars.
               </p>
             </div>
           </div>

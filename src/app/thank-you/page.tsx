@@ -1,32 +1,41 @@
 "use client";
 
-import Link from "next/link";
+import { CheckCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
-  const plan = searchParams.get("plan") || "Basic" || "Premium" || "Pro";
-  const price = parseFloat(
-    searchParams.get("price") || "9.99" || "19.99" || "29.99"
-  );
+  const plan = searchParams.get("plan") || "Basic";
+  const price = parseFloat(searchParams.get("price") || "9.99");
+  const cardHolder = searchParams.get("cardHolder") || "User"; // Fallback to "User" if not provided
 
   return (
-    <div className="min-h-screen p-10 flex flex-col items-center justify-start gap-15">
+    <div className="min-h-screen pt-20 flex flex-col items-center justify-start gap-2">
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold mb-4 text-green-400">
-          Thank You for Your Purchase!
+        <h1 className="text-4xl mb-4 text-white/90">
+          Thank You for Your{" "}
+          <span className="text-blue-400">Subscription</span>
+          {cardHolder && (
+            <>
+              ,{" "}
+              <span className="text-white/90">
+                {decodeURIComponent(cardHolder)}
+              </span>
+              !
+            </>
+          )}
         </h1>
         <p className="text-lg text-white/90">
-          Your payment was processed successfully.
+          Your payment was processed successfully
+          <CheckCircle className="inline-block text-green-600 opacity-70 w-5 h-5" />
         </p>
       </div>
-      <div className="flex flex-col items-center justify-center w-full gap-20">
+      <div className="flex flex-col items-center justify-center w-full gap-8">
         <div className="text-center max-w-md">
-          <div className="relative p-8 rounded-xl transform hover:scale-105 transition-transform duration-300 w-[500px] h-[260px]">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-white/20 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] rounded-xl" />
-            <div className="absolute w-20 h-20 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 opacity-20 blur-xl top-20 -left-10" />
-            <div className="relative h-full flex flex-col justify-center">
-              <h2 className="text-2xl font-semibold mb-4 text-white/90">
+          <div className="relative rounded-lg p-6 flex flex-col h-[250px] w-120 transform hover:scale-105 transition-transform duration-300  border border-gray-700 shadow-lg">
+            <div className="absolute inset-0 bg-gradient-to-br  backdrop-blur-md rounded-lg" />
+            <div className="relative flex flex-col h-full text-white/90 pt-2">
+              <h2 className="text-2xl mb-4 text-white/90">
                 Subscription Details:
               </h2>
               <p className="mb-4 text-white/90">
@@ -45,12 +54,6 @@ export default function ThankYouPage() {
             </div>
           </div>
         </div>
-        <Link
-          href="/"
-          className="ml-10 inline-block bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Back to Home
-        </Link>
       </div>
     </div>
   );

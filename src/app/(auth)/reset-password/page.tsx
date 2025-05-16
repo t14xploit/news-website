@@ -73,8 +73,9 @@ export default function ResetPasswordPage() {
                   subject: "Your password has been reset",
                   html: `
                     <h1>Password Reset Successful</h1>
+
                     <p>Your password for OpenNews has been successfully reset.</p>
-                    <p>If you did not request this change, please contact our support team immediately.</p>
+     <p>If you did not request this change, please contact our support team immediately.</p>
                   `,
                 });
               } catch (emailError) {

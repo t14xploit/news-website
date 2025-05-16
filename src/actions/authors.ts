@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
 
-//  shuffle an array (Fisher-Yates Shuffle)
+
 const shuffleArray = (array: unknown[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
+
 
 export async function getTopAuthorsWithRandomArticles() {
   // Step 1: Fetch authors with ALL their articles
@@ -42,6 +43,11 @@ export async function getTopAuthorsWithRandomArticles() {
       continue; // Skip this author if we've already selected one of their articles
     }
 
+    // Check if the author has any articles
+    if (!author.articles || author.articles.length === 0) {
+      continue; // Skip authors with no articles
+    }
+
     // Shuffle the author's articles to pick one randomly
     shuffleArray(author.articles);
 
@@ -53,7 +59,7 @@ export async function getTopAuthorsWithRandomArticles() {
       name: author.name,
       id: author.id,
       picture: author.picture,
-      headline: article.headline ?? "No headline available",
+      headline: article.headline ?? "No headline available", // Default to "No headline available" if no headline
       articleSummary: article.summary ?? "No summary available",
       articleUrl: `/articles/${article.id}`,
     });
@@ -67,3 +73,4 @@ export async function getTopAuthorsWithRandomArticles() {
 
   return uniqueAuthorsWithArticles;
 }
+

@@ -1,8 +1,8 @@
 "use server";
 
-import { PlanType } from "@/components/subscribe/plan-context";
 import { prisma } from "@/lib/prisma";
 import { PaymentFormData } from "@/lib/validation/payment-schema";
+import { PlanType } from "@/components/subscribe/plan-context";
 
 interface ProcessPaymentResult {
   success: boolean;
@@ -14,7 +14,8 @@ interface ProcessPaymentResult {
 
 export async function processPayment(
   data: PaymentFormData,
-  selectedPlan: { id: string; name: PlanType; price: number }
+  selectedPlan: { id: string; name: PlanType; price: number },
+  userId: string
 ): Promise<ProcessPaymentResult> {
   try {
     const cleanedCardNumber = data.cardNumber.replace(/\s/g, "");
@@ -30,38 +31,22 @@ export async function processPayment(
     };
     console.log("Simulated payment intent:", paymentIntent);
 
-    const userId = "user_" + Date.now().toString();
-    await prisma.user.upsert({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
-      update: {},
-      create: {
-        id: userId,
-        email: `${userId}@ufo.io`,
-        name: "Alien",
-      },
     });
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
 
-    await prisma.subscriptionType.upsert({
-      where: { id: selectedPlan.id },
-      update: {},
-      create: {
-        id: selectedPlan.id,
-        name: selectedPlan.name,
-        description: "Default description for the subscription plan",
-        price: selectedPlan.price,
-        features: ["Dynamic Feature"],
-      },
-    });
-
-    const subscription = await prisma.subscription.create({
-      data: {
+    const subscription = await prisma.subscription.findFirst({
+      where: {
+        users: { some: { id: userId } },
         typeId: selectedPlan.id,
-        expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-        users: {
-          connect: { id: userId },
-        },
       },
     });
+    if (!subscription) {
+      throw new Error(`No subscription found for user ${userId} with plan ID ${selectedPlan.id}`);
+    }
 
     const payment = await prisma.payment.create({
       data: {
@@ -72,8 +57,6 @@ export async function processPayment(
         createdAt: new Date(),
       },
     });
-
-    console.log("Subscription created:", subscription);
     console.log("Payment saved:", payment);
 
     return {
