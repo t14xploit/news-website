@@ -3,14 +3,16 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
-import {
-  paymentSchema,
-  PaymentFormData,
-} from "@/lib/validation/payment-schema"
-import CardPreview from "./card-preview"
+// import {
+//   paymentSchema,
+//   PaymentFormData,
+// } from "@/lib/validation/payment-schema"
+// import CardPreview from "./card-preview"
+import RealisticCardPreview from "@/components/t-two-payment/realistic-card-preview"
+import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-preview-schema"
 // import { usePlan } from "../subscribe/plan-context"
 
-type PlanType = "Basic" | "Premium" | "Pro"
+// type PlanType = "Basic" | "Premium" | "Pro"
 
 interface ProcessPaymentResult {
   success: boolean
@@ -18,10 +20,15 @@ interface ProcessPaymentResult {
   price: number
   error?: string
 }
+
 interface PaymentFormProps {
-  onSubmit: (data: PaymentFormData) => Promise<ProcessPaymentResult>
-  selectedPlan: { name: PlanType; price: number }
+  onSubmit: (data: CardPreviewFormData) => Promise<ProcessPaymentResult>;
+  selectedPlan: { id: string; name: string; price: number };
 }
+// interface PaymentFormProps {
+//   onSubmit: (data: PaymentFormData) => Promise<ProcessPaymentResult>
+//   selectedPlan: { name: PlanType; price: number }
+// }
 
 export default function PaymentForm({
   onSubmit,
@@ -32,10 +39,9 @@ export default function PaymentForm({
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<PaymentFormData>({
-    resolver: zodResolver(paymentSchema),
+  } = useForm<CardPreviewFormData>({
+    resolver: zodResolver(cardPreviewSchema),
     defaultValues: {
       cardNumber: "",
       cardHolder: "",
@@ -44,7 +50,7 @@ export default function PaymentForm({
     },
   })
 
-  const formData = watch()
+  // const formData = watch()
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "")
@@ -60,7 +66,7 @@ export default function PaymentForm({
     e.target.value = value
   }
 
-  const handleFormSubmit = async (data: PaymentFormData) => {
+  const handleFormSubmit = async (data: CardPreviewFormData) => {
    await onSubmit(data)
     // const result = await onSubmit(data)
     // if (result.success) {
@@ -73,8 +79,8 @@ export default function PaymentForm({
       onSubmit={handleSubmit(handleFormSubmit)}
       className="flex flex-col items-center pt-8"
     >
-      <CardPreview
-        formData={formData}
+      <RealisticCardPreview
+        // formData={formData}
         register={register}
         errors={errors}
         onCardNumberChange={handleCardNumberChange}
@@ -87,5 +93,5 @@ export default function PaymentForm({
         Pay ${selectedPlan.price.toFixed(2)}
       </Button>
     </form>
-  )
+  );
 }

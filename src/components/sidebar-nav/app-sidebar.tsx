@@ -1,6 +1,6 @@
 "use client"
 
-import type * as React from "react"
+import * as React from "react";
 import {
   FileText,
   Home,
@@ -21,16 +21,19 @@ import { NavSecondary } from "./nav-secondary"
 import { usePlan, PlanType } from "../subscribe/plan-context"
 import { NavMainBottom } from "./nav-bottom"
 import { PlanSwitcher } from "./plan-switcher"
+interface AppSidebarProps {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { currentPlan, setCurrentPlan } = usePlan()
+export function AppSidebar({ user, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
+  const { currentPlan } = usePlan();
 
+  
   const data = {
-    user: {
-      name: "Alien",
-      email: "ninja@ufo.io",
-      avatar: "/alien/alien_1.jpg",
-    },
     PlanSwitcher: [
         {
             title: "Basic" as PlanType,
@@ -211,7 +214,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-         <NavUser user={data.user} />
+         <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.NavSecondary} />
@@ -223,8 +226,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
       <PlanSwitcher
           items={data.PlanSwitcher}
-          currentPlan={currentPlan}
-          setCurrentPlan={setCurrentPlan}
+          // currentPlan={currentPlan}
+          // setCurrentPlan={setCurrentPlan}
         />
         {/* <TeamSwitcher teams={data.teams} /> */}
       </SidebarFooter>

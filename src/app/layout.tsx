@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import SiteHeader from "@/components/sidebar-nav/site-header";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
 import { PlanProvider } from "@/components/subscribe/plan-context";
-
 import { Toaster } from "sonner";
 
 
@@ -22,6 +21,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+ const user = {
+    name: "",
+    email: "",
+    avatar: "/alien/alien_1.jpg",
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
 
@@ -32,8 +38,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <PlanProvider>
-            <ClientSidebarWrapper>
+          <PlanProvider initialUserData={user}>
+            <ClientSidebarWrapper user={user}>
               <SidebarInset className="flex flex-col min-h-screen">
                 <SiteHeader />
                 <main className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height))] w-full">
