@@ -4,7 +4,16 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2, Mail, AlertCircle, ExternalLink } from "lucide-react";
+import {
+  Loader2,
+  Mail,
+  AlertCircle,
+  ExternalLink,
+  KeyRound,
+  AtSign,
+  ArrowRight,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -66,7 +75,7 @@ export default function ForgotPasswordPage() {
       await authClient.forgetPassword(
         {
           email: data.email,
-          redirectTo: `${window.location.origin}/reset-password`,
+          redirectTo: `/reset-password`,
         },
         {
           onRequest: () => {
@@ -119,9 +128,9 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  if (userNotFound) {
-    return (
-      <div className="w-full max-w-md mx-auto py-6">
+  return (
+    <div className="w-full max-w-md mx-auto py-6">
+      {userNotFound ? (
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-destructive">
@@ -131,7 +140,7 @@ export default function ForgotPasswordPage() {
               We couldn&apos;t find an account with this email address
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
+          <CardContent className="flex flex-col items-center justify-center py-6">
             <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
               <AlertCircle className="h-6 w-6" />
             </div>
@@ -143,23 +152,22 @@ export default function ForgotPasswordPage() {
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <Button variant="default" className="w-full" onClick={resetState}>
+              <RefreshCw className="mr-2 h-4 w-4" />
               Try with a different email
             </Button>
             <p className="text-sm text-center text-muted-foreground">
               Don&apos;t have an account?{" "}
-              <Link href="/sign-up" className="text-primary hover:underline">
+              <Link
+                href="/sign-up"
+                className="text-primary hover:underline inline-flex items-center"
+              >
                 Sign Up
+                <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </p>
           </CardFooter>
         </Card>
-      </div>
-    );
-  }
-
-  if (isEmailSent) {
-    return (
-      <div className="w-full max-w-md mx-auto py-6">
+      ) : isEmailSent ? (
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-success">
@@ -194,66 +202,94 @@ export default function ForgotPasswordPage() {
             </Button>
             <p className="text-sm text-center text-muted-foreground">
               Remember your password?{" "}
-              <Link href="/sign-in" className="text-primary hover:underline">
+              <Link
+                href="/sign-in"
+                className="text-primary hover:underline inline-flex items-center"
+              >
                 Sign In
+                <ArrowRight className="ml-1 h-3 w-3" />
               </Link>
             </p>
           </CardFooter>
         </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full max-w-md mx-auto py-6">
-      <Card className="max-w-md w-full">
-        <CardHeader>
-          <CardTitle className="text-lg md:text-xl">Forgot Password</CardTitle>
-          <CardDescription className="text-xs md:text-sm">
-            Enter your email to receive a password reset link
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="email">Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        autoComplete="email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  "Send Reset Link"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
-            Remember your password?{" "}
-            <Link href="/sign-in" className="text-primary hover:underline">
-              Sign In
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+      ) : (
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-lg md:text-xl">
+              Forgot Password
+            </CardTitle>
+            <CardDescription className="text-xs md:text-sm">
+              Enter your email to receive a password reset link
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-6 flex justify-center">
+              <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                <KeyRound className="h-6 w-6" />
+              </div>
+            </div>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="grid gap-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel htmlFor="email">Email</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Input
+                            id="email"
+                            type="email"
+                            placeholder="m@example.com"
+                            autoComplete="email"
+                            className="pl-10"
+                            {...field}
+                          />
+                          <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Sending Reset Link...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="mr-2 h-4 w-4" />
+                      Send Reset Link
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <p className="text-sm text-muted-foreground">
+              Remember your password?{" "}
+              <Link
+                href="/sign-in"
+                className="text-primary hover:underline inline-flex items-center"
+              >
+                Sign In
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      )}
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, type ChangeEvent } from "react";
 import Image from "next/image";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, User, Mail, Lock } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { signUpSchema } from "@/lib/validation/auth-schema";
@@ -173,13 +173,23 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
   }
 
   return (
-    <Card className="z-50 rounded-md">
+    <Card className="max-w-md w-full">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
+        <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+          Sign Up
+        </CardTitle>
         <CardDescription className="text-xs md:text-sm">
           Enter your information to create an account
         </CardDescription>
       </CardHeader>
+
+      {/* Hz, posmotrim */}
+      <div className="mb-6 flex justify-center">
+        <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+          <Mail className="h-6 w-6" />
+        </div>
+      </div>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
@@ -193,9 +203,12 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                     <FormControl>
                       <Input
                         id="firstName"
+                        type="text"
                         placeholder="Max"
-                        {...field}
+                        autoComplete="given-name"
                         aria-describedby="firstName-error"
+                        icon={<User />}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -211,9 +224,12 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                     <FormControl>
                       <Input
                         id="lastName"
+                        type="text"
                         placeholder="Robinson"
-                        {...field}
+                        autoComplete="family-name"
                         aria-describedby="lastName-error"
+                        icon={<User />}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -232,8 +248,10 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       id="email"
                       type="email"
                       placeholder="m@example.com"
-                      {...field}
+                      autoComplete="email"
                       aria-describedby="email-error"
+                      icon={<Mail />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -252,8 +270,9 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       type="password"
                       autoComplete="new-password"
                       placeholder="••••••••"
-                      {...field}
                       aria-describedby="password-error"
+                      icon={<Lock />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -274,8 +293,9 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       type="password"
                       autoComplete="new-password"
                       placeholder="••••••••"
-                      {...field}
                       aria-describedby="passwordConfirmation-error"
+                      icon={<Lock />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -320,7 +340,10 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...{" "}
+                </>
               ) : (
                 "Create account"
               )}
