@@ -14,6 +14,8 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
   if (articles.length < 2) return null;
 
   const [first, second, ...rest] = articles;
+  const fallbackImageUrl =
+  "https://media.istockphoto.com/id/1147544807/vector/thumbnail-image-vector-graphic.jpg?s=612x612&w=0&k=20&c=rnCKVbdxqkjlcs3xH87-9gocETqpspHFXu5dIGB4wuM=";
 
   // Function to format the metadata (time and categories)
   const renderMeta = (article: Article & { categories: Category[] }) => {
@@ -57,7 +59,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
         {/* Left: Part 1 - Main Article Image */}
         <div className="w-full lg:w-1/3 flex justify-center">
           <Image
-            src={first.image || "/placeholder.jpg"}
+            src={first.image || fallbackImageUrl}
             alt={first.headline}
             width={500}
             height={350}
@@ -79,7 +81,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
           {/* Part 3: Second Article Card */}
           <div className="flex gap-4 border-t pt-4 lg:border-t-0 lg:p-0">
             <Image
-              src={second.image || "/placeholder.jpg"}
+              src={second.image || fallbackImageUrl}
               alt={second.headline}
               width={160}
               height={100}
@@ -101,7 +103,7 @@ export default function EditorsChoiceSection({ articles }: EditorsChoiceProps) {
         {rest.slice(0, 5).map((article) => (
           <div key={article.id} className="border rounded-md p-4 hover:shadow-md transition">
             <Image
-              src={article.image || "/placeholder.jpg"}
+              src={article.image || fallbackImageUrl}
               alt={article.headline}
               width={300}
               height={180}
