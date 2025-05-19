@@ -32,7 +32,7 @@ export default async function CategoryPage(props: Props) {
     },
   });
 
-  // If no category, return 404 page
+  // If no category, return  page
   if (!category) return notFound();
 
   return (
@@ -49,7 +49,6 @@ export default async function CategoryPage(props: Props) {
           <Link href={`/admin/categories/${category.title}/edit`}>
             <Button className="cursor-pointer" variant="link" size="sm">
               <Edit className="w-4 h-4 mr-1" />
-          
             </Button>
           </Link>
           <DeleteCategoryButton name={category.title} />
@@ -58,14 +57,19 @@ export default async function CategoryPage(props: Props) {
 
       {/* Articles List */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Articles in this Category</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Articles in this Category
+        </h2>
 
         {category.articles.length === 0 ? (
           <p className="text-muted-foreground">No articles assigned.</p>
         ) : (
           <ul className="space-y-3">
             {category.articles.map((article) => (
-              <li key={article.id} className="flex items-center justify-between">
+              <li
+                key={article.id}
+                className="flex items-center justify-between"
+              >
                 <div>
                   <Link
                     href={`/admin/articles/${article.id}`}

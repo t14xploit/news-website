@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle,
+  XCircle,
+  ArrowRight,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -96,9 +102,6 @@ export default function VerifyEmailPage() {
                       <h1>Email Verification Successful</h1>
 
                       <p>Your email address for OpenNews has been successfully verified.</p>
-
-
-
                       <p>You can now enjoy full access to our platform.</p>
                     `,
                   });
@@ -313,12 +316,10 @@ export default function VerifyEmailPage() {
             </div>
             <p className="text-center text-sm text-muted-foreground">
               You&apos;ve successfully verified your email address and can now
-
               access all features of OpenNews.
-
             </p>
           </CardContent>
-          <CardFooter className="flex justify-center">
+          <CardFooter>
             <Button asChild className="w-full">
               <Link href="/">Continue to Home</Link>
             </Button>
@@ -364,12 +365,18 @@ export default function VerifyEmailPage() {
                     Sending...
                   </>
                 ) : (
-                  "Resend verification email"
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Resend verification email
+                  </>
                 )}
               </Button>
             )}
             <Button asChild className="w-full">
-              <Link href="/sign-in">Return to Sign In</Link>
+              <Link href="/sign-in">
+                Return to Sign In
+                <ArrowRight className="ml-1 h-3 w-3" />
+              </Link>
             </Button>
           </CardFooter>
         </Card>

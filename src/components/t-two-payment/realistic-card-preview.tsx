@@ -8,15 +8,14 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const combineRefs = (
-  ref1: React.Ref<HTMLInputElement>,
-  ref2: React.Ref<HTMLInputElement>
-) => (element: HTMLInputElement) => {
-  if (typeof ref1 === "function") ref1(element);
-  else if (ref1) ref1.current = element;
-  if (typeof ref2 === "function") ref2(element);
-  else if (ref2) ref2.current = element;
-};
+const combineRefs =
+  (ref1: React.Ref<HTMLInputElement>, ref2: React.Ref<HTMLInputElement>) =>
+  (element: HTMLInputElement) => {
+    if (typeof ref1 === "function") ref1(element);
+    else if (ref1) ref1.current = element;
+    if (typeof ref2 === "function") ref2(element);
+    else if (ref2) ref2.current = element;
+  };
 
 interface CardPreviewProps {
   register?: UseFormRegister<CardPreviewFormData>;
@@ -43,24 +42,30 @@ export default function RealisticCardPreview({
 
   const cvvInputRef = React.useRef<HTMLInputElement>(null);
 
- // const safeRegister = (field: keyof CardPreviewFormData) => (register ? register(field) : {});
+  // const safeRegister = (field: keyof CardPreviewFormData) => (register ? register(field) : {});
 
   const cvvRegister: {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     value?: string | undefined;
-    ref?: React.RefCallback<HTMLInputElement> | React.RefObject<HTMLInputElement> | null;
+    ref?:
+      | React.RefCallback<HTMLInputElement>
+      | React.RefObject<HTMLInputElement>
+      | null;
   } = register
     ? {
         ...register("cvv"),
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
           const value = e.target.value.replace(/\D/g, "").slice(0, 4);
-          setCvvValue(value); 
+          setCvvValue(value);
           if (register("cvv").onChange) {
-            const syntheticEvent = { ...e, target: { ...e.target, value } } as React.ChangeEvent<HTMLInputElement>;
-            register("cvv").onChange(syntheticEvent); 
+            const syntheticEvent = {
+              ...e,
+              target: { ...e.target, value },
+            } as React.ChangeEvent<HTMLInputElement>;
+            register("cvv").onChange(syntheticEvent);
           }
         },
-        value: undefined, 
+        value: undefined,
       }
     : {
         onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,10 +139,15 @@ export default function RealisticCardPreview({
       <div
         className={cn(
           "relative h-[220px] w-[350px] rounded-xl transition-all duration-500",
-          flipped ? "rotate-y-180" : "rotate-y-0",
+          flipped ? "rotate-y-180" : "rotate-y-0"
         )}
       >
-        <div className={cn("absolute inset-0 rounded-xl shadow-xl backface-hidden", getBackgroundStyle())}>
+        <div
+          className={cn(
+            "absolute inset-0 rounded-xl shadow-xl backface-hidden",
+            getBackgroundStyle()
+          )}
+        >
           <div className="absolute top-0 left-0 right-0 h-20 bg-white/5 rounded-t-xl"></div>
           <div className="absolute bottom-10 right-10 h-20 w-20 rounded-full bg-white/10 blur-xl"></div>
           <div className="absolute top-10 left-10 h-10 w-10 rounded-full bg-white/10 blur-md"></div>
@@ -165,29 +175,39 @@ export default function RealisticCardPreview({
                   placeholder="•••• •••• •••• ••••"
                   className={cn(
                     "border-none bg-transparent font-mono text-xl tracking-widest text-white placeholder:text-white/60 focus:ring-1 focus:ring-white/20",
-                    focused === "cardNumber" ? "ring-1 ring-white/50" : "",
+                    focused === "cardNumber" ? "ring-1 ring-white/50" : ""
                   )}
                   onChange={onCardNumberChange}
                   onFocus={() => setFocused("cardNumber")}
                   onBlur={() => setFocused(null)}
                 />
-                {errors?.cardNumber && <p className="mt-1 text-xs text-red-300">{errors.cardNumber.message}</p>}
+                {errors?.cardNumber && (
+                  <p className="mt-1 text-xs text-red-300">
+                    {errors.cardNumber.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex items-end justify-between">
                 <div className="w-2/3 space-y-1">
-                  <div className="text-xs uppercase text-white/70">Card Holder</div>
+                  <div className="text-xs uppercase text-white/70">
+                    Card Holder
+                  </div>
                   <Input
                     {...(register ? register("cardHolder") : {})}
                     placeholder="FULL NAME"
                     className={cn(
                       "border-none bg-transparent uppercase text-sm text-white placeholder:text-white/60 focus:ring-1 focus:ring-white/20",
-                      focused === "cardHolder" ? "ring-1 ring-white/50" : "",
+                      focused === "cardHolder" ? "ring-1 ring-white/50" : ""
                     )}
                     onFocus={() => setFocused("cardHolder")}
                     onBlur={() => setFocused(null)}
                   />
-                  {errors?.cardHolder && <p className="text-xs text-red-300">{errors.cardHolder.message}</p>}
+                  {errors?.cardHolder && (
+                    <p className="text-xs text-red-300">
+                      {errors.cardHolder.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="w-1/3 space-y-1">
@@ -197,29 +217,40 @@ export default function RealisticCardPreview({
                     placeholder="MM/YY"
                     className={cn(
                       "border-none bg-transparent text-sm text-white placeholder:text-white/60 focus:ring-1 focus:ring-white/20",
-                      focused === "expiryDate" ? "ring-1 ring-white/50" : "",
+                      focused === "expiryDate" ? "ring-1 ring-white/50" : ""
                     )}
                     onChange={onExpiryDateChange}
                     onFocus={() => setFocused("expiryDate")}
                     onBlur={() => setFocused(null)}
                   />
-                  {errors?.expiryDate && <p className="text-xs text-red-300">{errors.expiryDate.message}</p>}
+                  {errors?.expiryDate && (
+                    <p className="text-xs text-red-300">
+                      {errors.expiryDate.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className={cn("absolute inset-0 rounded-xl shadow-xl backface-hidden rotate-y-180", getBackgroundStyle())}>
+        <div
+          className={cn(
+            "absolute inset-0 rounded-xl shadow-xl backface-hidden rotate-y-180",
+            getBackgroundStyle()
+          )}
+        >
           <div className="absolute top-8 h-12 w-full bg-black/80"></div>
 
           <div className="absolute top-28 right-6 left-6 h-12 bg-white/90 rounded-md">
             <div className="h-full w-2/3 overflow-hidden">
-              <div className="h-full w-full bg-[repeating-linear-gradient(45deg,#303030,#303030_10px,#404040_10px,#404040_20px)]"></div>
+              <div className="h-full w-full bg-[repeating-linear-gradient(45deg,#303030,#303030_10px,#040_10px,#404040_20px)]"></div>
             </div>
 
             <div className="absolute right-3 top-3 bottom-3 w-16 bg-white rounded flex items-center justify-center">
-              <div className="absolute -top-5 left-0 text-xs text-white font-medium">CVV</div>
+              <div className="absolute -top-5 left-0 text-xs text-white font-medium">
+                CVV
+              </div>
               <Input
                 ref={combineRefs(cvvInputRef, cvvRegister.ref ?? null)}
                 onChange={cvvRegister.onChange}
@@ -235,14 +266,23 @@ export default function RealisticCardPreview({
           </div>
 
           <div className="absolute bottom-6 left-6 right-6 text-xs text-white/70">
-            <p>This card is property of the issuing bank. Use subject to cardholder agreement.</p>
+            <p>
+              This card is property of the issuing bank. Use subject to
+              cardholder agreement.
+            </p>
           </div>
         </div>
       </div>
 
       {/* Removed separate CVV input */}
       <div className="mt-4 flex items-center justify-center gap-4">
-        <Button type="button" variant="outline" size="sm" className="mt-6" onClick={() => setFlipped(!flipped)}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mt-6"
+          onClick={() => setFlipped(!flipped)}
+        >
           {flipped ? "Show Front" : "Show Back"}
         </Button>
       </div>
