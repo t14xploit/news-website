@@ -80,6 +80,8 @@ export default function PaymentForm({ onSubmit, selectedPlan }: PaymentFormProps
         defaultTheme="gradient"
         selectedPlan={selectedPlan} 
         isSubmitting={isSubmitting}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
       />
       <Button
         type="submit"

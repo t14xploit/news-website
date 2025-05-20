@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const cardPreviewSchema = z.object({
   cardNumber: z.string()
-    .transform((val) => val.replace(/\s/g, "")) // Remove spaces
+    .transform((val) => val.replace(/\s/g, "")) 
     .pipe(
       z.string()
         .length(16, "Card number must be 16 digits (excluding spaces)")

@@ -6,19 +6,20 @@ import type { UseFormRegister, FieldErrors } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { PaymentFormData } from "../types"
 import { CardType, CardBackground } from "../types"
 import { JSX } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 
 interface RealisticCardPreviewProps {
-  register: UseFormRegister<PaymentFormData>;
-  errors: FieldErrors<PaymentFormData>;
+  register: UseFormRegister<CardPreviewFormData>;
+  errors: FieldErrors<CardPreviewFormData>;
   onCardNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onExpiryDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onCvvChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   cardType: CardType;
   cardBackground: CardBackground;
+  isSubmitting?: boolean;
 }
 
 export function RealisticCardPreview({
@@ -29,6 +30,7 @@ export function RealisticCardPreview({
   onCvvChange,
   cardType,
   cardBackground,
+  isSubmitting = false,
 }: RealisticCardPreviewProps) {
 
   const [isFlipped, setIsFlipped] = React.useState(false)
@@ -91,8 +93,19 @@ export function RealisticCardPreview({
   onCvvChange(e)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "");
+    if (rawValue.length <= 16) {
+      onCardNumberChange(e);
+    } else {
+      e.target.value = rawValue.slice(0, 16).replace(/(\d{4})/g, "$1 ").trim();
+    }
+  };
 
-  return (    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
+
+  return (    
+  <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
       <TooltipProvider>
        <Tooltip>
         <TooltipTrigger asChild>
@@ -154,8 +167,10 @@ export function RealisticCardPreview({
                 <Input
                   {...register("cardNumber")}
                   placeholder="•••• •••• •••• ••••"
+                  maxLength={19}
                   className="w-full h-12 text-center font-mono tracking-wider text-3xl bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 placeholder:text-white/70 text-white/90"
                   onChange={onCardNumberChange}
+                  disabled={isSubmitting}
                 />
                 {errors.cardNumber && (
                   <p className="text-red-300 text-xs mt-1">
@@ -171,6 +186,7 @@ export function RealisticCardPreview({
                     {...register("cardHolder")}
                     placeholder="CARD HOLDER" 
                     className="w-full h-12 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 text-white/90 placeholder:text-white/70 text-sm"
+                    disabled={isSubmitting}
                   />
                   {errors.cardHolder && (
                     <p className="text-red-300 text-xs">
@@ -185,6 +201,7 @@ export function RealisticCardPreview({
                     placeholder="MM/YY"
                     className="w-full h-12 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 text-white/90 placeholder:text-white/70 text-sm"
                     onChange={onExpiryDateChange}
+                    disabled={isSubmitting}
                   />
                   {errors.expiryDate && (
                     <p className="text-red-300 text-xs">
@@ -223,12 +240,15 @@ export function RealisticCardPreview({
                     type={showCvv ? "text" : "password"}
                     className="w-full h-full text-center font-mono bg-transparent border-none focus-visible:ring-0 text-black placeholder:text-gray-400 text-sm"
                     onChange={handleCvvChange}
+                    disabled={isSubmitting}
+                    aria-describedby={errors.cvv ? "cvv-error" : undefined}
                     />
                   <button
                      type="button"
                      className="absolute right-1 text-gray-600 hover:text-gray-800"
                      onClick={() => setShowCvv(!showCvv)}
                      aria-label={showCvv ? "Hide CVV" : "Show CVV"}
+                     disabled={isSubmitting}
                    >
                      {showCvv ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                  </button>

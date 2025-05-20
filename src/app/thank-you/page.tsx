@@ -31,7 +31,7 @@ export default function ThankYouPage() {
         <h1 className="text-4xl mb-4 text-white/90">
           Thank You for Your{" "}
           <span className="text-blue-400">{plan}</span> Subscription,{""}
-          <span className="text-white/90">{cardHolder}</span>!
+          <span className="text-white/90"> {cardHolder}</span>!
         </h1>
         <p className="text-lg text-white/90">
           Your payment was processed successfully
