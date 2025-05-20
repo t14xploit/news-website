@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +12,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  KeyRound,
+  CheckCircle,
+  XCircle,
+  Lock,
+  AlertTriangle,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -26,17 +33,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { sendEmailFromClient } from "@/lib/email/email-client";
+import Link from "next/link";
 import {
   resetPasswordSchema,
   ResetPasswordFormValues,
 } from "@/lib/validation/auth-schema";
 
 export default function ResetPasswordPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -54,6 +62,7 @@ export default function ResetPasswordPage() {
 
     try {
       setIsSubmitting(true);
+      setResetError(null);
 
       await authClient.resetPassword(
         {
@@ -73,9 +82,8 @@ export default function ResetPasswordPage() {
                   subject: "Your password has been reset",
                   html: `
                     <h1>Password Reset Successful</h1>
-
                     <p>Your password for OpenNews has been successfully reset.</p>
-     <p>If you did not request this change, please contact our support team immediately.</p>
+                    <p>If you did not request this change, please contact our support team immediately.</p>
                   `,
                 });
               } catch (emailError) {
@@ -84,19 +92,19 @@ export default function ResetPasswordPage() {
             }
           },
           onError: (ctx) => {
-            toast.error(
+            const errorMessage =
               ctx.error.message ||
-                "Failed to reset password. The token may have expired."
-            );
+              "Failed to reset password. The token may have expired.";
+            setResetError(errorMessage);
+            toast.error(errorMessage);
           },
         }
       );
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("An unexpected error occurred");
-      }
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      setResetError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,28 +112,67 @@ export default function ResetPasswordPage() {
 
   if (resetSuccess) {
     return (
-      <Card className="w-full max-w-md mx-auto py-6">
-        <CardHeader>
-          <CardTitle>Password Reset Successful</CardTitle>
-          <CardDescription>
-            Your password has been reset successfully.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p>You can now sign in with your new password.</p>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full" onClick={() => router.push("/sign-in")}>
-            Continue to Sign In
-          </Button>
-        </CardFooter>
-      </Card>
+      <div className="w-full max-w-md mx-auto py-6">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-lg md:text-xl text-success">
+              Password Reset Successful
+            </CardTitle>
+            <CardDescription className="text-xs md:text-sm">
+              Your password has been reset successfully
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center py-8">
+            <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
+              <CheckCircle className="h-6 w-6" />
+            </div>
+            <p className="text-center text-sm text-muted-foreground">
+              You can now sign in with your new password.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="w-full">
+              <Link href="/sign-in">Continue to Sign In</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!token) {
+    return (
+      <div className="w-full max-w-md mx-auto py-6">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-lg md:text-xl text-destructive">
+              Invalid Reset Link
+            </CardTitle>
+            <CardDescription className="text-xs md:text-sm">
+              The password reset link is invalid or has expired
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center py-8">
+            <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
+              <AlertTriangle className="h-6 w-6" />
+            </div>
+            <p className="text-center text-sm text-muted-foreground">
+              Please request a new password reset link to continue.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button asChild className="w-full">
+              <Link href="/forget-password">Request New Reset Link</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     );
   }
 
   return (
     <div className="w-full max-w-md mx-auto py-6">
-      <Card className="z-50 rounded-md">
+      <Card className="max-w-md w-full">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
           <CardDescription className="text-xs md:text-sm">
@@ -133,71 +180,80 @@ export default function ResetPasswordPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!token ? (
-            <div className="text-center text-red-500">
-              Invalid or expired reset token. Please request a new password
-              reset.
+          <div className="mb-6 flex justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+              <KeyRound className="h-6 w-6" />
             </div>
-          ) : (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="grid gap-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel htmlFor="password">New Password</FormLabel>
-                      <FormControl>
+          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel htmlFor="password">New Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
                         <Input
                           id="password"
                           type="password"
-                          autoComplete="new-password"
                           placeholder="••••••••"
+                          autoComplete="new-password"
+                          className="pl-10"
                           {...field}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel htmlFor="confirmPassword">
-                        Confirm New Password
-                      </FormLabel>
-                      <FormControl>
+                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="grid gap-2">
+                    <FormLabel htmlFor="confirmPassword">
+                      Confirm New Password
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
                         <Input
                           id="confirmPassword"
                           type="password"
-                          autoComplete="new-password"
                           placeholder="••••••••"
+                          autoComplete="new-password"
+                          className="pl-10"
                           {...field}
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
+                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {resetError && (
+                <div className="flex items-center gap-2 text-sm text-destructive">
+                  <XCircle className="h-4 w-4" />
+                  <span>{resetError}</span>
+                </div>
+              )}
+
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    "Reset Password"
-                  )}
-                </Button>
-              </form>
-            </Form>
-          )}
+                    Resetting Password...
+                  </>
+                ) : (
+                  "Reset Password"
+                )}
+              </Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

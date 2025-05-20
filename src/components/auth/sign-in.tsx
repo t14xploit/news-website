@@ -6,7 +6,15 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Loader2, Mail } from "lucide-react";
+import {
+  Loader2,
+  Mail,
+  AtSign,
+  Lock,
+  ArrowRight,
+  ExternalLink,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -64,7 +72,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
       const response = await authClient.sendVerificationEmail({
         email: unverifiedEmail,
 
-        callbackURL: `${window.location.origin}/verify-email`,
+        callbackURL: `/verify-email`,
       });
 
       // Response contains a preview URL Nodemailer
@@ -150,14 +158,16 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
   return (
     <Card className="max-w-md w-full">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+        <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+          Sign In
+        </CardTitle>
         <CardDescription className="text-xs md:text-sm">
           Enter your email below to login to your account
         </CardDescription>
       </CardHeader>
       <CardContent>
         {unverifiedEmail && (
-          <Alert variant="destructive" className="mb-4">
+          <Alert variant="destructive" className="mb-8">
             <AlertDescription>
               <div className="flex flex-col space-y-3">
                 <p className="text-sm">
@@ -175,11 +185,14 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                   >
                     {isResendingVerification ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Sending...
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending verification email...
                       </>
                     ) : (
-                      "Resend verification email"
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Resend verification email
+                      </>
                     )}
                   </Button>
 
@@ -195,7 +208,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Mail className="mr-2 h-4 w-4" />
+                        <ExternalLink className="mr-2 h-4 w-4" />
                         Open E-mailbox
                       </a>
                     </Button>
@@ -205,6 +218,12 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
             </AlertDescription>
           </Alert>
         )}
+
+        <div className="mb-6 flex justify-center">
+          <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+            <Mail className="h-6 w-6" />
+          </div>
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
@@ -220,6 +239,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                       type="email"
                       placeholder="m@example.com"
                       autoComplete="email"
+                      aria-describedby="email-error"
+                      icon={<AtSign />}
                       {...field}
                     />
                   </FormControl>
@@ -236,10 +257,10 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                   <div className="flex items-center justify-between">
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <Link
-                      href="/forgot-password"
-                      className="text-sm text-primary hover:underline"
+                      href="/forget-password"
+                      className="text-sm text-primary hover:underline inline-flex items-center"
                     >
-                      Forgot your password?
+                      Forgot password?
                     </Link>
                   </div>
                   <FormControl>
@@ -248,6 +269,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                       type="password"
                       placeholder="••••••••"
                       autoComplete="current-password"
+                      aria-describedby="password-error"
+                      icon={<Lock />}
                       {...field}
                     />
                   </FormControl>
@@ -260,7 +283,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               control={form.control}
               name="rememberMe"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                <FormItem className="flex flex-row items-center space-y-0">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -270,7 +293,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
                   <div className="space-y-1 leading-none">
                     <FormLabel
                       htmlFor="rememberMe"
-                      className="cursor-pointer"
+                      className="cursor-pointer inline-flex items-center"
                       onClick={() => field.onChange(!field.value)}
                     >
                       Remember me
@@ -282,9 +305,12 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
               ) : (
-                "Sign In"
+                <>Sign In</>
               )}
             </Button>
           </form>
@@ -295,10 +321,11 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           Don&apos;t have an account?{" "}
           <button
             onClick={onSwitchTab}
-            className="text-primary hover:underline"
+            className="text-primary hover:underline inline-flex items-center"
             type="button"
           >
             Sign Up
+            <ArrowRight className="ml-1 h-3 w-3" />
           </button>
         </p>
       </CardFooter>

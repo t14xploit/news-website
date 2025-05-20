@@ -10,10 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState, type ChangeEvent } from "react";
-import Image from "next/image";
-import { Loader2, X } from "lucide-react";
+import { useState } from "react";
+import { Loader2, User, Mail, Lock, ArrowRight } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { signUpSchema } from "@/lib/validation/auth-schema";
@@ -39,7 +37,6 @@ interface SignUpResponseData {
 }
 
 export default function SignUp({ onSwitchTab }: SignUpProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [userEmail, setUserEmail] = useState("");
@@ -55,52 +52,18 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       email: "",
       password: "",
       passwordConfirmation: "",
-      image: null,
     },
   });
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB");
-        return;
-      }
-
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file");
-        return;
-      }
-
-      form.setValue("image", file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const clearImage = () => {
-    form.setValue("image", null);
-    setImagePreview(null);
-  };
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     try {
       setIsSubmitting(true);
-      let imageBase64 = "";
-
-      if (data.image) {
-        imageBase64 = await convertImageToBase64(data.image);
-      }
 
       await authClient.signUp.email(
         {
           email: data.email,
           password: data.password,
           name: `${data.firstName} ${data.lastName}`,
-          image: imageBase64,
           callbackURL: "/verify-email",
         },
         {
@@ -134,7 +97,7 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
             setVerificationSent(true);
 
             if (!responseData?.previewUrl) {
-              sendVerificationEmail(data.email);
+              sendVerificationEmail(data.email); // Trigger sendVerificationEmail after successful signup
             }
           },
         }
@@ -163,6 +126,7 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       }
     } catch (error) {
       console.error("Failed to send verification email:", error);
+      toast.error("Failed to send verification email");
     }
   };
 
@@ -171,15 +135,24 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       <EmailVerificationSent email={userEmail} previewUrl={emailPreviewUrl} />
     );
   }
-
   return (
-    <Card className="z-50 rounded-md">
+    <Card className="max-w-md w-full">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign Up</CardTitle>
+        <CardTitle className="text-lg md:text-xl flex items-center gap-2">
+          Sign Up
+        </CardTitle>
         <CardDescription className="text-xs md:text-sm">
           Enter your information to create an account
         </CardDescription>
       </CardHeader>
+
+      {/* Hz, posmotrim */}
+      <div className="mb-6 flex justify-center">
+        <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+          <Mail className="h-6 w-6" />
+        </div>
+      </div>
+
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
@@ -193,9 +166,12 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                     <FormControl>
                       <Input
                         id="firstName"
+                        type="text"
                         placeholder="Max"
-                        {...field}
+                        autoComplete="given-name"
                         aria-describedby="firstName-error"
+                        icon={<User />}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -211,9 +187,12 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                     <FormControl>
                       <Input
                         id="lastName"
+                        type="text"
                         placeholder="Robinson"
-                        {...field}
+                        autoComplete="family-name"
                         aria-describedby="lastName-error"
+                        icon={<User />}
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -232,8 +211,10 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       id="email"
                       type="email"
                       placeholder="m@example.com"
-                      {...field}
+                      autoComplete="email"
                       aria-describedby="email-error"
+                      icon={<Mail />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -252,8 +233,9 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       type="password"
                       autoComplete="new-password"
                       placeholder="••••••••"
-                      {...field}
                       aria-describedby="password-error"
+                      icon={<Lock />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -274,53 +256,22 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                       type="password"
                       autoComplete="new-password"
                       placeholder="••••••••"
-                      {...field}
                       aria-describedby="passwordConfirmation-error"
+                      icon={<Lock />}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="grid gap-2">
-              <Label htmlFor="image">Profile Image (optional)</Label>
-              <div className="flex items-end gap-4">
-                {imagePreview && (
-                  <div className="relative w-16 h-16 rounded-sm overflow-hidden">
-                    <Image
-                      src={imagePreview}
-                      alt="Profile preview"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center gap-2 w-full">
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full"
-                    aria-label="Profile image upload"
-                  />
-                  {imagePreview && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={clearImage}
-                      aria-label="Clear image"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
+
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating account...{" "}
+                </>
               ) : (
                 "Create account"
               )}
@@ -331,24 +282,16 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Button
-            variant="link"
-            className="p-0 h-auto font-normal"
+          <button
+            className="text-primary hover:underline inline-flex items-center"
+            type="button"
             onClick={onSwitchTab}
           >
             Sign In
-          </Button>
+            <ArrowRight className="ml-1 h-3 w-3" />
+          </button>
         </p>
       </CardFooter>
     </Card>
   );
-}
-
-async function convertImageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }

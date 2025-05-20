@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react"
 import { Eye, EyeOff, RefreshCw, Wifi } from "lucide-react"
@@ -12,13 +12,13 @@ import { JSX } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface RealisticCardPreviewProps {
-  register: UseFormRegister<PaymentFormData>
-  errors: FieldErrors<PaymentFormData>
-  onCardNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onExpiryDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onCvvChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  cardType: CardType
-  cardBackground: CardBackground
+  register: UseFormRegister<PaymentFormData>;
+  errors: FieldErrors<PaymentFormData>;
+  onCardNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onExpiryDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onCvvChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  cardType: CardType;
+  cardBackground: CardBackground;
 }
 
 export function RealisticCardPreview({
@@ -30,10 +30,12 @@ export function RealisticCardPreview({
   cardType,
   cardBackground,
 }: RealisticCardPreviewProps) {
+
   const [isFlipped, setIsFlipped] = React.useState(false)
   const [showCvv, setShowCvv] = React.useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cvvValue, setCvvValue] = React.useState("")
+
 
 
   const getCardBgClass = () => {
@@ -42,9 +44,9 @@ export function RealisticCardPreview({
       blue: "bg-gradient-to-br from-blue-400 via-blue-600 to-blue-900",
       purple: "bg-gradient-to-br from-purple-400 via-purple-600 to-purple-900",
       black: "bg-gradient-to-br from-gray-900 via-black to-gray-900",
-    }
-    return bgClasses[cardBackground]
-  }
+    };
+    return bgClasses[cardBackground];
+  };
 
   const getCardLogo = () => {
     const logos: Record<CardType, JSX.Element> = {
@@ -68,19 +70,21 @@ export function RealisticCardPreview({
     return logos[cardType]
   }
 
+
   React.useEffect(() => {
-    const cvvInput = document.getElementById("cvv-input")
+    const cvvInput = document.getElementById("cvv-input");
     if (isFlipped && cvvInput) {
-      setTimeout(() => cvvInput.focus(), 500)
+      setTimeout(() => cvvInput.focus(), 500);
     }
   }, [isFlipped])
   
 
+
   const handleFlipClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setIsFlipped(!isFlipped)
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    setIsFlipped(!isFlipped);
+  };
 
   const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   setCvvValue(e.target.value)
@@ -88,8 +92,7 @@ export function RealisticCardPreview({
 }
 
 
-  return (
-    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
+  return (    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
       <TooltipProvider>
        <Tooltip>
         <TooltipTrigger asChild>
@@ -103,6 +106,7 @@ export function RealisticCardPreview({
       >
         <RefreshCw className="size-5" />
         {/* Flip Card */}
+
       </Button>
       </TooltipTrigger>
           <TooltipContent
@@ -153,7 +157,11 @@ export function RealisticCardPreview({
                   className="w-full h-12 text-center font-mono tracking-wider text-3xl bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 placeholder:text-white/70 text-white/90"
                   onChange={onCardNumberChange}
                 />
-                {errors.cardNumber && <p className="text-red-300 text-xs mt-1">{errors.cardNumber.message}</p>}
+                {errors.cardNumber && (
+                  <p className="text-red-300 text-xs mt-1">
+                    {errors.cardNumber.message}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between items-end">
@@ -164,7 +172,11 @@ export function RealisticCardPreview({
                     placeholder="CARD HOLDER" 
                     className="w-full h-12 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 text-white/90 placeholder:text-white/70 text-sm"
                   />
-                  {errors.cardHolder && <p className="text-red-300 text-xs">{errors.cardHolder.message}</p>}
+                  {errors.cardHolder && (
+                    <p className="text-red-300 text-xs">
+                      {errors.cardHolder.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1 w-1/3">
                   <div className="text-xs text-white/70 uppercase mr-30">Expires</div>
@@ -174,7 +186,11 @@ export function RealisticCardPreview({
                     className="w-full h-12 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 text-white/90 placeholder:text-white/70 text-sm"
                     onChange={onExpiryDateChange}
                   />
-                  {errors.expiryDate && <p className="text-red-300 text-xs">{errors.expiryDate.message}</p>}
+                  {errors.expiryDate && (
+                    <p className="text-red-300 text-xs">
+                      {errors.expiryDate.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -185,6 +201,7 @@ export function RealisticCardPreview({
           !isFlipped ? "pointer-events-none" : "")}>
           <div className={cn("absolute inset-0 backdrop-blur-md rounded-xl", 
             getCardBgClass(), "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30")} />
+
           <div className="absolute inset-0 rounded-xl overflow-hidden">
             <div className="absolute -inset-[500%] bg-gradient-to-r from-transparent via-white/20 to-transparent card-shine"></div>
           </div>
@@ -217,11 +234,13 @@ export function RealisticCardPreview({
                  </button>
                 </div>
               </div>
+
               {errors.cvv && <p className="text-red-300 text-xs mt-1">{errors.cvv.message}</p>}
               <div className="text-sm text-white/70 mr-1 mt-1">CVV</div>
             </div>
             <div className="mt-auto p-5 text-white/80 text-[13px]">
               <p>This card is property of the issuing bank.</p>
+
               <p className="text-[13px] mt-1">
                 Use of this card is subject to the terms and conditions of your agreement with the issuer.
               </p>
@@ -230,5 +249,5 @@ export function RealisticCardPreview({
         </div>
       </div>
     </div>
-  )
+  );
 }

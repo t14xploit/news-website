@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Loader2, ExternalLink } from "lucide-react";
+import {
+  Loader2,
+  ExternalLink,
+  ArrowRight,
+  CheckCircle,
+  Inbox,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,6 +42,7 @@ export default function EmailVerificationSent({
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null | false>(
     previewUrl || null
   );
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleResend = async () => {
     if (!localEmail) {
@@ -47,10 +54,11 @@ export default function EmailVerificationSent({
     try {
       if (onResend) {
         await onResend();
+        setIsSuccess(true);
       } else {
         const response = await authClient.sendVerificationEmail({
           email: localEmail,
-          callbackURL: `${window.location.origin}/verify-email`,
+          callbackURL: `/verify-email`,
         });
 
         if (response.error) {
@@ -62,6 +70,7 @@ export default function EmailVerificationSent({
           if (data?.previewUrl) {
             setLocalPreviewUrl(data.previewUrl);
           }
+          setIsSuccess(true);
           toast.success("Verification email sent successfully!");
         }
       }
@@ -74,10 +83,10 @@ export default function EmailVerificationSent({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto ">
-      <Card>
+    <div className="max-w-md w-full">
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-lg md:text-xl text-success">
+          <CardTitle className="text-lg md:text-xl text-success flex items-center gap-2">
             Check Your Email
           </CardTitle>
           <CardDescription className="text-xs md:text-sm">
@@ -86,13 +95,16 @@ export default function EmailVerificationSent({
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-8">
           <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 mx-auto flex items-center justify-center mb-4">
-            <Mail className="h-6 w-6" />
+            <Inbox className="h-6 w-6" />
           </div>
           <p className="text-center text-sm text-muted-foreground mb-4">
             Please check your inbox at{" "}
             <span className="font-medium">{localEmail}</span> and click on the
-            verification link to activate your account. If you don&apos;t see
-            the email within a few minutes, check your spam folder.
+            verification link to activate your account.
+          </p>
+          <p className="text-center text-sm text-muted-foreground">
+            If you don&apos;t see the email within a few minutes, check your
+            spam folder.
           </p>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
@@ -124,19 +136,26 @@ export default function EmailVerificationSent({
             {isResending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
+                Sending verification email...
               </>
             ) : (
-              "Resend verification email"
+              <>Resend verification email</>
             )}
           </Button>
+          {isSuccess && (
+            <div className="flex items-center justify-center gap-2 text-sm text-success">
+              <CheckCircle className="h-4 w-4" />
+              <span>Verification email sent successfully!</span>
+            </div>
+          )}
           <p className="text-sm text-center text-muted-foreground pt-2">
             Already verified?{" "}
             <Link
               href="/sign-in"
-              className="text-primary font-medium hover:underline"
+              className="text-primary font-medium hover:underline inline-flex items-center"
             >
               Sign In
+              <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </p>
         </CardFooter>

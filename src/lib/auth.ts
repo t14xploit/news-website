@@ -25,7 +25,7 @@ export const auth = betterAuth({
   secret: SECRET_KEY,
   trustedOrigins: [BASE_URL, "/verify-email"],
 
-  // Verify email
+  // SEND verification email
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
       const emailResponse = await sendEmail({
@@ -51,6 +51,7 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    // SEND reset password
     sendResetPassword: async ({ user, url }) => {
       const emailResponse = await sendEmail({
         to: user.email,
@@ -68,7 +69,7 @@ export const auth = betterAuth({
 
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
-      if (ctx.path === "/forgot-password") {
+      if (ctx.path === "/forget-password") {
         const email = ctx.body?.email;
         if (!email) {
           throw new APIError("BAD_REQUEST", {
@@ -99,7 +100,7 @@ export const auth = betterAuth({
     }),
     after: createAuthMiddleware(async (ctx) => {
       if (
-        (ctx.path === "/forgot-password" ||
+        (ctx.path === "/forget-password" ||
           ctx.path === "/send-verification-email" ||
           ctx.path === "/verify-email") &&
         ctx.context.returned
