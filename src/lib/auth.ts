@@ -25,7 +25,7 @@ export const auth = betterAuth({
   secret: SECRET_KEY,
   trustedOrigins: [BASE_URL, "/verify-email"],
 
-  // Verify email
+  // SEND verification email
   emailVerification: {
     sendVerificationEmail: async ({ user, url }) => {
       const emailResponse = await sendEmail({
@@ -51,6 +51,7 @@ export const auth = betterAuth({
     requireEmailVerification: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    // SEND reset password
     sendResetPassword: async ({ user, url }) => {
       const emailResponse = await sendEmail({
         to: user.email,
