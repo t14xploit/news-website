@@ -72,7 +72,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
       const response = await authClient.sendVerificationEmail({
         email: unverifiedEmail,
 
-        callbackURL: `${window.location.origin}/verify-email`,
+        callbackURL: `/verify-email`,
       });
 
       // Response contains a preview URL Nodemailer

@@ -58,7 +58,7 @@ export default function EmailVerificationSent({
       } else {
         const response = await authClient.sendVerificationEmail({
           email: localEmail,
-          callbackURL: `${window.location.origin}/verify-email`,
+          callbackURL: `/verify-email`,
         });
 
         if (response.error) {
@@ -83,7 +83,7 @@ export default function EmailVerificationSent({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto py-6">
+    <div className="max-w-md w-full">
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl text-success flex items-center gap-2">
