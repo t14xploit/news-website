@@ -55,6 +55,7 @@ export function CardPreview({
         cardNumber: data.cardNumber,
         cardHolder: data.cardHolder,
         expiryDate: data.expiryDate,
+        cvv: data.cvv,
         cardType,
         isDefault: savedCards.length === 0,
       }

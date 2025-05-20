@@ -78,6 +78,7 @@ export const usePaymentForm = ({ initialCards = [], defaultTheme = "gradient" }:
           cardNumber: data.cardNumber,
           cardHolder: data.cardHolder,
           expiryDate: data.expiryDate,
+          cvv: data.cvv,
           cardType,
           isDefault: savedCards.length === 0,
         }

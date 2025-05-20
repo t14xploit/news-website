@@ -11,6 +11,7 @@ export type SavedCard = {
   cardHolder: string
   expiryDate: string
   cardType: CardType
+  cvv: string
   isDefault: boolean
 }
 
