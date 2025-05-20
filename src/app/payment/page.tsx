@@ -137,10 +137,10 @@ export default function PaymentPage() {
         <h2 className="text-3xl font-medium mb-2 text-white/90">
           Subscribe to <span className="text-blue-400">{name}</span> News
         </h2>
-        <p className="text-gray-400 mb-6">
-         <p> Enter your card details to complete the payment and </p>
-          <p> Enjoy the Best Updates Every Month</p>
-        </p>
+        <div className="text-gray-400 mb-6">
+          <p>Enter your card details to complete the payment and</p>
+          <p>Enjoy the Best Updates Every Month</p>
+        </div>
         <PaymentForm
           onSubmit={handlePaymentSubmit}
           selectedPlan={selectedPlan}

@@ -8,7 +8,7 @@ import { RealisticCardPreview } from "./realistic-card-preview";
 import { CardBackground, CardType } from "../types";
 import { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, SubmitHandler } from "react-hook-form";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 import { useRouter } from "next/navigation";
 
@@ -21,6 +21,8 @@ interface CardPreviewProps {
   onCvvChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedPlan: { id: string; name: string; price: number };
   isSubmitting?: boolean;
+  handleSubmit: (handler: SubmitHandler<CardPreviewFormData>) => (e: React.FormEvent) => void;
+  onSubmit: (data: CardPreviewFormData) => Promise<{ success: boolean; plan: string; price: number; error?: string }>;
 }
 
 export function CardPreview({
@@ -32,9 +34,13 @@ export function CardPreview({
   onCvvChange,
   selectedPlan,
   isSubmitting = false,
+  handleSubmit,
+  onSubmit,
 }: CardPreviewProps) {
   const [cardBackground, setCardBackground] = useState<CardBackground>(defaultTheme);
   const [cardType, setCardType] = useState<CardType>("generic");
+  
+  const router = useRouter();
 
   const detectCardType = (cardNumber: string) => {
     const cleaned = cardNumber.replace(/\D/g, "");
@@ -49,8 +55,22 @@ export function CardPreview({
     onCardNumberChange(e);
     setCardType(detectCardType(e.target.value));
   };
+  
+  const handleFormSubmit: SubmitHandler<CardPreviewFormData> = async (data) => {
+    try {
+      const result = await onSubmit(data);
+      if (result.success) {
+        router.push(
+          `/thank-you?plan=${encodeURIComponent(selectedPlan.name)}&price=${selectedPlan.price.toFixed(2)}&cardHolder=${encodeURIComponent(data.cardHolder)}`
+        );
+      } else {
+        console.error(result.error);
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    }
+  };
 
-  const router = useRouter();
   const handleCancel = () => {
     router.push("/subscribe");
   };
@@ -74,6 +94,7 @@ export function CardPreview({
                 onCvvChange={onCvvChange}
                 cardType={cardType}
                 cardBackground={cardBackground}
+                isSubmitting={isSubmitting}
               />
             </div>
             <div className="grid gap-4 pt-4">
@@ -111,12 +132,17 @@ export function CardPreview({
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleCancel} disabled={isSubmitting} className="w-full max-w-[150px]">
+          <Button variant="outline" 
+          onClick={handleCancel} 
+          disabled={isSubmitting} 
+          className="w-full max-w-[150px]"
+          >
             Cancel
           </Button>
           <Button
             type="submit"
             form="payment-form"
+            onClick={handleSubmit(handleFormSubmit)}
             disabled={isSubmitting}
             className="w-full max-w-[150px] relative"
           >

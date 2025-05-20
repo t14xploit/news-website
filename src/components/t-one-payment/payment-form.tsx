@@ -51,11 +51,14 @@ export default function PaymentForm({
 
   // const formData = watch()
 
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, "")
-    value = value.replace(/(\d{4})/g, "$1 ").trim()
-    e.target.value = value
-  }
+const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length > 16) {
+      value = value.slice(0, 16);
+    }
+    value = value.replace(/(\d{4})/g, "$1 ").trim();
+    e.target.value = value;
+  };
 
   const handleExpiryDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "")
@@ -70,17 +73,18 @@ export default function PaymentForm({
     e.target.value = value;
   };
 
-  const handleFormSubmit = async (data: CardPreviewFormData) => {
-   await onSubmit(data)
+  // const handleFormSubmit = async (data: CardPreviewFormData) => {
+  //  await onSubmit(data)
     // const result = await onSubmit(data)
     // if (result.success) {
     //   setCurrentPlan(selectedPlan.name)
     // }
-  }
+  // }
 
   return (
     <form
-      onSubmit={handleSubmit(handleFormSubmit)}
+      id="payment-form"
+      onSubmit={handleSubmit(async (data) => await onSubmit(data))}
       className="flex flex-col items-center pt-8"
     >
       <CardPreview
@@ -91,7 +95,9 @@ export default function PaymentForm({
         onExpiryDateChange={handleExpiryDateChange}
         onCvvChange={handleCvvChange}
         selectedPlan={selectedPlan}
-        isSubmitting={isSubmitting} 
+        isSubmitting={isSubmitting}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit} 
       />
       {/* <Button
         type="submit"
