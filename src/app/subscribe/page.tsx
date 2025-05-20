@@ -5,8 +5,14 @@ import { PlanProvider } from "@/components/subscribe/plan-context"
 import { plans } from "@/lib/subscribe/plans"
 
 export default function SubscribePage() {
+  const defaultUserData = {
+    name: "",
+    email: "",
+    avatar: "",
+  }
+
   return (
-    <PlanProvider>
+    <PlanProvider initialUserData={defaultUserData}>
       <div className="min-h-screen flex flex-col items-center justify-start pt-10 text-white">
         <div className="text-center">
           <h2 className="text-3xl font-medium mb-2">

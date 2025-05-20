@@ -129,7 +129,7 @@ export default function PaymentPage() {
   };
 
  return (
-    <div className="min-h-screen flex flex-col items-center justify-start pt-10">
+    <div className="">
       <div className="text-center">
         {error && (
           <p className="text-red-400 mb-4">{error}</p>
@@ -138,7 +138,8 @@ export default function PaymentPage() {
           Subscribe to <span className="text-blue-400">{name}</span> News
         </h2>
         <p className="text-gray-400 mb-6">
-          Enjoy the Best Updates Every Month
+         <p> Enter your card details to complete the payment and </p>
+          <p> Enjoy the Best Updates Every Month</p>
         </p>
         <PaymentForm
           onSubmit={handlePaymentSubmit}

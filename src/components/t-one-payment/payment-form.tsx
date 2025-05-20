@@ -2,16 +2,16 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 // import {
 //   paymentSchema,
 //   PaymentFormData,
 // } from "@/lib/validation/payment-schema"
 // import CardPreview from "./card-preview"
-import RealisticCardPreview from "@/components/t-two-payment/realistic-card-preview"
+// import RealisticCardPreview from "@/components/t-two-payment/realistic-card-preview"
 import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-preview-schema"
 // import { usePlan } from "../subscribe/plan-context"
-
+import { CardPreview } from "../payment-card/ui/payment-subscribe"
 // type PlanType = "Basic" | "Premium" | "Pro"
 
 interface ProcessPaymentResult {
@@ -35,11 +35,10 @@ export default function PaymentForm({
   selectedPlan,
 }: PaymentFormProps) {
   // const { setCurrentPlan } = usePlan()
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<CardPreviewFormData>({
     resolver: zodResolver(cardPreviewSchema),
     defaultValues: {
@@ -66,6 +65,11 @@ export default function PaymentForm({
     e.target.value = value
   }
 
+  const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "");
+    e.target.value = value;
+  };
+
   const handleFormSubmit = async (data: CardPreviewFormData) => {
    await onSubmit(data)
     // const result = await onSubmit(data)
@@ -79,19 +83,22 @@ export default function PaymentForm({
       onSubmit={handleSubmit(handleFormSubmit)}
       className="flex flex-col items-center pt-8"
     >
-      <RealisticCardPreview
+      <CardPreview
         // formData={formData}
         register={register}
         errors={errors}
         onCardNumberChange={handleCardNumberChange}
         onExpiryDateChange={handleExpiryDateChange}
+        onCvvChange={handleCvvChange}
+        selectedPlan={selectedPlan}
+        isSubmitting={isSubmitting} 
       />
-      <Button
+      {/* <Button
         type="submit"
         className="mt-8 w-[120px] bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors shadow-md"
       >
         Pay ${selectedPlan.price.toFixed(2)}
-      </Button>
+      </Button> */}
     </form>
   );
 }
