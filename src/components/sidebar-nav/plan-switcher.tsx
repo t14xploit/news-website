@@ -1,20 +1,20 @@
 "use client";
 
 import * as React from "react";
-import { Sparkles, EllipsisVertical, CreditCard } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Sparkles } from "lucide-react";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { usePlan } from "@/components/subscribe/plan-context";
+import Link from "next/link";
 
 type PlanType = "Free" | "Elite" | "Business" | "";
 
@@ -28,9 +28,9 @@ export function PlanSwitcher({
     isActive?: boolean;
   }[];
 }) {
-  const { isMobile } = useSidebar();
+  // const { isMobile } = useSidebar();
   const { currentPlan, isLoading } = usePlan();
-  const [isManageClicked, setIsManageClicked] = React.useState(false);
+  // const [isManageClicked, setIsManageClicked] = React.useState(false);
 
   const plans = items
     .filter((item) => item.title !== "")
@@ -41,17 +41,17 @@ export function PlanSwitcher({
     }));
 
   const activePlan = plans.find((plan) => plan.name === currentPlan) || {
-    name: "Choose a plan",
+    name: "View plans",
     icon: Sparkles,
-    description: "No subscription",
+    description: "Discover a lot of new things",
   };
 
-  const planColors: Record<PlanType | "Choose a plan", string> = {
-    Free: "text-gray-300",
-    Elite: "text-gray-300",
-    Business: "text-gray-300",
+  const planColors: Record<PlanType | "View plans", string> = {
+    Free: "text-gray-100",
+    Elite: "text-gray-100",
+    Business: "text-gray-100",
     "": "text-gray-300",
-    "Choose a plan": "text-gray-300",
+    "View plans": "text-gray-100",
   };
 
   if (isLoading) {
@@ -62,18 +62,18 @@ export function PlanSwitcher({
             size="lg"
             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-opacity-20 bg-gray-700-600 backdrop-blur-md border shadow-lg">
-              <Sparkles className="size-4 text-gray-300" />
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg  backdrop-blur-md  border">
+              <Sparkles className="" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold text-md text-gray-300">
+              <span className="truncate font-semibold text-md">
                 Loading...
               </span>
-              <span className="truncate text-xs text-gray-400">
+              <span className="truncate text-xs block">
                 Subscription plan
               </span>
             </div>
-            <EllipsisVertical className="ml-auto" />
+            {/* <EllipsisVertical className="ml-auto" /> */}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
@@ -83,16 +83,18 @@ export function PlanSwitcher({
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+        <Link href="/subscribe">
+        {/* <DropdownMenu> */}
+          {/* <DropdownMenuTrigger asChild> */}
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground w-full"
+              aria-label={`Go to subscription page, current plan: ${activePlan.name}`}            
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-opacity-20 bg-gray-700-600 backdrop-blur-md border shadow-lg">
-                <activePlan.icon className="size-4 text-gray-300" />
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg backdrop-blur-md border">
+                <activePlan.icon className="size-5" />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight ">
                 <span
                   className={`truncate font-semibold text-md ${
                     planColors[activePlan.name]
@@ -100,14 +102,15 @@ export function PlanSwitcher({
                 >
                   {activePlan.name}
                 </span>
-                <span className="truncate text-xs text-gray-400">
+                <span className="truncate text-xs block text-gray-400">
                   {activePlan.description}
                 </span>
               </div>
-              <EllipsisVertical className="ml-auto" />
+              {/* <EllipsisVertical className="ml-auto" /> */}
             </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
+          </Link>
+          {/* </DropdownMenuTrigger> */}
+          {/* <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
             align="start"
             side={isMobile ? "bottom" : "right"}
@@ -122,10 +125,10 @@ export function PlanSwitcher({
               </div>
               <div className="font-medium text-muted-foreground">
                 <a href="/subscribe">Manage subscription</a>
-              </div>
-            </DropdownMenuItem>
+              </div> */}
+            {/* </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </SidebarMenuItem>
     </SidebarMenu>
   );

@@ -14,34 +14,56 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import SignOutButton from "@/components/auth/sign-out-button"
+import toast from "react-hot-toast"
 
+interface NavUserProps {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
 
 export function NavUser({
   user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+}: NavUserProps ){
   const { isMobile } = useSidebar()
   const [loadedUser, setLoadedUser] = useState(user);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const router = useRouter();
+  const initials = user.name
+  ? user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    : "ON";
 
-  useEffect(() => {
-  async function fetchUser() {
-    const response = await fetch("/api/user");
-    const data = await response.json();
-    setLoadedUser({
-      name: data.name || "Alien",
-      email: data.email || "ninja@ufo.io",
-      avatar: data.avatar || "/alien/alien_1.jpg",
-    });
-  }
-  fetchUser();
-}, []);
-  if (!loadedUser) return <div>Loading...</div>;
+// useEffect(() => {
+//   async function fetchUser() {
+//     try {
+//       const response = await fetch("/api/user");
+//       if (!response.ok) throw new Error("Failed to fetch user");
+//       const data = await response.json();
+//       setLoadedUser({
+//         name: data.name || "",
+//         email: data.email || "",
+//         avatar: data.avatar || "/alien/alien_1.jpg",
+//       });
+//     } catch (error) {
+//       console.error("Fetch user error:", error);
+//       toast.error("Failed to load user data");
+//       setLoadedUser(user);
+//     } finally {
+//       setIsLoaded(true);
+//     }
+//   }
+//   fetchUser();
+// }, [user]);
 
+const displayUser = isLoaded ? loadedUser : user;
 
   return (
     <SidebarMenu>
@@ -51,14 +73,15 @@ export function NavUser({
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
+              aria-label={`User profile: ${displayUser.name} (${displayUser.email})`}
+           >
               <Avatar className="h-8 w-8 rounded-lg">
-                {loadedUser.avatar && <AvatarImage src={loadedUser.avatar} alt={loadedUser.name} />}
-                <AvatarFallback className="rounded-lg">CW</AvatarFallback>
+                {displayUser.avatar && <AvatarImage src={displayUser.avatar} alt={displayUser.name} />}
+                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{loadedUser.name}</span>
-                <span className="truncate text-xs">{loadedUser.email}</span>
+                <span className="truncate font-semibold">{displayUser.name}</span>
+                <span className="truncate text-xs">{displayUser.email}</span>
               </div>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -72,41 +95,59 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={loadedUser.avatar} alt={loadedUser.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={displayUser.avatar} alt={displayUser.name} />
+                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{loadedUser.name}</span>
-                  <span className="truncate text-xs">{loadedUser.email}</span>
+                  <span className="truncate font-semibold">{displayUser.name}</span>
+                  <span className="truncate text-xs">{displayUser.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/subscribe")}
+                className="gap-2"
+              >
                 <Sparkles />
-                Upgrade to Pro
+                Upgrade plan
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
+              <DropdownMenuItem 
+                onClick={() => router.push("/account")} 
+                className="gap-2"
+                >
+                <BadgeCheck className="size-5" />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
+              <DropdownMenuItem 
+                onClick={() => router.push("/card-details")} 
+                className="gap-2"
+              >
+                <CreditCard className="size-5" />
+                Card details
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
+              <DropdownMenuItem 
+                 onClick={() => router.push("/notifications")} 
+                 className="gap-2"
+                 >
+                <Bell className="size-5" />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
+            <DropdownMenuItem asChild className="gap-2">
+              <SignOutButton
+                onSignOutSuccess={() => {
+                  router.push("/sign-in")
+                }}
+              >
+               <LogOut className="size-5" />
+                Log out
+              </SignOutButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
