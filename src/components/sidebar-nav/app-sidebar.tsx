@@ -27,31 +27,37 @@ interface AppSidebarProps {
     email: string;
     avatar: string;
   };
+  collapsible?: "none" | "icon" | "offcanvas";
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ 
+  user,
+  collapsible,
+  ...props 
+}: AppSidebarProps & 
+React.ComponentProps<typeof Sidebar>) {
   const { currentPlan } = usePlan();
 
   
   const data = {
     PlanSwitcher: [
         {
-            title: "Basic" as PlanType,
+            title: "Free" as PlanType,
             url: "#",
             icon: Sparkles,
-            isActive: currentPlan === "Basic",
+            isActive: currentPlan === "Free",
         },
         {
-            title: "Premium" as PlanType,
+            title: "Elite" as PlanType,
             url: "#",
             icon: Sparkles,
-            isActive: currentPlan === "Premium",
+            isActive: currentPlan === "Elite",
         },
         {
-            title: "Pro" as PlanType,
+            title: "Business" as PlanType,
             url: "#",
             icon: Sparkles,
-            isActive: currentPlan === "Pro",
+            isActive: currentPlan === "Business",
         },
     ],
     // teams: [
@@ -212,7 +218,11 @@ export function AppSidebar({ user, ...props }: AppSidebarProps & React.Component
   }
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar
+      collapsible={collapsible}
+      className="md:block"
+      {...props}
+    >
       <SidebarHeader>
          <NavUser user={user} />
       </SidebarHeader>
@@ -221,7 +231,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps & React.Component
         <NavMain items={data.navMain} />
         {/* <NavSubscriptions items={data.NavSubscriptions} currentPlan={currentPlan} setCurrentPlan={setCurrentPlan} /> */}
         <NavMainBottom items={data.navMainBottom} 
-        className="mt-auto"/>
+        className="mt-auto"
+        />
       </SidebarContent>
       <SidebarFooter>
       <PlanSwitcher

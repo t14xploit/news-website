@@ -47,7 +47,7 @@ export default function SignOutButton({
 
   return (
     <Button
-      variant="secondary"
+      variant="ghost"
       onClick={handleSignOut}
       disabled={isPending}
       {...props}

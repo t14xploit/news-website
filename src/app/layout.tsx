@@ -3,12 +3,13 @@ import "./globals.css";
 
 // import Footer from "@/components/Footer";
 
-import { SidebarInset } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import SiteHeader from "@/components/sidebar-nav/site-header";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
+import { ErrorBoundary } from "@/lib/error-boundary";
+
 
 export const metadata: Metadata = {
   title: "OpenNews",
@@ -31,6 +32,10 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+       <head>
+         <meta name="viewport" content="width=device-width, initial-scale=1" />
+         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+       </head>
       <body>
         <ThemeProvider
           attribute="class"
@@ -39,8 +44,8 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <PlanProvider initialUserData={user}>
+            <ErrorBoundary>
             <ClientSidebarWrapper user={user}>
-              <SidebarInset className="flex flex-col min-h-screen">
                 <SiteHeader />
                 <main className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height))] w-full">
                   <div className="flex flex-1 flex-col max-w-full md:max-w-full mx-auto px-4  lg:px-8 w-full">
@@ -50,8 +55,8 @@ export default function RootLayout({
                   </div>
                 </main>
                 <Toaster />
-              </SidebarInset>
             </ClientSidebarWrapper>
+            </ErrorBoundary>
           </PlanProvider>
         </ThemeProvider>
       </body>

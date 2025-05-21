@@ -20,6 +20,7 @@ interface ClientSidebarWrapperProps {
 }
 
 export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperProps) {
+  const [mounted, setMounted] = useState(false);
   const [sidebarState, setSidebarState] = useState<{
     collapsible: "none" | "icon" | "offcanvas" | undefined;
     variant: string;
@@ -29,7 +30,8 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
   });
 
   useEffect(() => {
-    const savedState = localStorage.getItem("sidebar-state");
+    setMounted(true);
+    const savedState = localStorage.getItem("sidebar_state");
     if (savedState) {
       const validStates: Array<"none" | "icon" | "offcanvas"> = ["none", "icon", "offcanvas"];
       if (validStates.includes(savedState as "none" | "icon" | "offcanvas")) {
@@ -37,6 +39,24 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
       }
     }
   }, []);
+
+  if (!mounted) {
+    return (
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "18rem",
+            "--sidebar-width-icon": "3rem",
+            "--header-height": "4rem",
+          } as SidebarStyle
+        }
+        open={true}
+      >
+        <AppSidebar collapsible="icon" user={user} />
+        <SidebarInset>{children}</SidebarInset>
+      </SidebarProvider>
+    );
+  }
 
   return (
     <SidebarProvider
@@ -47,6 +67,15 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
           "--header-height": "4rem",
         } as SidebarStyle
       }
+      open={true}
+      onOpenChange={(open: boolean) => {
+        const newCollapsible = open ? "icon" : "offcanvas";
+        setSidebarState((prev) => ({
+          ...prev,
+          collapsible: newCollapsible,
+        }));
+        localStorage.setItem("sidebar_state", newCollapsible);
+      }}
     >
       <AppSidebar collapsible={sidebarState.collapsible} user={user} />
       <SidebarInset>{children}</SidebarInset>
