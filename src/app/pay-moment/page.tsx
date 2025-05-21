@@ -10,9 +10,9 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const planId = searchParams.get("plan");
   const plans: { id: string; name: PlanType; price: number }[] = [
-    { id: "basic", name: "Basic", price: 9.99 },
-    { id: "premium", name: "Premium", price: 19.99 },
-    { id: "pro", name: "Pro", price: 29.99 },
+    { id: "Free", name: "Free", price: 0 },
+    { id: "Elite", name: "Elite", price: 19.99 },
+    { id: "Business", name: "Business", price: 49.99 },
   ];
   const selectedPlan = plans.find((plan) => plan.id === planId) || plans[0];
 

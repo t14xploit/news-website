@@ -1,14 +1,19 @@
 "use client";
 
-import * as React from "react"
-import { Eye, EyeOff, RefreshCw, Wifi } from "lucide-react"
-import type { UseFormRegister, FieldErrors } from "react-hook-form"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-import { CardType, CardBackground } from "../types"
-import { JSX } from "react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import * as React from "react";
+import { Eye, EyeOff, RefreshCw, Wifi } from "lucide-react";
+import type { UseFormRegister, FieldErrors } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { CardType, CardBackground } from "../types";
+import { JSX } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 
 interface RealisticCardPreviewProps {
@@ -32,13 +37,10 @@ export function RealisticCardPreview({
   cardBackground,
   isSubmitting = false,
 }: RealisticCardPreviewProps) {
-
-  const [isFlipped, setIsFlipped] = React.useState(false)
+  const [isFlipped, setIsFlipped] = React.useState(false);
   const [showCvv, setShowCvv] = React.useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cvvValue, setCvvValue] = React.useState("")
-
-
+  const [cvvValue, setCvvValue] = React.useState("");
 
   const getCardBgClass = () => {
     const bgClasses: Record<CardBackground, string> = {
@@ -52,35 +54,42 @@ export function RealisticCardPreview({
 
   const getCardLogo = () => {
     const logos: Record<CardType, JSX.Element> = {
-      visa: <div className="text-white font-bold tracking-tighter text-4xl">
-            <span className="italic">VISA</span>
-          </div>,
-      mastercard: <div className="flex">
-            <div className="h-10 w-10 rounded-full bg-red-500 opacity-80"></div>
-            <div className="h-10 w-10 -ml-4 rounded-full bg-yellow-500 opacity-80"></div>
-          </div>,
-      amex:  <div className="text-white font-bold text-3xl">
-            <span>AMERICAN EXPRESS</span>
-          </div>,
-      discover:  <div className="text-white font-bold text-3xl">
-            <span>DISCOVER</span>
-          </div>,
-      generic: <div className="text-white font-bold tracking-tighter text-4xl">
-            <span className="italic">Bank</span>
-          </div>,
-    }
-    return logos[cardType]
-  }
-
+      visa: (
+        <div className="text-white font-bold tracking-tighter text-4xl">
+          <span className="italic">VISA</span>
+        </div>
+      ),
+      mastercard: (
+        <div className="flex">
+          <div className="h-10 w-10 rounded-full bg-red-500 opacity-80"></div>
+          <div className="h-10 w-10 -ml-4 rounded-full bg-yellow-500 opacity-80"></div>
+        </div>
+      ),
+      amex: (
+        <div className="text-white font-bold text-3xl">
+          <span>AMERICAN EXPRESS</span>
+        </div>
+      ),
+      discover: (
+        <div className="text-white font-bold text-3xl">
+          <span>DISCOVER</span>
+        </div>
+      ),
+      generic: (
+        <div className="text-white font-bold tracking-tighter text-4xl">
+          <span className="italic">Bank</span>
+        </div>
+      ),
+    };
+    return logos[cardType];
+  };
 
   React.useEffect(() => {
     const cvvInput = document.getElementById("cvv-input");
     if (isFlipped && cvvInput) {
       setTimeout(() => cvvInput.focus(), 500);
     }
-  }, [isFlipped])
-  
-
+  }, [isFlipped]);
 
   const handleFlipClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -89,39 +98,42 @@ export function RealisticCardPreview({
   };
 
   const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setCvvValue(e.target.value)
-  onCvvChange(e)
-}
+    setCvvValue(e.target.value);
+    onCvvChange(e);
+  };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const handleCardNumberChangeWrapper = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const rawValue = e.target.value.replace(/\D/g, "");
     if (rawValue.length <= 16) {
       onCardNumberChange(e);
     } else {
-      e.target.value = rawValue.slice(0, 16).replace(/(\d{4})/g, "$1 ").trim();
+      e.target.value = rawValue
+        .slice(0, 16)
+        .replace(/(\d{4})/g, "$1 ")
+        .trim();
     }
   };
 
-
-  return (    
-  <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
+  return (
+    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
       <TooltipProvider>
-       <Tooltip>
-        <TooltipTrigger asChild>
-      <Button
-        type="button"
-        variant="outline"
-        size="lg"
-        className="absolute -top-13 right-0 z-10 mr-2"
-        onClick={handleFlipClick}
-        aria-label="Flip Card"
-      >
-        <RefreshCw className="size-5" />
-        {/* Flip Card */}
-
-      </Button>
-      </TooltipTrigger>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="absolute -top-13 right-0 z-10 mr-2"
+              onClick={handleFlipClick}
+              aria-label="Flip Card"
+            >
+              <RefreshCw className="size-5" />
+              {/* Flip Card */}
+            </Button>
+          </TooltipTrigger>
           <TooltipContent
             side="left"
             sideOffset={8}
@@ -132,13 +144,25 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
         </Tooltip>
       </TooltipProvider>
 
-      <div className={cn("relative w-full h-full transition-transform duration-700 transform-style-3d", 
-        isFlipped ? "rotate-y-180" : "")}>
-        <div className={cn("absolute w-full h-full backface-hidden rounded-xl p-6 flex flex-col border border-gray-700/30 shadow-xl", 
-          isFlipped ? "pointer-events-none" : "")}>
-          <div className={cn("absolute inset-0 backdrop-blur-md rounded-xl", 
-            getCardBgClass(), 
-            "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30")} />
+      <div
+        className={cn(
+          "relative w-full h-full transition-transform duration-700 transform-style-3d",
+          isFlipped ? "rotate-y-180" : ""
+        )}
+      >
+        <div
+          className={cn(
+            "absolute w-full h-full backface-hidden rounded-xl p-6 flex flex-col border border-gray-700/30 shadow-xl",
+            isFlipped ? "pointer-events-none" : ""
+          )}
+        >
+          <div
+            className={cn(
+              "absolute inset-0 backdrop-blur-md rounded-xl",
+              getCardBgClass(),
+              "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30"
+            )}
+          />
           <div className="absolute inset-0 rounded-xl overflow-hidden">
             <div className="absolute -inset-[500%] bg-gradient-to-r from-transparent via-white/20 to-transparent card-shine"></div>
           </div>
@@ -181,10 +205,12 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
 
               <div className="flex justify-between items-end">
                 <div className="space-y-1 w-1/2">
-                  <div className="text-xs  text-white/70 uppercase mr-44">Card Holder</div>
+                  <div className="text-xs  text-white/70 uppercase mr-44">
+                    Card Holder
+                  </div>
                   <Input
                     {...register("cardHolder")}
-                    placeholder="CARD HOLDER" 
+                    placeholder="CARD HOLDER"
                     className="w-full h-12 bg-transparent border-none focus-visible:ring-1 focus-visible:ring-white/30 text-white/90 placeholder:text-white/70 text-sm"
                     disabled={isSubmitting}
                   />
@@ -195,7 +221,9 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
                   )}
                 </div>
                 <div className="space-y-1 w-1/3">
-                  <div className="text-xs text-white/70 uppercase mr-30">Expires</div>
+                  <div className="text-xs text-white/70 uppercase mr-30">
+                    Expires
+                  </div>
                   <Input
                     {...register("expiryDate")}
                     placeholder="MM/YY"
@@ -214,10 +242,19 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
           </div>
         </div>
 
-        <div className={cn("absolute w-full h-full backface-hidden rounded-xl border border-gray-700/30 shadow-xl rotate-y-180", 
-          !isFlipped ? "pointer-events-none" : "")}>
-          <div className={cn("absolute inset-0 backdrop-blur-md rounded-xl", 
-            getCardBgClass(), "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30")} />
+        <div
+          className={cn(
+            "absolute w-full h-full backface-hidden rounded-xl border border-gray-700/30 shadow-xl rotate-y-180",
+            !isFlipped ? "pointer-events-none" : ""
+          )}
+        >
+          <div
+            className={cn(
+              "absolute inset-0 backdrop-blur-md rounded-xl",
+              getCardBgClass(),
+              "before:absolute before:inset-0 before:rounded-xl before:bg-white/10 before:backdrop-blur-sm before:opacity-30"
+            )}
+          />
 
           <div className="absolute inset-0 rounded-xl overflow-hidden">
             <div className="absolute -inset-[500%] bg-gradient-to-r from-transparent via-white/20 to-transparent card-shine"></div>
@@ -232,7 +269,7 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
                     Signature
                   </div>
                 </div>
-                <div className="w-1/4 h-8 bg-white border border-gray-200 rounded-r flex items-center justify-center">
+                <div className="w-1/4 h-8 bg-white border  border-gray-200 rounded-r flex items-center justify-center">
                   <Input
                     id="cvv-input"
                     {...register("cvv")}
@@ -242,27 +279,36 @@ const handleCardNumberChangeWrapper = (e: React.ChangeEvent<HTMLInputElement>) =
                     onChange={handleCvvChange}
                     disabled={isSubmitting}
                     aria-describedby={errors.cvv ? "cvv-error" : undefined}
-                    />
+                  />
                   <button
-                     type="button"
-                     className="absolute right-1 text-gray-600 hover:text-gray-800"
-                     onClick={() => setShowCvv(!showCvv)}
-                     aria-label={showCvv ? "Hide CVV" : "Show CVV"}
-                     disabled={isSubmitting}
-                   >
-                     {showCvv ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                 </button>
+                    type="button"
+                    className="absolute right-1 text-gray-600 hover:text-gray-800"
+                    onClick={() => setShowCvv(!showCvv)}
+                    aria-label={showCvv ? "Hide CVV" : "Show CVV"}
+                    disabled={isSubmitting}
+                  >
+                    {showCvv ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
                 </div>
               </div>
 
-              {errors.cvv && <p className="text-red-300 text-xs mt-1">{errors.cvv.message}</p>}
+              {errors.cvv && (
+                <p className="text-red-300 text-xs mt-1">
+                  {errors.cvv.message}
+                </p>
+              )}
               <div className="text-sm text-white/70 mr-1 mt-1">CVV</div>
             </div>
             <div className="mt-auto p-5 text-white/80 text-[13px]">
               <p>This card is property of the issuing bank.</p>
 
               <p className="text-[13px] mt-1">
-                Use of this card is subject to the terms and conditions of your agreement with the issuer.
+                Use of this card is subject to the terms and conditions of your
+                agreement with the issuer.
               </p>
             </div>
           </div>

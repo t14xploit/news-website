@@ -4,17 +4,17 @@ import { CheckCircle } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const validPlans = ["Basic", "Premium", "Pro"];
+const validPlans = ["Free", "Elite", "Business"];
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const rawPlan = searchParams.get("plan") || "Basic";
-  const plan = validPlans.includes(rawPlan) ? rawPlan : "Basic";
+  const rawPlan = searchParams.get("plan") || "Free";
+  const plan = validPlans.includes(rawPlan) ? rawPlan : "Free";
   const priceMap: Record<string, number> = {
-    Basic: 9.99,
-    Premium: 19.99,
-    Pro: 29.99,
+    Free: 0,
+    Elite: 19.99,
+    Business: 49.99,
   };
   const rawCardHolder = searchParams.get("cardHolder") || "User";
   const cardHolder = rawCardHolder.replace(/[<>]/g, "");
@@ -29,8 +29,8 @@ export default function ThankYouPage() {
     <div className="min-h-screen pt-20 flex flex-col items-center justify-start gap-2">
       <div className="text-center mb-10">
         <h1 className="text-4xl mb-4 text-white/90">
-          Thank You for Your{" "}
-          <span className="text-blue-400">{plan}</span> Subscription,{""}
+          Thank You for Your <span className="text-blue-400">{plan}</span>{" "}
+          Subscription,{""}
           <span className="text-white/90"> {cardHolder}</span>!
         </h1>
         <p className="text-lg text-white/90">

@@ -5,14 +5,16 @@ import { useState } from "react";
 import PaymentForm from "@/components/t-one-payment/payment-form";
 import { processPayment } from "@/actions/payment-actions";
 // import { PaymentFormData } from "@/lib/validation/payment-schema";
-import { subscribeSchema, SubscribeFormData } from "@/lib/validation/subscribe-schema";
+import {
+  subscribeSchema,
+  SubscribeFormData,
+} from "@/lib/validation/subscribe-schema";
 import { usePlan, UserData } from "@/components/subscribe/plan-context";
 import { selectSubscription } from "@/actions/subscribe-action";
 import { z } from "zod";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 
-
-type PlanType = "Basic" | "Premium" | "Pro";
+type PlanType = "Free" | "Elite" | "Business";
 
 interface ProcessPaymentResult {
   success: boolean;
@@ -29,19 +31,20 @@ export default function PaymentPage() {
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
   const { setCurrentPlan, userId, setUserData } = usePlan();
-  const validPlans: PlanType[] = ["Basic", "Premium", "Pro"];
+  const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
     ? (nameFromParams as PlanType)
-    : "Basic";
+    : "Free";
 
   const priceMap: Record<PlanType, number> = {
-    Basic: 9.99,
-    Premium: 19.99,
-    Pro: 29.99,
+    Free: 0,
+    Elite: 19.99,
+    Business: 49.99,
   };
-  const price = priceFromParams && !isNaN(parseFloat(priceFromParams))
-    ? parseFloat(priceFromParams)
-    : priceMap[name];
+  const price =
+    priceFromParams && !isNaN(parseFloat(priceFromParams))
+      ? parseFloat(priceFromParams)
+      : priceMap[name];
 
   const [error, setError] = useState<string | null>(null);
 
@@ -68,9 +71,10 @@ export default function PaymentPage() {
       });
       console.log("Validated subscription data:", subscribeData);
     } catch (validationError) {
-      const errorMessage = validationError instanceof z.ZodError
-        ? validationError.errors.map((e: z.ZodIssue) => e.message).join(", ")
-        : "Invalid subscription data";
+      const errorMessage =
+        validationError instanceof z.ZodError
+          ? validationError.errors.map((e: z.ZodIssue) => e.message).join(", ")
+          : "Invalid subscription data";
       console.error("Subscription validation failed:", errorMessage);
       setError(errorMessage);
       return {
@@ -81,7 +85,10 @@ export default function PaymentPage() {
       };
     }
 
-    const subscriptionResult = await selectSubscription(selectedPlan.id, userId);
+    const subscriptionResult = await selectSubscription(
+      selectedPlan.id,
+      userId
+    );
     if (!subscriptionResult.success) {
       console.error("Subscription selection failed:", subscriptionResult.error);
       const errorMessage = subscriptionResult.error?.includes("Invalid plan ID")
@@ -97,29 +104,44 @@ export default function PaymentPage() {
     }
 
     if (subscriptionResult.subscriptionId) {
-      sessionStorage.setItem("subscriptionId", subscriptionResult.subscriptionId);
-      console.log("Stored subscriptionId in sessionStorage:", subscriptionResult.subscriptionId);
+      sessionStorage.setItem(
+        "subscriptionId",
+        subscriptionResult.subscriptionId
+      );
+      console.log(
+        "Stored subscriptionId in sessionStorage:",
+        subscriptionResult.subscriptionId
+      );
     }
 
-    const paymentResult: ProcessPaymentResult = await processPayment(data, selectedPlan, userId);
+    const paymentResult: ProcessPaymentResult = await processPayment(
+      data,
+      selectedPlan,
+      userId
+    );
     if (paymentResult.success) {
-      console.log("Payment successful, setting currentPlan to:", selectedPlan.name);
+      console.log(
+        "Payment successful, setting currentPlan to:",
+        selectedPlan.name
+      );
       setCurrentPlan(selectedPlan.name);
       localStorage.setItem("currentPlan", selectedPlan.name);
       console.log("Storing userId in localStorage:", userId);
       localStorage.setItem("userId", userId);
-     
+
       setUserData((prev: UserData) => ({
         ...prev,
-        name: data.cardHolder, 
-        avatar: prev.avatar || "/alien/alien_1.jpg", 
+        name: data.cardHolder,
+        avatar: prev.avatar || "/alien/alien_1.jpg",
       }));
       console.log("Storing cardholder name in PlanContext:", data.cardHolder);
-     
+
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Redirecting to /thank-you");
       router.replace(
-        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}&price=${paymentResult.price}&cardHolder=${encodeURIComponent(data.cardHolder)}`
+        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}&price=${
+          paymentResult.price
+        }&cardHolder=${encodeURIComponent(data.cardHolder)}`
       );
     } else {
       console.error("Payment failed:", paymentResult.error);
@@ -128,12 +150,10 @@ export default function PaymentPage() {
     return paymentResult;
   };
 
- return (
+  return (
     <div className="">
       <div className="text-center">
-        {error && (
-          <p className="text-red-400 mb-4">{error}</p>
-        )}
+        {error && <p className="text-red-400 mb-4">{error}</p>}
         <h2 className="text-3xl font-medium mb-2 text-white/90">
           Subscribe to <span className="text-blue-400">{name}</span> News
         </h2>

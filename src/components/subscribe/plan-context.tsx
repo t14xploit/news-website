@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { getActiveSubscription } from "@/actions/subscribe-action";
 
-export type PlanType = "Basic" | "Premium" | "Pro" | "";
+export type PlanType = "Free" | "Elite" | "Business" | "";
 
 export interface UserData {
   name: string;
@@ -37,7 +37,9 @@ const PlanContext = createContext<PlanContextType>({
 export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
   const getInitialPlan = (): PlanType => {
     if (typeof window === "undefined") {
-      console.log("SSR: Initializing currentPlan as '' (12:17 PM CEST, May 15, 2025)");
+      console.log(
+        "SSR: Initializing currentPlan as '' (12:17 PM CEST, May 15, 2025)"
+      );
       return "";
     }
     console.log("Client: Initializing currentPlan as ''");
@@ -61,15 +63,28 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
       setUserId(storedUserId);
 
       console.log("Fetching backend plan for user", storedUserId);
-      const { plan: backendPlan, subscriptionId } = await getActiveSubscription(storedUserId);
-      console.log("Backend plan received:", backendPlan, "with subscription ID:", subscriptionId);
+      const { plan: backendPlan, subscriptionId } = await getActiveSubscription(
+        storedUserId
+      );
+      console.log(
+        "Backend plan received:",
+        backendPlan,
+        "with subscription ID:",
+        subscriptionId
+      );
 
       const storedSubscriptionId = sessionStorage.getItem("subscriptionId");
-      console.log("Stored subscription ID in sessionStorage:", storedSubscriptionId);
+      console.log(
+        "Stored subscription ID in sessionStorage:",
+        storedSubscriptionId
+      );
 
-      const isValidSubscription = subscriptionId && storedSubscriptionId === subscriptionId;
+      const isValidSubscription =
+        subscriptionId && storedSubscriptionId === subscriptionId;
       const validBackendPlan =
-        isValidSubscription && backendPlan && ["Basic", "Premium", "Pro"].includes(backendPlan)
+        isValidSubscription &&
+        backendPlan &&
+        ["Free", "Elite", "Business"].includes(backendPlan)
           ? (backendPlan as PlanType)
           : "";
       if (validBackendPlan) {
@@ -85,12 +100,25 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
       setIsLoading(false);
     }
     syncPlan().catch((error) =>
-      console.error("Sync plan failed:", error, "at 12:17 PM CEST, May 15, 2025")
+      console.error(
+        "Sync plan failed:",
+        error,
+        "at 12:17 PM CEST, May 15, 2025"
+      )
     );
   }, []);
 
   return (
-    <PlanContext.Provider value={{ currentPlan, setCurrentPlan, userId, isLoading, userData, setUserData }}>
+    <PlanContext.Provider
+      value={{
+        currentPlan,
+        setCurrentPlan,
+        userId,
+        isLoading,
+        userData,
+        setUserData,
+      }}
+    >
       {children}
     </PlanContext.Provider>
   );

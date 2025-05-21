@@ -1,76 +1,96 @@
-"use client"
+"use client";
 
-import { CheckCircle } from "lucide-react"
-import { useSearchParams, useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import type { CardBackground } from "@/components/payment-card"
+import { CheckCircle } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { CardBackground } from "@/components/payment-card";
 
-const validPlans = ["Basic", "Premium", "Pro"]
-const validCardBackgrounds = ["blue", "purple", "black", "gradient"]
+const validPlans = ["Free", "Elite", "Business"];
+const validCardBackgrounds = ["blue", "purple", "black", "gradient"];
 
 export default function ThankYouPage() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const rawPlan = searchParams.get("plan") || "Basic"
-  const plan = validPlans.includes(rawPlan) ? rawPlan : "Basic"
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const rawPlan = searchParams.get("plan") || "Free";
+  const plan = validPlans.includes(rawPlan) ? rawPlan : "Free";
   const priceMap: Record<string, number> = {
-    Basic: 9.99,
-    Premium: 19.99,
-    Pro: 29.99,
-  }
-  const rawCardHolder = searchParams.get("cardHolder") || "User"
-  const cardHolder = rawCardHolder.replace(/[<>]/g, "")
-  const lastFour = searchParams.get("lastFour") || "****"
-  const cardType = searchParams.get("cardType") || "visa"
+    Free: 0,
+    Elite: 19.99,
+    Business: 49.99,
+  };
+  const rawCardHolder = searchParams.get("cardHolder") || "User";
+  const cardHolder = rawCardHolder.replace(/[<>]/g, "");
+  const lastFour = searchParams.get("lastFour") || "****";
+  const cardType = searchParams.get("cardType") || "visa";
 
-  const rawCardBackground = searchParams.get("cardBackground") || "gradient"
+  const rawCardBackground = searchParams.get("cardBackground") || "gradient";
   const cardBackground = validCardBackgrounds.includes(rawCardBackground)
     ? (rawCardBackground as CardBackground)
-    : "gradient"
+    : "gradient";
 
   useEffect(() => {
     if (!validPlans.includes(rawPlan) || !rawCardHolder) {
-      router.push("/")
+      router.push("/");
     }
-  }, [rawPlan, rawCardHolder, router])
+  }, [rawPlan, rawCardHolder, router]);
 
   const getCardBgClass = () => {
     switch (cardBackground) {
       case "blue":
-        return "bg-gradient-to-br from-blue-400 via-blue-600 to-blue-800"
+        return "bg-gradient-to-br from-blue-400 via-blue-600 to-blue-800";
       case "purple":
-        return "bg-gradient-to-br from-purple-400 via-purple-600 to-purple-900"
+        return "bg-gradient-to-br from-purple-400 via-purple-600 to-purple-900";
       case "black":
-        return "bg-gradient-to-br from-gray-700 via-gray-900 to-black"
+        return "bg-gradient-to-br from-gray-700 via-gray-900 to-black";
       case "gradient":
       default:
-        return "bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-600"
+        return "bg-gradient-to-br from-indigo-400 via-purple-500 to-pink-600";
     }
-  }
+  };
 
   const getCardLogo = () => {
     switch (cardType) {
       case "visa":
-        return <div className="text-white font-bold text-xl tracking-wider">VISA</div>
+        return (
+          <div className="text-white font-bold text-xl tracking-wider">
+            VISA
+          </div>
+        );
       case "mastercard":
-        return <div className="text-white font-bold text-xl tracking-wider">MASTERCARD</div>
+        return (
+          <div className="text-white font-bold text-xl tracking-wider">
+            MASTERCARD
+          </div>
+        );
       case "amex":
-        return <div className="text-white font-bold text-xl tracking-wider">AMEX</div>
+        return (
+          <div className="text-white font-bold text-xl tracking-wider">
+            AMEX
+          </div>
+        );
       case "discover":
-        return <div className="text-white font-bold text-xl tracking-wider">DISCOVER</div>
+        return (
+          <div className="text-white font-bold text-xl tracking-wider">
+            DISCOVER
+          </div>
+        );
       default:
-        return <div className="text-white font-bold text-xl tracking-wider">CARD</div>
+        return (
+          <div className="text-white font-bold text-xl tracking-wider">
+            CARD
+          </div>
+        );
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-12 flex flex-col items-center justify-start gap-6">
       <div className="text-center mb-6">
         <h1 className="text-4xl font-bold mb-4">
-          Thank You for Your <span className="text-primary">{plan}</span> Subscription,{" "}
-          <span className="font-medium">{cardHolder}</span>!
+          Thank You for Your <span className="text-primary">{plan}</span>{" "}
+          Subscription, <span className="font-medium">{cardHolder}</span>!
         </h1>
         <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
           Your payment was processed successfully
@@ -82,10 +102,15 @@ export default function ThankYouPage() {
         <CardContent className="pt-6">
           <div
             className={cn(
-              "relative rounded-lg p-6 flex flex-col h-[250px] w-full transform hover:scale-105 transition-transform duration-300 border border-gray-700/30 shadow-lg overflow-hidden",
+              "relative rounded-lg p-6 flex flex-col h-[250px] w-full transform hover:scale-105 transition-transform duration-300 border border-gray-700/30 shadow-lg overflow-hidden"
             )}
           >
-            <div className={cn("absolute inset-0 backdrop-blur-md rounded-lg", getCardBgClass())} />
+            <div
+              className={cn(
+                "absolute inset-0 backdrop-blur-md rounded-lg",
+                getCardBgClass()
+              )}
+            />
 
             {/* Card shine effect */}
             <div className="absolute inset-0 rounded-lg overflow-hidden">
@@ -101,7 +126,9 @@ export default function ThankYouPage() {
                 {getCardLogo()}
               </div>
 
-              <h2 className="text-2xl font-semibold mb-6">Subscription Details:</h2>
+              <h2 className="text-2xl font-semibold mb-6">
+                Subscription Details:
+              </h2>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
@@ -111,23 +138,31 @@ export default function ThankYouPage() {
 
                 <div className="flex justify-between items-center">
                   <span className="text-white/70">Price:</span>
-                  <span className="font-medium text-white">${priceMap[plan].toFixed(2)}/month</span>
+                  <span className="font-medium text-white">
+                    ${priceMap[plan].toFixed(2)}/month
+                  </span>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-white/70">Card:</span>
-                  <span className="font-medium text-white">•••• •••• •••• {lastFour}</span>
+                  <span className="font-medium text-white">
+                    •••• •••• •••• {lastFour}
+                  </span>
                 </div>
               </div>
 
               <div className="mt-auto">
-                <p className="text-white/80 text-sm">You now have access to all {plan} content.</p>
-                <p className="text-white/80 text-sm mt-1">Enjoy your subscription!</p>
+                <p className="text-white/80 text-sm">
+                  You now have access to all {plan} content.
+                </p>
+                <p className="text-white/80 text-sm mt-1">
+                  Enjoy your subscription!
+                </p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

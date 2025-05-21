@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type * as React from "react"
-import type { LucideIcon } from "lucide-react"
+import type * as React from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -12,25 +12,25 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavSubscriptions({
   items,
-  setCurrentPlan,
+  setCurrentPlanAction,
 }: {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-      isActive?: boolean
-    }[]
-  }[]
-  currentPlan: string
-  setCurrentPlan: React.Dispatch<React.SetStateAction<string>>
+      title: string;
+      url: string;
+      isActive?: boolean;
+    }[];
+  }[];
+  currentPlan: string;
+  setCurrentPlanAction: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
     <SidebarGroup>
@@ -39,7 +39,11 @@ export function NavSubscriptions({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title} isActive={item.isActive}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={item.isActive}
+              >
                 <a href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
@@ -48,10 +52,9 @@ export function NavSubscriptions({
               {item.items && (
                 <SidebarMenuSub>
                   {item.items.map((subItem) => {
-                    const planName =
-                      subItem.title.startsWith("Manage plan: ")
-                        ? subItem.title.replace("Manage plan: ", "")
-                        : subItem.title
+                    const planName = subItem.title.startsWith("Manage plan: ")
+                      ? subItem.title.replace("Manage plan: ", "")
+                      : subItem.title;
 
                     return (
                       <SidebarMenuSubItem key={subItem.title}>
@@ -59,9 +62,13 @@ export function NavSubscriptions({
                           asChild
                           isActive={subItem.isActive}
                           onClick={(e) => {
-                            e.preventDefault()
-                            if (planName === "Basic" || planName === "Premium" || planName === "Pro") {
-                              setCurrentPlan(planName)
+                            e.preventDefault();
+                            if (
+                              planName === "Free" ||
+                              planName === "Elite" ||
+                              planName === "Business"
+                            ) {
+                              setCurrentPlanAction(planName);
                             }
                           }}
                         >
@@ -70,7 +77,7 @@ export function NavSubscriptions({
                           </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
-                    )
+                    );
                   })}
                 </SidebarMenuSub>
               )}
@@ -79,5 +86,5 @@ export function NavSubscriptions({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
+  );
 }

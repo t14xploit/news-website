@@ -8,10 +8,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import { usePlan } from "@/components/subscribe/plan-context";
 
-type PlanType = "Basic" | "Premium" | "Pro" | "";
+type PlanType = "Free" | "Elite" | "Business" | "";
 
 export function PlanSwitcher({
   items,
@@ -35,17 +40,16 @@ export function PlanSwitcher({
       description: "Subscription plan",
     }));
 
-  const activePlan =
-    plans.find((plan) => plan.name === currentPlan) || {
-      name: "Choose a plan",
-      icon: Sparkles,
-      description: "No subscription",
-    };
+  const activePlan = plans.find((plan) => plan.name === currentPlan) || {
+    name: "Choose a plan",
+    icon: Sparkles,
+    description: "No subscription",
+  };
 
   const planColors: Record<PlanType | "Choose a plan", string> = {
-    Basic: "text-gray-300",
-    Premium: "text-gray-300",
-    Pro: "text-gray-300",
+    Free: "text-gray-300",
+    Elite: "text-gray-300",
+    Business: "text-gray-300",
     "": "text-gray-300",
     "Choose a plan": "text-gray-300",
   };
@@ -89,7 +93,11 @@ export function PlanSwitcher({
                 <activePlan.icon className="size-4 text-gray-300" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className={`truncate font-semibold text-md ${planColors[activePlan.name]}`}>
+                <span
+                  className={`truncate font-semibold text-md ${
+                    planColors[activePlan.name]
+                  }`}
+                >
                   {activePlan.name}
                 </span>
                 <span className="truncate text-xs text-gray-400">
