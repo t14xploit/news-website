@@ -1,4 +1,4 @@
-// import "server-only";
+// "use server";
 import nodemailer from "nodemailer";
 
 let testAccount: nodemailer.TestAccount | null = null;
