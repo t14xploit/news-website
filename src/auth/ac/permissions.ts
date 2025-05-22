@@ -10,7 +10,7 @@ const statements = {
   ...adminDefaultStatements,
   article: ["create", "read", "update", "delete", "repost"],
   subscription: ["view", "purchase", "cancel", "upgrade", "downgrade"],
-  channel: ["view", "manage"],
+  channel: ["view", "manage", "create", "update", "delete"],
   business: ["access"],
 } as const;
 
@@ -54,7 +54,7 @@ export const owner = ac.newRole({
 
 export const member = ac.newRole({
   article: ["read"],
-  channel: ["view"],
+  channel: ["view", "create", "update"],
   subscription: ["view", "purchase", "upgrade"],
 });
 

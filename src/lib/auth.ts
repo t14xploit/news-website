@@ -4,10 +4,10 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { sendEmail } from "./email/email";
 import { createAuthMiddleware, APIError } from "better-auth/api";
-
 import { customSession, organization } from "better-auth/plugins";
 import { admin as adminPlugin } from "better-auth/plugins";
 import { ac, admin, user, owner, member, editor } from "@/auth/ac/permissions";
+import { getActiveOrganization } from "./organization/get-active-organization";
 
 const prisma = new PrismaClient();
 let lastEmailPreviewUrl: string | false = false;
@@ -119,7 +119,7 @@ export const auth = betterAuth({
     freshAge: 60 * 60,
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, //
+      maxAge: 5 * 60, // 5 minutes
     },
   },
 
@@ -217,34 +217,56 @@ export const auth = betterAuth({
     nextCookies(),
 
     customSession(async ({ user, session }) => {
-      let dbUser = null;
-      let subscription = null;
-      let subscriptionType = null;
+      let role = "user";
+      let subscriptionId: string | null = null;
 
+      const sessionUser = {
+        id: user?.id,
+        email: user?.email,
+      };
+
+      // Fetch subscription and role
       if (user?.id) {
-        dbUser = await prisma.user.findUnique({
+        const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          include: { subscription: { include: { type: true } } },
+          include: {
+            subscription: { include: { type: true } },
+          },
         });
 
         if (dbUser?.subscription) {
-          subscription = dbUser.subscription;
-          subscriptionType = dbUser.subscription.type;
+          subscriptionId = dbUser.subscriptionId;
+          if (dbUser.subscription.type?.name === "Business") {
+            role = "editor";
+          }
         }
       }
 
       return {
         user: {
-          ...user,
-          role: dbUser?.role || "user",
-          subscriptionId: dbUser?.subscriptionId,
-          subscription: subscription,
+          ...sessionUser,
+          role,
+          subscriptionId,
         },
         session,
-        subscription,
-        subscriptionType,
       };
     }),
   ],
+
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const organization = await getActiveOrganization(session.userId);
+          return {
+            data: {
+              ...session,
+              activeOrganizationId: organization?.id,
+            },
+          };
+        },
+      },
+    },
+  },
 });
 export const { api } = auth;

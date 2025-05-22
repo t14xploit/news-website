@@ -4,13 +4,23 @@ import { prisma } from "@/lib/prisma";
 import { PlanType } from "@/components/subscribe/plan-context";
 import { plans } from "@/lib/subscribe/plans";
 
-export async function selectSubscription(planId: string, userId: string) {
+export async function selectSubscription(
+  planId: string,
+  userId: string,
+  userEmail?: string
+) {
   try {
-    console.log(`Selecting plan with ID: ${planId} for user: ${userId} at 03:11 PM CEST, May 14, 2025`);
+    console.log(
+      `Selecting plan with ID: ${planId} for user: ${userId} at 03:11 PM CEST, May 14, 2025`
+    );
 
     const plan = plans.find((p) => p.id === planId);
     if (!plan) {
-      throw new Error(`Invalid plan ID: ${planId}. Must be one of: ${plans.map((p) => p.id).join(", ")}`);
+      throw new Error(
+        `Invalid plan ID: ${planId}. Must be one of: ${plans
+          .map((p) => p.id)
+          .join(", ")}`
+      );
     }
 
     const subscriptionType = await prisma.subscriptionType.upsert({
@@ -29,18 +39,39 @@ export async function selectSubscription(planId: string, userId: string) {
       where: { id: userId },
     });
 
+    //Sophie  - if the user does not exist, and if the email is provided -> create
     if (!user) {
-      user = await prisma.user.create({
-        data: {
-          id: userId,
-          email: `${userId}@ufo.io`,
-          name: "",
-          role: "USER",
-          emailVerified: false,
-        },
-      });
-      console.log(`Created new user with ID: ${userId}`);
+      if (userEmail) {
+        user = await prisma.user.create({
+          data: {
+            id: userId,
+            email: userEmail,
+            name: "",
+            role: "",
+            emailVerified: false,
+          },
+        });
+        console.log(
+          `Created new user with ID: ${userId} and email: ${userEmail}`
+        );
+      } else {
+        throw new Error(
+          "User not found and email not provided to create a new user."
+        );
+      }
     }
+    // if (!user) {
+    //   user = await prisma.user.create({
+    //     data: {
+    //       id: userId,
+    //       email: `${userId}@ufo.io`,
+    //       name: "",
+    //       role: "USER",
+    //       emailVerified: false,
+    //     },
+    //   });
+    //   console.log(`Created new user with ID: ${userId}`);
+    // }
 
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -75,12 +106,20 @@ export async function selectSubscription(planId: string, userId: string) {
       console.log("Created subscription:", subscription);
     }
 
+    // Sophie - subscription Business -> editor role
+    if (plan?.name === "Business") {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { role: "editor" },
+      });
+    }
+
     return {
       success: true,
       planId,
       planName: subscriptionType.name as PlanType,
       userId,
-      subscriptionId: subscription.id, // Return subscription ID
+      subscriptionId: subscription.id,
     };
   } catch (error) {
     console.error("Failed to select subscription:", error);
@@ -91,7 +130,9 @@ export async function selectSubscription(planId: string, userId: string) {
   }
 }
 
-export async function getActiveSubscription(userId: string): Promise<{ plan: PlanType | ""; subscriptionId: string | null }> {
+export async function getActiveSubscription(
+  userId: string
+): Promise<{ plan: PlanType | ""; subscriptionId: string | null }> {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -119,7 +160,7 @@ export async function getActiveSubscription(userId: string): Promise<{ plan: Pla
       subscription?.id || "none"
     );
     return {
-      plan: subscription?.type.name as PlanType || "",
+      plan: (subscription?.type.name as PlanType) || "",
       subscriptionId: subscription?.id || null,
     };
   } catch (error) {
