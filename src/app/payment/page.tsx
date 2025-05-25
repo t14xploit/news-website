@@ -30,6 +30,7 @@ export default function PaymentPage() {
   const planId = searchParams.get("planId") || "";
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
+  const cardBackground = searchParams.get("cardBackground") || "gradient";
   const { setCurrentPlan, userId, setUserData } = usePlan();
   const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
@@ -129,6 +130,23 @@ export default function PaymentPage() {
       console.log("Storing userId in localStorage:", userId);
       localStorage.setItem("userId", userId);
 
+      const cardDetails = {
+        cardNumber: data.cardNumber.replace(/\s/g, ""),
+        cardHolder: data.cardHolder,
+        cardType: detectCardType(data.cardNumber),
+        cardBackground,
+        plan: selectedPlan.name,
+        lastUsed: new Date().toISOString(),
+      };
+      const savedCards = JSON.parse(
+        localStorage.getItem(`cards_${userId}`) || "[]"
+      );
+      localStorage.setItem(
+        `cards_${userId}`,
+        JSON.stringify([...savedCards, cardDetails])
+      );
+      console.log("Saved card details:", cardDetails);
+
       setUserData((prev: UserData) => ({
         ...prev,
         name: data.cardHolder,
@@ -139,15 +157,26 @@ export default function PaymentPage() {
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.log("Redirecting to /thank-you");
       router.replace(
-        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}&price=${
-          paymentResult.price
-        }&cardHolder=${encodeURIComponent(data.cardHolder)}`
+        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}
+        &price=${paymentResult.price}
+        &cardHolder=${encodeURIComponent(data.cardHolder)}
+        &cardNumber=${encodeURIComponent(data.cardNumber)}
+        &cardBackground=${encodeURIComponent(cardBackground)}`
       );
     } else {
       console.error("Payment failed:", paymentResult.error);
       setError(paymentResult.error || "Payment failed. Please try again.");
     }
     return paymentResult;
+  };
+
+  const detectCardType = (cardNumber: string) => {
+    const cleaned = cardNumber.replace(/\D/g, "");
+    if (/^4/.test(cleaned)) return "visa";
+    if (/^5[1-5]/.test(cleaned)) return "mastercard";
+    if (/^3[47]/.test(cleaned)) return "amex";
+    if (/^6(?:011|5)/.test(cleaned)) return "discover";
+    return "generic";
   };
 
   return (
