@@ -6,8 +6,8 @@ import { plans } from "@/lib/subscribe/plans";
 
 export async function selectSubscription(
   planId: string,
-  userId: string,
-  userEmail?: string
+  userId: string
+  // userEmail?: string
 ) {
   try {
     console.log(
@@ -40,38 +40,38 @@ export async function selectSubscription(
     });
 
     //Sophie  - if the user does not exist, and if the email is provided -> create
-    if (!user) {
-      if (userEmail) {
-        user = await prisma.user.create({
-          data: {
-            id: userId,
-            email: userEmail,
-            name: "",
-            role: "",
-            emailVerified: false,
-          },
-        });
-        console.log(
-          `Created new user with ID: ${userId} and email: ${userEmail}`
-        );
-      } else {
-        throw new Error(
-          "User not found and email not provided to create a new user."
-        );
-      }
-    }
     // if (!user) {
-    //   user = await prisma.user.create({
-    //     data: {
-    //       id: userId,
-    //       email: `${userId}@ufo.io`,
-    //       name: "",
-    //       role: "USER",
-    //       emailVerified: false,
-    //     },
-    //   });
-    //   console.log(`Created new user with ID: ${userId}`);
+    //   if (userEmail) {
+    //     user = await prisma.user.create({
+    //       data: {
+    //         id: userId,
+    //         email: userEmail,
+    //         name: "",
+    //         role: "",
+    //         emailVerified: false,
+    //       },
+    //     });
+    //     console.log(
+    //       `Created new user with ID: ${userId} and email: ${userEmail}`
+    //     );
+    //   } else {
+    //     throw new Error(
+    //       "User not found and email not provided to create a new user."
+    //     );
+    //   }
     // }
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+          email: `${userId}@ufo.io`,
+          name: "",
+          role: "USER",
+          emailVerified: false,
+        },
+      });
+      console.log(`Created new user with ID: ${userId}`);
+    }
 
     const existingUser = await prisma.user.findUnique({
       where: { id: userId },
