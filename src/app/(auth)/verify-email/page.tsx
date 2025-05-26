@@ -8,6 +8,8 @@ import {
   XCircle,
   ArrowRight,
   RefreshCw,
+  Inbox,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,276 +22,126 @@ import {
 } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
-import EmailVerificationSent from "@/components/auth/email-verification-sent";
 import { toast } from "sonner";
-import { sendEmailFromClient } from "@/lib/email/email-client";
 
-interface VerificationStatus {
-  attempted: boolean;
-  success: boolean;
-  error: string | null;
-  loading: boolean;
-  isResending: boolean;
-  previewUrl: string | false | null;
-  userNotFound: boolean;
-}
-
-interface SessionStatus {
-  isLoading: boolean;
-  isVerified: boolean;
-  email: string | null;
-}
+type Status = "verifying" | "success" | "error" | "pending";
 
 export default function VerifyEmailPage() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
-  const email = searchParams.get("email") || "";
-  const callbackURL = searchParams.get("callbackURL") || "/sign-in";
+  const params = useSearchParams();
 
-  const [verificationStatus, setVerificationStatus] =
-    useState<VerificationStatus>({
-      attempted: false,
-      success: false,
-      error: null,
-      loading: !!token,
-      isResending: false,
-      previewUrl: null,
-      userNotFound: false,
-    });
-
-  const [sessionStatus, setSessionStatus] = useState<SessionStatus>({
-    isLoading: true,
-    isVerified: false,
-    email: null,
-  });
+  const token = params.get("token");
+  const emailParam = params.get("email") || "";
+  const [status, setStatus] = useState<Status>(token ? "verifying" : "pending");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
-    const verifyEmail = async () => {
-      if (!token) {
-        setVerificationStatus((prev) => ({
-          ...prev,
-          loading: false,
-          attempted: true,
-        }));
-        return;
+    if (!token) return;
+
+    authClient.verifyEmail(
+      { query: { token } },
+      {
+        onSuccess: () => {
+          setStatus("success");
+          toast.success("Email verified successfully!");
+        },
+        onError: (ctx) => {
+          setStatus("error");
+          toast.error(
+            ctx.error.message ||
+              "Verification failed. The link may be invalid or expired."
+          );
+        },
       }
+    );
+  }, [token]);
 
-      try {
-        await authClient.verifyEmail(
-          { query: { token } },
-          {
-            onSuccess: async (response) => {
-              const userEmail = response.data?.user?.email || email;
-
-              setVerificationStatus({
-                loading: false,
-                attempted: true,
-                success: true,
-                error: null,
-                isResending: false,
-                previewUrl: null,
-                userNotFound: false,
-              });
-
-              toast.success("Email verified successfully!");
-
-              if (userEmail) {
-                try {
-                  await sendEmailFromClient({
-                    to: userEmail,
-                    subject: "Email Verification Successful",
-                    html: `
-                      <h1>Email Verification Successful</h1>
-
-                      <p>Your email address for OpenNews has been successfully verified.</p>
-                      <p>You can now enjoy full access to our platform.</p>
-                    `,
-                  });
-                } catch (emailError) {
-                  console.error(
-                    "Failed to send confirmation email:",
-                    emailError
-                  );
-                }
-              }
-            },
-            onError: (ctx) => {
-              const errorMessage =
-                ctx.error.message || "Failed to verify email";
-
-              const isUserNotFound =
-                ctx.error.code === "USER_NOT_FOUND" ||
-                errorMessage.toLowerCase().includes("not found") ||
-                ctx.error.status === 404;
-
-              setVerificationStatus({
-                loading: false,
-                attempted: true,
-                success: false,
-                error: errorMessage,
-                isResending: false,
-                previewUrl: null,
-                userNotFound: isUserNotFound,
-              });
-
-              if (isUserNotFound) {
-                toast.error("User not found. Please check your email address.");
-              } else {
-                toast.error(errorMessage);
-              }
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Email verification error:", error);
-        const errorMessage =
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred. Please try again.";
-
-        setVerificationStatus({
-          loading: false,
-          attempted: true,
-          success: false,
-          error: errorMessage,
-          isResending: false,
-          previewUrl: null,
-          userNotFound: false,
-        });
-
-        toast.error(errorMessage);
-      }
-    };
-
-    if (token) {
-      verifyEmail();
-    }
-  }, [token, email]);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        await authClient.getSession(
-          {
-            query: { disableCookieCache: true },
-          },
-          {
-            onSuccess: (response) => {
-              setSessionStatus({
-                isLoading: false,
-                isVerified: response.data?.user?.emailVerified || false,
-                email: response.data?.user?.email || null,
-              });
-
-              if (response.data?.user?.emailVerified) {
-                setVerificationStatus((prev) => ({
-                  ...prev,
-                  success: true,
-                  loading: false,
-                  attempted: true,
-                }));
-              }
-            },
-            onError: () => {
-              setSessionStatus({
-                isLoading: false,
-                isVerified: false,
-                email: null,
-              });
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Session check error:", error);
-        setSessionStatus({
-          isLoading: false,
-          isVerified: false,
-          email: null,
-        });
-      }
-    };
-
-    checkSession();
-  }, [verificationStatus.success]);
-
-  const handleResendVerification = async () => {
+  const handleResend = async () => {
+    const email = emailParam;
     if (!email) {
-      toast.error("Email address is required to resend verification");
+      toast.error("Email is required to resend verification");
       return;
     }
 
-    try {
-      setVerificationStatus((prev) => ({ ...prev, isResending: true }));
-
-      await authClient.sendVerificationEmail(
-        {
-          email,
-          callbackURL: callbackURL || "/verify-email",
+    setIsResending(true);
+    authClient.sendVerificationEmail(
+      { email, callbackURL: "/verify-email" },
+      {
+        onSuccess: (res) => {
+          setIsResending(false);
+          setStatus("pending");
+          setPreviewUrl(res.data?.previewUrl ?? null);
+          toast.success("Verification email sent!");
         },
-        {
-          onSuccess: (response) => {
-            const previewUrl = response.data?.previewUrl ?? null;
-
-            setVerificationStatus((prev) => ({
-              ...prev,
-              isResending: false,
-              previewUrl,
-              userNotFound: false,
-            }));
-
-            toast.success("Verification email sent successfully!");
-          },
-          onError: (ctx) => {
-            if (
-              ctx.error.code === "USER_NOT_FOUND" ||
-              ctx.error.message?.toLowerCase().includes("not found") ||
-              ctx.error.status === 404
-            ) {
-              setVerificationStatus((prev) => ({
-                ...prev,
-                isResending: false,
-                userNotFound: true,
-              }));
-            } else {
-              toast.error(
-                ctx.error.message || "Failed to resend verification email"
-              );
-              setVerificationStatus((prev) => ({
-                ...prev,
-                isResending: false,
-              }));
-            }
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Resend verification error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
-
-      setVerificationStatus((prev) => ({
-        ...prev,
-        isResending: false,
-      }));
-    }
+        onError: (ctx) => {
+          setIsResending(false);
+          toast.error(ctx.error.message || "Failed to resend email");
+        },
+      }
+    );
   };
 
-  if (verificationStatus.userNotFound) {
-    return <EmailVerificationSent email={email} />;
-  }
-
-  if (verificationStatus.loading || sessionStatus.isLoading) {
+  if (status === "pending") {
     return (
       <div className="w-full max-w-md mx-auto py-6">
-        <Card className="max-w-md w-full">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg md:text-xl ">
-              Verifying Your Email
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Please wait while we verify your email address...
+            <CardTitle>Check Your Email</CardTitle>
+            <CardDescription>
+              We’ve sent a verification link to{" "}
+              <span className="font-medium">{emailParam}</span>
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-12">
+          <CardContent className="flex flex-col items-center py-8">
+            <Inbox className="h-12 w-12 text-blue-600 mb-4" />
+            <p className="text-center text-sm text-muted-foreground">
+              Please click the link in your inbox to verify your email.
+            </p>
+          </CardContent>
+          <CardFooter className="flex flex-col gap-2">
+            {previewUrl && (
+              <Button asChild variant="outline" className="w-full">
+                <a
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center"
+                >
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  Open E-mailbox
+                </a>
+              </Button>
+            )}
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={handleResend}
+              disabled={isResending}
+            >
+              {isResending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Resending…
+                </>
+              ) : (
+                "Resend Verification Email"
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
+
+  if (status === "verifying") {
+    return (
+      <div className="w-full max-w-md mx-auto py-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Verifying Your Email</CardTitle>
+            <CardDescription>Please wait…</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </CardContent>
         </Card>
@@ -297,7 +149,7 @@ export default function VerifyEmailPage() {
     );
   }
 
-  if (verificationStatus.success || sessionStatus.isVerified) {
+  if (status === "success") {
     return (
       <div className="w-full max-w-md mx-auto py-6">
         <Card className="max-w-md w-full">
@@ -329,66 +181,43 @@ export default function VerifyEmailPage() {
     );
   }
 
-  if (verificationStatus.error) {
-    return (
-      <div className="w-full max-w-md mx-auto py-6">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl text-destructive">
-              Verification Failed
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              {verificationStatus.error ||
-                "We couldn't verify your email address"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center mb-4">
-              <XCircle className="h-6 w-6" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              The verification link may have expired or is invalid. Please
-              request a new verification link.
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center gap-4 flex-col">
-            {email && (
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={handleResendVerification}
-                disabled={verificationStatus.isResending}
-              >
-                {verificationStatus.isResending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Resend verification email
-                  </>
-                )}
-              </Button>
-            )}
-            <Button asChild className="w-full">
-              <Link href="/sign-in">
-                Return to Sign In
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <EmailVerificationSent
-      email={email}
-      previewUrl={verificationStatus.previewUrl}
-      onResend={handleResendVerification}
-    />
+    <div className="w-full max-w-md mx-auto py-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-destructive">
+            Verification Failed
+          </CardTitle>
+          <CardDescription>The link may be invalid or expired.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex justify-center py-8">
+          <XCircle className="h-12 w-12 text-red-600" />
+        </CardContent>
+        <CardFooter className="flex flex-col gap-2">
+          <Button
+            variant="outline"
+            className="w-full flex items-center justify-center"
+            onClick={() => {
+              if (!token) return;
+              setStatus("verifying");
+              authClient.verifyEmail(
+                { query: { token } },
+                {
+                  onSuccess: () => setStatus("success"),
+                  onError: () => setStatus("error"),
+                }
+              );
+            }}
+          >
+            <RefreshCw className="mr-2 h-4 w-4" /> Retry Verification
+          </Button>
+          <Button asChild className="w-full">
+            <Link href="/sign-in">
+              Back to Sign In <ArrowRight className="ml-1 h-3 w-3" />
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
   );
 }

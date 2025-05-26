@@ -25,11 +25,11 @@ export async function processPayment(
       );
     }
 
-    const paymentIntent = {
-      id: "simulated_payment_intent_" + Date.now(),
-      status: "succeeded",
-    };
-    console.log("Simulated payment intent:", paymentIntent);
+    // const paymentIntent = {
+    //   id: "simulated_payment_intent_" + Date.now(),
+    //   status: "succeeded",
+    // };
+    // console.log("Simulated payment intent:", paymentIntent);
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -45,12 +45,14 @@ export async function processPayment(
       },
     });
     if (!subscription) {
-      throw new Error(`No subscription found for user ${userId} with plan ID ${selectedPlan.id}`);
+      throw new Error(
+        `No subscription found for user ${userId} with plan ID ${selectedPlan.id}`
+      );
     }
 
     const payment = await prisma.payment.create({
       data: {
-        userId: userId,
+        userId,
         subscriptionId: subscription.id,
         amount: selectedPlan.price,
         status: "succeeded",

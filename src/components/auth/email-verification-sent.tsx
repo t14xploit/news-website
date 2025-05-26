@@ -40,7 +40,7 @@ export default function EmailVerificationSent({
   const [isResending, setIsResending] = useState(false);
   const [localEmail] = useState(email);
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null | false>(
-    previewUrl || null
+    previewUrl ?? null
   );
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -54,11 +54,10 @@ export default function EmailVerificationSent({
     try {
       if (onResend) {
         await onResend();
-        setIsSuccess(true);
       } else {
         const response = await authClient.sendVerificationEmail({
           email: localEmail,
-          callbackURL: `/verify-email`,
+          callbackURL: "/verify-email",
         });
 
         if (response.error) {
@@ -83,8 +82,8 @@ export default function EmailVerificationSent({
   };
 
   return (
-    <div className="max-w-md w-full">
-      <Card className="w-full">
+    <div className="max-w-md w-full mx-auto">
+      <Card>
         <CardHeader>
           <CardTitle className="text-lg md:text-xl text-success flex items-center gap-2">
             Check Your Email

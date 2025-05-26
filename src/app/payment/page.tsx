@@ -9,7 +9,11 @@ import { usePlan, UserData } from "@/components/subscribe/plan-context";
 import { selectSubscription } from "@/actions/subscribe-action";
 import { z } from "zod";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
+
 import { CardBackground, CardType, SavedCard } from "@/components/payment-card/types";
+
+import { authClient } from "@/lib/auth-client"; // Sophie
+
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -27,8 +31,8 @@ export default function PaymentPage() {
   const planId = searchParams.get("planId") || "";
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
+  const { setCurrentPlan, setUserData } = usePlan(); // Sophie - userId removed from here
   const cardBackground = searchParams.get("cardBackground") || "gradient";
-  const { setCurrentPlan, userId, setUserData } = usePlan();
   const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
     ? (nameFromParams as PlanType)
@@ -51,6 +55,9 @@ export default function PaymentPage() {
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
     console.log("Starting payment process for plan:", selectedPlan.name, { userId, data });
+
+    const session = await authClient.getSession(); // Sophie
+    const userId = session?.data?.user?.id; //Sophie
 
     if (!userId) {
       const errorMessage = "User ID not found. Please try again.";
@@ -176,6 +183,73 @@ export default function PaymentPage() {
         error: errorMessage,
       };
     }
+
+
+    if (subscriptionResult.subscriptionId) {
+      sessionStorage.setItem(
+        "subscriptionId",
+        subscriptionResult.subscriptionId
+      );
+      console.log(
+        "Stored subscriptionId in sessionStorage:",
+        subscriptionResult.subscriptionId
+      );
+    }
+
+    const paymentResult: ProcessPaymentResult = await processPayment(
+      data,
+      selectedPlan,
+      userId
+    );
+    if (paymentResult.success) {
+      console.log(
+        "Payment successful, setting currentPlan to:",
+        selectedPlan.name
+      );
+      setCurrentPlan(selectedPlan.name);
+      localStorage.setItem("currentPlan", selectedPlan.name);
+      // console.log("Storing userId in localStorage:", userId); // Sophie
+      // localStorage.setItem("userId", userId); // Sophie
+
+      const cardDetails = {
+        cardNumber: data.cardNumber.replace(/\s/g, ""),
+        cardHolder: data.cardHolder,
+        cardType: detectCardType(data.cardNumber),
+        cardBackground,
+        plan: selectedPlan.name,
+        lastUsed: new Date().toISOString(),
+      };
+      const savedCards = JSON.parse(
+        localStorage.getItem(`cards_${userId}`) || "[]"
+      );
+      localStorage.setItem(
+        `cards_${userId}`,
+        JSON.stringify([...savedCards, cardDetails])
+      );
+      console.log("Saved card details:", cardDetails);
+
+      setUserData((prev: UserData) => ({
+        ...prev,
+        name: data.cardHolder,
+        avatar: prev.avatar || "/alien/alien_1.jpg",
+      }));
+      console.log("Storing cardholder name in PlanContext:", data.cardHolder);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log("Redirecting to /thank-you");
+      router.replace(
+        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}
+        &price=${paymentResult.price}
+        &cardHolder=${encodeURIComponent(data.cardHolder)}
+        &cardNumber=${encodeURIComponent(data.cardNumber)}
+        &cardBackground=${encodeURIComponent(cardBackground)}`
+      );
+    } else {
+      console.error("Payment failed:", paymentResult.error);
+      setError(paymentResult.error || "Payment failed. Please try again.");
+    }
+    return paymentResult;
+
   };
 
   const detectCardType = (cardNumber: string): CardType => {

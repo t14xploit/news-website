@@ -37,6 +37,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { SignInFormValues, signInSchema } from "@/lib/validation/auth-schema";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useEffect } from "react";
 
 interface SignInProps {
   onSwitchTab?: () => void;
@@ -63,16 +64,20 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
     },
   });
 
+  useEffect(() => {
+    authClient.getSession().then((session) => {
+      if (session.data?.user) router.replace("/");
+    });
+  }, [router]);
+
   const handleResendVerification = async () => {
     if (!unverifiedEmail) return;
 
+    setIsResendingVerification(true);
     try {
-      setIsResendingVerification(true);
-
       const response = await authClient.sendVerificationEmail({
         email: unverifiedEmail,
-
-        callbackURL: `/verify-email`,
+        callbackURL: "/verify-email",
       });
 
       // Response contains a preview URL Nodemailer
@@ -104,7 +109,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          callbackURL: "/",
+          // callbackURL: "/",
         },
         {
           onRequest: () => {
@@ -143,7 +148,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           },
           onSuccess: () => {
             toast.success("Signed in successfully!");
-            router.push("/sign-in");
+            // router.push("/");
           },
         }
       );

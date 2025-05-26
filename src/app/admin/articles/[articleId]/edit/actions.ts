@@ -43,7 +43,27 @@ export async function editArticle(
   const { headline, summary, content, image, categories, isEditorsChoice } = result.data;
 
   try {
-    // Update article in the database
+    // Ensure all selected categories exist in the database
+    await Promise.all(
+      categories.map((title) =>
+        prisma.category.upsert({
+          where: { title },
+          update: {},
+          create: { title },
+        })
+      )
+    );
+    //ensure all selected authors exist in the db
+    await Promise.all(
+      selectedAuthorNames.map((name) =>
+        prisma.author.upsert({
+          where: { name },
+          update: {},
+          create: { name },
+        })
+      )
+    );
+    // Update the article
     const updated = await prisma.article.update({
       where: { id: articleId },
       data: {
@@ -52,18 +72,17 @@ export async function editArticle(
         content,
         image: image || null,
         isEditorsChoice: isEditorsChoice === "on",
+
+        // Replace old categories with new ones
         categories: {
-          connectOrCreate: categories.map((title) => ({
-            where: { title },
-            create: { title },
-          })),
+          set: categories.map((title) => ({ title })),
         },
+
+        // Authors fixed removing part error
         authors: {
-          connectOrCreate: selectedAuthorNames.map((name) => ({
-            where: { name },
-            create: { name },
-          })),
+          set: selectedAuthorNames.map((name) => ({ name })),
         },
+        
       },
     });
 
@@ -95,6 +114,7 @@ export async function editArticle(
     };
   }
 }
+
 export async function searchCategories(query: string) {
   return prisma.category.findMany({
     where: {
