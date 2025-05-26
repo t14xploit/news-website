@@ -211,6 +211,7 @@ export const auth = betterAuth({
     customSession(async ({ user, session }) => {
       let role = "user";
       let subscriptionId: string | null = null;
+      let subscriptionType = null;
       if (user.id) {
         const u = await prisma.user.findUnique({
           where: { id: user.id },
@@ -218,6 +219,7 @@ export const auth = betterAuth({
         });
         if (u?.subscription) {
           subscriptionId = u.subscriptionId;
+          subscriptionType = u.subscription.type?.name;
           if (u.subscription.type?.name === "Business") role = "editor";
         }
       }
@@ -229,6 +231,7 @@ export const auth = betterAuth({
           subscriptionId,
         },
         session,
+        subscriptionType,
       };
     }),
   ],
