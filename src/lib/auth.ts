@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { sendEmail } from "./email/email";
-import { createAuthMiddleware } from "better-auth/api";
+import { createAuthMiddleware, APIError } from "better-auth/api";
 import { customSession, organization } from "better-auth/plugins";
 import { admin as adminPlugin } from "better-auth/plugins";
 import { ac, owner, admin, member, user, editor } from "@/auth/ac/permissions";
@@ -26,15 +26,18 @@ export const auth = betterAuth({
 
   // Email verification —
   emailVerification: {
-    sendVerificationEmail: async ({ user, url, token }) => {
+    sendVerificationEmail: async ({ user, token }) => {
+      const verifyLink = `${BASE_URL}/verify-email?token=${token}&email=${encodeURIComponent(
+        user.email
+      )}`;
+
       const { previewUrl } = await sendEmail({
         to: user.email,
-        subject: "Verify your OpenNews email",
+        subject: "Verify your email",
         html: `
-          <h1>Verify Your Email</h1>
-          <p>Click here to verify:</p>
-          <a href="${url}">${url}</a>
-          console.log('${token}');
+          <h1>Welcome to OpenNews!</h1>
+          <p>Please click below to verify your email address:</p>
+          <a href="${verifyLink}">${verifyLink}</a>
         `,
       });
       lastPreviewUrl = previewUrl;
@@ -62,14 +65,60 @@ export const auth = betterAuth({
     resetPasswordTokenExpiresIn: 2 * 60 * 60,
   },
 
+  // hooks: {
+  //   after: createAuthMiddleware(async (ctx) => {
+  //     if (
+  //       [
+  //         "/send-verification-email",
+  //         "/forget-password",
+  //         "/verify-email",
+  //       ].includes(ctx.path) &&
+  //       ctx.context.returned
+  //     ) {
+  //       return ctx.json({
+  //         ...ctx.context.returned,
+  //         previewUrl: lastPreviewUrl,
+  //       });
+  //     }
+  //   }),
+  // },
+
   hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path === "/forget-password") {
+        const email = ctx.body?.email;
+        if (!email) {
+          throw new APIError("BAD_REQUEST", {
+            code: "EMAIL_REQUIRED",
+            message: "Email is required.",
+          });
+        }
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
+        if (!user) {
+          throw new APIError("BAD_REQUEST", {
+            code: "USER_NOT_FOUND",
+            message: "We couldn't find an account with that email address.",
+          });
+        }
+      }
+      // verify email
+      if (ctx.path === "/verify-email") {
+        const token = ctx.query?.token;
+        if (!token) {
+          throw new APIError("BAD_REQUEST", {
+            code: "TOKEN_REQUIRED",
+            message: "Verification token is required.",
+          });
+        }
+      }
+    }),
     after: createAuthMiddleware(async (ctx) => {
       if (
-        [
-          "/send-verification-email",
-          "/forget-password",
-          "/verify-email",
-        ].includes(ctx.path) &&
+        (ctx.path === "/forget-password" ||
+          ctx.path === "/send-verification-email" ||
+          ctx.path === "/verify-email") &&
         ctx.context.returned
       ) {
         return ctx.json({
