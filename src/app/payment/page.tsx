@@ -4,15 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PaymentForm from "@/components/t-one-payment/payment-form";
 import { processPayment } from "@/actions/payment-actions";
-// import { PaymentFormData } from "@/lib/validation/payment-schema";
-import {
-  subscribeSchema,
-  SubscribeFormData,
-} from "@/lib/validation/subscribe-schema";
+import { subscribeSchema, SubscribeFormData } from "@/lib/validation/subscribe-schema";
 import { usePlan, UserData } from "@/components/subscribe/plan-context";
 import { selectSubscription } from "@/actions/subscribe-action";
 import { z } from "zod";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
+import { CardBackground, CardType, SavedCard } from "@/components/payment-card/types";
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -53,15 +50,17 @@ export default function PaymentPage() {
 
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
-    console.log("Processing payment for plan:", selectedPlan.name);
+    console.log("Starting payment process for plan:", selectedPlan.name, { userId, data });
 
     if (!userId) {
-      setError("User ID not found. Please try again.");
+      const errorMessage = "User ID not found. Please try again.";
+      setError(errorMessage);
+      console.error(errorMessage);
       return {
         success: false,
         plan: selectedPlan.name,
         price: selectedPlan.price,
-        error: "User ID not found",
+        error: errorMessage,
       };
     }
 
@@ -86,15 +85,89 @@ export default function PaymentPage() {
       };
     }
 
-    const subscriptionResult = await selectSubscription(
-      selectedPlan.id,
-      userId
-    );
-    if (!subscriptionResult.success) {
-      console.error("Subscription selection failed:", subscriptionResult.error);
-      const errorMessage = subscriptionResult.error?.includes("Invalid plan ID")
-        ? "Selected plan is not available. Please choose another plan."
-        : subscriptionResult.error || "Failed to select subscription.";
+    try {
+      const subscriptionResult = await selectSubscription(selectedPlan.id, userId);
+      if (!subscriptionResult.success) {
+        const errorMessage = subscriptionResult.error?.includes("Invalid plan ID")
+          ? "Selected plan is not available. Please choose another plan."
+          : subscriptionResult.error || "Failed to select subscription.";
+        console.error("Subscription selection failed:", errorMessage);
+        setError(errorMessage);
+        return {
+          success: false,
+          plan: selectedPlan.name,
+          price: selectedPlan.price,
+          error: errorMessage,
+        };
+      }
+
+      if (subscriptionResult.subscriptionId) {
+        sessionStorage.setItem("subscriptionId", subscriptionResult.subscriptionId);
+        console.log("Stored subscriptionId in sessionStorage:", subscriptionResult.subscriptionId);
+      }
+
+      const paymentResult: ProcessPaymentResult = await processPayment(data, selectedPlan, userId);
+      if (paymentResult.success) {
+        console.log("Payment successful, setting currentPlan to:", selectedPlan.name);
+        setCurrentPlan(selectedPlan.name);
+        localStorage.setItem("currentPlan", selectedPlan.name);
+        console.log("Storing userId in localStorage:", userId);
+        localStorage.setItem("userId", userId);
+
+        const generateUUID = () => {
+          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
+        };
+
+        const cardDetails: SavedCard = {
+          id: generateUUID(),
+          cardNumber: data.cardNumber.replace(/\s/g, ""),
+          cardHolder: data.cardHolder,
+          expiryDate: data.expiryDate,
+          cvv: data.cvv,
+          cardType: detectCardType(data.cardNumber),
+          cardBackground: data.cardBackground as CardBackground,
+          plan: data.plan,
+          price: selectedPlan.price,
+          lastUsed: new Date().toISOString(),
+        };
+        const savedCards = JSON.parse(localStorage.getItem(`cards_${userId}`) || "[]");
+        localStorage.setItem(`cards_${userId}`, JSON.stringify([...savedCards, cardDetails]));
+        console.log("Saved card details:", cardDetails);
+
+        setUserData((prev: UserData) => ({
+          ...prev,
+          name: data.cardHolder,
+          avatar: prev.avatar || "/alien/alien_1.jpg",
+        }));
+        console.log("Storing cardholder name in PlanContext:", data.cardHolder);
+
+        console.log("Initiating redirect to /thank-you with params:", {
+          plan: paymentResult.plan,
+          price: paymentResult.price,
+          cardHolder: data.cardHolder,
+          cardNumber: data.cardNumber,
+          cardBackground: data.cardBackground,
+        });
+        router.replace(
+          `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}` +
+          `&price=${paymentResult.price}` +
+          `&cardHolder=${encodeURIComponent(data.cardHolder)}` +
+          `&cardNumber=${encodeURIComponent(data.cardNumber)}` +
+          `&cardBackground=${encodeURIComponent(data.cardBackground)}`
+        );
+        return paymentResult;
+      } else {
+        console.error("Payment failed:", paymentResult.error);
+        setError(paymentResult.error || "Payment failed. Please try again.");
+        return paymentResult;
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      console.error("Unexpected error during payment process:", errorMessage);
       setError(errorMessage);
       return {
         success: false,
@@ -103,74 +176,9 @@ export default function PaymentPage() {
         error: errorMessage,
       };
     }
-
-    if (subscriptionResult.subscriptionId) {
-      sessionStorage.setItem(
-        "subscriptionId",
-        subscriptionResult.subscriptionId
-      );
-      console.log(
-        "Stored subscriptionId in sessionStorage:",
-        subscriptionResult.subscriptionId
-      );
-    }
-
-    const paymentResult: ProcessPaymentResult = await processPayment(
-      data,
-      selectedPlan,
-      userId
-    );
-    if (paymentResult.success) {
-      console.log(
-        "Payment successful, setting currentPlan to:",
-        selectedPlan.name
-      );
-      setCurrentPlan(selectedPlan.name);
-      localStorage.setItem("currentPlan", selectedPlan.name);
-      console.log("Storing userId in localStorage:", userId);
-      localStorage.setItem("userId", userId);
-
-      const cardDetails = {
-        cardNumber: data.cardNumber.replace(/\s/g, ""),
-        cardHolder: data.cardHolder,
-        cardType: detectCardType(data.cardNumber),
-        cardBackground,
-        plan: selectedPlan.name,
-        lastUsed: new Date().toISOString(),
-      };
-      const savedCards = JSON.parse(
-        localStorage.getItem(`cards_${userId}`) || "[]"
-      );
-      localStorage.setItem(
-        `cards_${userId}`,
-        JSON.stringify([...savedCards, cardDetails])
-      );
-      console.log("Saved card details:", cardDetails);
-
-      setUserData((prev: UserData) => ({
-        ...prev,
-        name: data.cardHolder,
-        avatar: prev.avatar || "/alien/alien_1.jpg",
-      }));
-      console.log("Storing cardholder name in PlanContext:", data.cardHolder);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("Redirecting to /thank-you");
-      router.replace(
-        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}
-        &price=${paymentResult.price}
-        &cardHolder=${encodeURIComponent(data.cardHolder)}
-        &cardNumber=${encodeURIComponent(data.cardNumber)}
-        &cardBackground=${encodeURIComponent(cardBackground)}`
-      );
-    } else {
-      console.error("Payment failed:", paymentResult.error);
-      setError(paymentResult.error || "Payment failed. Please try again.");
-    }
-    return paymentResult;
   };
 
-  const detectCardType = (cardNumber: string) => {
+  const detectCardType = (cardNumber: string): CardType => {
     const cleaned = cardNumber.replace(/\D/g, "");
     if (/^4/.test(cleaned)) return "visa";
     if (/^5[1-5]/.test(cleaned)) return "mastercard";
@@ -193,6 +201,7 @@ export default function PaymentPage() {
         <PaymentForm
           onSubmit={handlePaymentSubmit}
           selectedPlan={selectedPlan}
+          cardBackground={cardBackground}
         />
       </div>
     </div>

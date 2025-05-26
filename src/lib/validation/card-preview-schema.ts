@@ -38,7 +38,15 @@ export const cardPreviewSchema = z.object({
     .min(3, "CVV must be at least 3 digits")
     .max(4, "CVV must be at most 4 digits")
     .regex(/^\d+$/, "CVV must contain only digits"),
-  // email: z.string().min(1, "Email is required").email("Invalid email address"),
+    cardBackground: z.enum(["blue", "purple", "black", "gradient"], {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    errorMap: (issue, ctx) => ({ message: "Invalid card background" }),
+  }),
+  plan: z.enum(["Free", "Elite", "Business"], {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    errorMap: (issue, ctx) => ({ message: "Invalid plan" }),
+  }),
+    // email: z.string().min(1, "Email is required").email("Invalid email address"),
 });
 
 export type CardPreviewFormData = z.infer<typeof cardPreviewSchema>;

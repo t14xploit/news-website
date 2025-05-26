@@ -68,7 +68,7 @@ export default function SiteHeader() {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4">
       <div className="flex items-center gap-2">
-        <SidebarTrigger className="-ml-1" />
+        <SidebarTrigger className="ml-1" />
         <Separator orientation="vertical" className="mr-2 h-4" />
         {breadcrumbs && (
           <Breadcrumb>
@@ -115,7 +115,7 @@ export default function SiteHeader() {
             <Button variant="secondary" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/alien/alien_11.jpg" alt="Alien" />
-                <AvatarFallback>SW</AvatarFallback>
+                <AvatarFallback>ON</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
