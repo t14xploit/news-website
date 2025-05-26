@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-  Loader2,
-  CheckCircle,
-  XCircle,
-  ArrowRight,
-  RefreshCw,
-} from "lucide-react";
+import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -100,8 +94,7 @@ export default function VerifyEmailPage() {
                     subject: "Email Verification Successful",
                     html: `
                       <h1>Email Verification Successful</h1>
-
-                      <p>Your email address for OpenNews has been successfully verified.</p>
+                      <p>Your email address for PandaNEWS has been successfully verified.</p>
                       <p>You can now enjoy full access to our platform.</p>
                     `,
                   });
@@ -279,10 +272,10 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.loading || sessionStatus.isLoading) {
     return (
-      <div className="w-full max-w-md mx-auto py-6">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle className="text-lg md:text-xl ">
+            <CardTitle className="text-lg md:text-xl">
               Verifying Your Email
             </CardTitle>
             <CardDescription className="text-xs md:text-sm">
@@ -299,7 +292,7 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.success || sessionStatus.isVerified) {
     return (
-      <div className="w-full max-w-md mx-auto py-6">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-success">
@@ -316,10 +309,10 @@ export default function VerifyEmailPage() {
             </div>
             <p className="text-center text-sm text-muted-foreground">
               You&apos;ve successfully verified your email address and can now
-              access all features of OpenNews.
+              access all features of PandaNEWS.
             </p>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex justify-center">
             <Button asChild className="w-full">
               <Link href="/">Continue to Home</Link>
             </Button>
@@ -331,7 +324,7 @@ export default function VerifyEmailPage() {
 
   if (verificationStatus.error) {
     return (
-      <div className="w-full max-w-md mx-auto py-6">
+      <div className="flex justify-center items-center p-4">
         <Card className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-lg md:text-xl text-destructive">
@@ -365,18 +358,12 @@ export default function VerifyEmailPage() {
                     Sending...
                   </>
                 ) : (
-                  <>
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Resend verification email
-                  </>
+                  "Resend verification email"
                 )}
               </Button>
             )}
             <Button asChild className="w-full">
-              <Link href="/sign-in">
-                Return to Sign In
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </Link>
+              <Link href="/sign-in">Return to Sign In</Link>
             </Button>
           </CardFooter>
         </Card>

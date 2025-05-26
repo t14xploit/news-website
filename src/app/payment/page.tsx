@@ -13,6 +13,7 @@ import { usePlan, UserData } from "@/components/subscribe/plan-context";
 import { selectSubscription } from "@/actions/subscribe-action";
 import { z } from "zod";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
+import { authClient } from "@/lib/auth-client"; // Sophie
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -30,7 +31,7 @@ export default function PaymentPage() {
   const planId = searchParams.get("planId") || "";
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
-  const { setCurrentPlan, userId, setUserData } = usePlan();
+  const { setCurrentPlan, setUserData } = usePlan(); // Sophie - userId removed from here
   const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
     ? (nameFromParams as PlanType)
@@ -53,6 +54,9 @@ export default function PaymentPage() {
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
     console.log("Processing payment for plan:", selectedPlan.name);
+
+    const session = await authClient.getSession(); // Sophie
+    const userId = session?.data?.user?.id; //Sophie
 
     if (!userId) {
       setError("User ID not found. Please try again.");
@@ -126,8 +130,8 @@ export default function PaymentPage() {
       );
       setCurrentPlan(selectedPlan.name);
       localStorage.setItem("currentPlan", selectedPlan.name);
-      console.log("Storing userId in localStorage:", userId);
-      localStorage.setItem("userId", userId);
+      // console.log("Storing userId in localStorage:", userId); // Sophie
+      // localStorage.setItem("userId", userId); // Sophie
 
       setUserData((prev: UserData) => ({
         ...prev,

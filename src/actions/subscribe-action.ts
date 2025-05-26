@@ -14,7 +14,7 @@ export async function selectSubscription(
       `Selecting plan with ID: ${planId} for user: ${userId} at 03:11 PM CEST, May 14, 2025`
     );
 
-    const plan = plans.find((p) => p.id === planId);
+    const plan = plans.find((p) => p.id === planId)!;
     if (!plan) {
       throw new Error(
         `Invalid plan ID: ${planId}. Must be one of: ${plans
@@ -25,7 +25,12 @@ export async function selectSubscription(
 
     const subscriptionType = await prisma.subscriptionType.upsert({
       where: { id: planId },
-      update: {},
+      update: {
+        name: plan.name,
+        description: plan.description,
+        price: plan.price,
+        features: plan.features,
+      },
       create: {
         id: planId,
         name: plan.name,
