@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { usePlan } from "@/components/subscribe/plan-context";
+// import { usePlan } from "@/components/subscribe/plan-context";
 import { subscribeSchema } from "@/lib/validation/subscribe-schema";
 import { z } from "zod";
 import {
@@ -14,6 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
+import { authClient } from "@/lib/auth-client"; // Sophie
+import { useCallback } from "react";
 
 interface SubscribePlanProps {
   id: string;
@@ -29,20 +31,26 @@ export default function SubscribePlan({
   features,
 }: SubscribePlanProps) {
   const router = useRouter();
-  const { userId } = usePlan();
+  // const { userId } = usePlan();
 
-  const handleSelect = () => {
-    if (!userId) {
-      console.error("No userId available");
-      alert("User ID not found. Please try again.");
-      return;
-    }
-
+  const handleSelect = useCallback(async () => {
     try {
       subscribeSchema.parse({
         planId: id,
-        userId,
+        // userId, // Sophie - userId removed from here
       });
+
+      const session = await authClient.getSession(); //Sophie
+      const userId = session?.data?.user?.id; // Sophie
+      if (!userId) {
+        console.error("No userId available");
+        alert("User ID not found. Please try again.");
+        return;
+      }
+
+      router.push(
+        `/payment?planId=${id}&name=${encodeURIComponent(name)}&price=${price}`
+      );
     } catch (validationError) {
       const errorMessage =
         validationError instanceof z.ZodError
@@ -50,15 +58,15 @@ export default function SubscribePlan({
           : "Invalid subscription data";
       console.error("Subscription validation failed:", errorMessage);
       alert(errorMessage);
-      return;
+      // return;
     }
 
-    router.push(
-      `/payment?planId=${id}&name=${encodeURIComponent(
-        name
-      )}&price=${price}&userId=${userId}`
-    );
-  };
+    // router.push(
+    //   `/payment?planId=${id}&name=${encodeURIComponent(
+    //     name
+    //   )}&price=${price}&userId=${userId}`
+    // );
+  }, [id, name, price, router]);
 
   const isPopular = id === "2";
   const isFree = name === "Free";

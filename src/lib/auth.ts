@@ -6,16 +6,15 @@ import { sendEmail } from "./email/email";
 import { createAuthMiddleware, APIError } from "better-auth/api";
 import { customSession, organization } from "better-auth/plugins";
 import { admin as adminPlugin } from "better-auth/plugins";
-import { ac, admin, user, owner, member, editor } from "@/auth/ac/permissions";
+import { ac, owner, admin, member, user, editor } from "@/auth/ac/permissions";
 import { getActiveOrganization } from "./organization/get-active-organization";
 
 const prisma = new PrismaClient();
-let lastEmailPreviewUrl: string | false = false;
+let lastPreviewUrl: string | false = false;
 
 const BASE_URL = process.env.BETTER_AUTH_URL || "http://localhost:3000";
 const SECRET_KEY =
   process.env.BETTER_AUTH_SECRET || "QifjblZMPGfaRrUbR32rzcxcxtaF1XIq";
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -23,49 +22,66 @@ export const auth = betterAuth({
   }),
   baseURL: BASE_URL,
   secret: SECRET_KEY,
-  trustedOrigins: [BASE_URL, "/verify-email"],
+  trustedOrigins: [BASE_URL],
 
-  // SEND verification email
+  // Email verification —
   emailVerification: {
-    sendVerificationEmail: async ({ user, url }) => {
-      const emailResponse = await sendEmail({
+    sendVerificationEmail: async ({ user, token }) => {
+      const verifyLink = `${BASE_URL}/verify-email?token=${token}&email=${encodeURIComponent(
+        user.email
+      )}`;
+
+      const { previewUrl } = await sendEmail({
         to: user.email,
-        subject: "Verify your email address",
+        subject: "Verify your email",
         html: `
-          <h1>Verify your email</h1>
-          <p>Click the link below to verify your email address:</p>
-          <a href="${url}">${url}</a>
+          <h1>Welcome to OpenNews!</h1>
+          <p>Please click below to verify your email address:</p>
+          <a href="${verifyLink}">${verifyLink}</a>
         `,
       });
-      lastEmailPreviewUrl = emailResponse.previewUrl;
+      lastPreviewUrl = previewUrl;
     },
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    expiresIn: 7200, // 2 hours
+    expiresIn: 2 * 60 * 60,
   },
 
-  // Reset password
+  // Password-reset
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false,
     requireEmailVerification: true,
+    autoSignIn: false,
     minPasswordLength: 8,
     maxPasswordLength: 128,
-    // SEND reset password
     sendResetPassword: async ({ user, url }) => {
-      const emailResponse = await sendEmail({
+      const { previewUrl } = await sendEmail({
         to: user.email,
-        subject: "Reset your password",
-        html: `
-          <h1>Reset your password</h1>
-          <p>Click the link below to reset your password:</p>
-          <a href="${url}">${url}</a>
-        `,
+        subject: "Reset your OpenNews password",
+        html: `<p><a href="${url}">Reset your password</a></p>`,
       });
-      lastEmailPreviewUrl = emailResponse.previewUrl;
+      lastPreviewUrl = previewUrl;
     },
-    resetPasswordTokenExpiresIn: 7200, // 2 hours
+    resetPasswordTokenExpiresIn: 2 * 60 * 60,
   },
+
+  // hooks: {
+  //   after: createAuthMiddleware(async (ctx) => {
+  //     if (
+  //       [
+  //         "/send-verification-email",
+  //         "/forget-password",
+  //         "/verify-email",
+  //       ].includes(ctx.path) &&
+  //       ctx.context.returned
+  //     ) {
+  //       return ctx.json({
+  //         ...ctx.context.returned,
+  //         previewUrl: lastPreviewUrl,
+  //       });
+  //     }
+  //   }),
+  // },
 
   hooks: {
     before: createAuthMiddleware(async (ctx) => {
@@ -107,37 +123,34 @@ export const auth = betterAuth({
       ) {
         return ctx.json({
           ...ctx.context.returned,
-          previewUrl: lastEmailPreviewUrl,
+          previewUrl: lastPreviewUrl,
         });
       }
     }),
   },
 
   session: {
-    expiresIn: 60 * 60 * 24 * 7, // 7 days
-    updateAge: 60 * 60 * 24, // 1 day
+    expiresIn: 7 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
     freshAge: 60 * 60,
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60, // 5 minutes
-    },
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
   },
-
   advanced: {
-    useSecureCookies: IS_PRODUCTION,
+    useSecureCookies: process.env.NODE_ENV === "production",
     cookies: {
       session_token: {
         name: "auth.session",
         attributes: {
           httpOnly: true,
           sameSite: "lax",
-          secure: IS_PRODUCTION,
+          secure: process.env.NODE_ENV === "production",
           path: "/",
         },
       },
     },
   },
 
+  //  Organization & admin plugins
   plugins: [
     organization({
       teams: {
@@ -146,16 +159,15 @@ export const auth = betterAuth({
         allowRemovingAllTeams: false,
       },
       allowUserToCreateOrganization: async (user) => {
-        const subscription = await prisma.user.findUnique({
+        const sub = await prisma.user.findUnique({
           where: { id: user.id },
           include: { subscription: { include: { type: true } } },
         });
-        return subscription?.subscription?.type?.name === "business";
+        return sub?.subscription?.type?.name === "Business";
       },
-
       organizationCreation: {
         beforeCreate: async ({ organization, user }) => {
-          const userWithSubscription = await prisma.user.findUnique({
+          const sub = await prisma.user.findUnique({
             where: { id: user.id },
             include: { subscription: { include: { type: true } } },
           });
@@ -164,7 +176,7 @@ export const auth = betterAuth({
               ...organization,
               metadata: {
                 createdByUserId: user.id,
-                subscriptionId: userWithSubscription?.subscription?.id || null,
+                subscriptionId: sub?.subscription?.id || null,
               },
             },
           };
@@ -175,76 +187,44 @@ export const auth = betterAuth({
           );
         },
       },
-
       sendInvitationEmail: async (data) => {
-        const inviteLink = `${BASE_URL}/accept-invitation/${data.id}`;
+        const link = `${process.env.NEXT_PUBLIC_APP_URL}/accept-invitation/${data.id}`;
         await sendEmail({
           to: data.email,
-          subject: `You've been invited to join ${data.organization.name} on OpenNews`,
-          html: `
-              <h1>You've been invited to join a channel</h1>
-            <p>${
-              data.inviter.user.name || data.inviter.user.email
-            } has invited you to join "${
-            data.organization.name
-          }" on OpenNews.</p>
-            <p>Click the link below to accept the invitation:</p>
-            <a href="${inviteLink}">${inviteLink}</a>
-          `,
+          subject: `Invitation to join ${data.organization.name}`,
+          html: `<p><a href="${link}">Accept invitation</a></p>`,
         });
       },
       ac,
-      roles: {
-        owner,
-        admin,
-        member,
-      },
+      roles: { owner, admin, member },
     }),
 
     adminPlugin({
       defaultRole: "user",
       adminRoles: ["admin"],
-      defaultBanReason: "Violation of terms of service",
-      bannedUserMessage:
-        "Your account has been suspended. Please contact support for assistance.",
       ac,
-      roles: {
-        admin,
-        user,
-        editor,
-      },
+      roles: { admin, user, editor },
     }),
+
     nextCookies(),
 
     customSession(async ({ user, session }) => {
       let role = "user";
       let subscriptionId: string | null = null;
-
-      const sessionUser = {
-        id: user?.id,
-        email: user?.email,
-      };
-
-      // Fetch subscription and role
-      if (user?.id) {
-        const dbUser = await prisma.user.findUnique({
+      if (user.id) {
+        const u = await prisma.user.findUnique({
           where: { id: user.id },
-          include: {
-            subscription: { include: { type: true } },
-          },
+          include: { subscription: { include: { type: true } } },
         });
-
-        if (dbUser?.subscription) {
-          subscriptionId = dbUser.subscriptionId;
-          if (dbUser.subscription.type?.name === "Business") {
-            role = "editor";
-          }
+        if (u?.subscription) {
+          subscriptionId = u.subscriptionId;
+          if (u.subscription.type?.name === "Business") role = "editor";
         }
       }
-
       return {
         user: {
-          ...sessionUser,
+          id: user.id,
+          email: user.email,
           role,
           subscriptionId,
         },
@@ -253,20 +233,19 @@ export const auth = betterAuth({
     }),
   ],
 
+  //  DB‐hook for putting activeOrganization into new sessions
   databaseHooks: {
     session: {
       create: {
         before: async (session) => {
-          const organization = await getActiveOrganization(session.userId);
+          const org = await getActiveOrganization(session.userId);
           return {
-            data: {
-              ...session,
-              activeOrganizationId: organization?.id,
-            },
+            data: { ...session, activeOrganizationId: org?.id },
           };
         },
       },
     },
   },
 });
+
 export const { api } = auth;
