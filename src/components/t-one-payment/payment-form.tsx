@@ -12,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-preview-schema"
 // import { usePlan } from "../subscribe/plan-context"
 import { CardPreview } from "../payment-card/ui/payment-subscribe"
+import { Button } from "../ui/button"
 // type PlanType = "Basic" | "Premium" | "Pro"
 
 interface ProcessPaymentResult {
@@ -24,6 +25,7 @@ interface ProcessPaymentResult {
 interface PaymentFormProps {
   onSubmit: (data: CardPreviewFormData) => Promise<ProcessPaymentResult>;
   selectedPlan: { id: string; name: string; price: number };
+  cardBackground?: string;
 }
 // interface PaymentFormProps {
 //   onSubmit: (data: PaymentFormData) => Promise<ProcessPaymentResult>
@@ -33,6 +35,7 @@ interface PaymentFormProps {
 export default function PaymentForm({
   onSubmit,
   selectedPlan,
+  cardBackground = "gradient",
 }: PaymentFormProps) {
   // const { setCurrentPlan } = usePlan()
   const {
@@ -46,6 +49,8 @@ export default function PaymentForm({
       cardHolder: "",
       expiryDate: "",
       cvv: "",
+     cardBackground: cardBackground as "blue" | "purple" | "black" | "gradient",
+      plan: selectedPlan.name as "Free" | "Elite" | "Business",
     },
   })
 
@@ -99,6 +104,15 @@ const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         handleSubmit={handleSubmit}
         onSubmit={onSubmit} 
       />
+      <input type="hidden" {...register("cardBackground")} />
+      <input type="hidden" {...register("plan")} />
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-8 w-[120px] bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors shadow-md"
+      >
+        {isSubmitting ? "Processing..." : `Pay $${selectedPlan.price.toFixed(2)}`}
+      </Button>
       {/* <Button
         type="submit"
         className="mt-8 w-[120px] bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition-colors shadow-md"

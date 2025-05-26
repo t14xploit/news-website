@@ -28,6 +28,8 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
     collapsible: "icon",
     variant: "sidebar",
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isOpen, setIsOpen] = useState(true)
 
   useEffect(() => {
     setMounted(true);
@@ -36,6 +38,7 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
       const validStates: Array<"none" | "icon" | "offcanvas"> = ["none", "icon", "offcanvas"];
       if (validStates.includes(savedState as "none" | "icon" | "offcanvas")) {
         setSidebarState({ collapsible: savedState as "none" | "icon" | "offcanvas", variant: "sidebar" });
+        setIsOpen(savedState === "icon");      
       }
     }
   }, []);
@@ -58,6 +61,17 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
     );
   }
 
+  const handleOpenChange = (open: boolean) => {
+    console.log("Open changed to:", open);
+    setIsOpen(open);
+    const newCollapsible = open ? "icon" : "offcanvas";
+    setSidebarState((prev) => ({
+      ...prev,
+      collapsible: newCollapsible,
+    }));
+    localStorage.setItem("sidebar_state", newCollapsible);
+  };
+
   return (
     <SidebarProvider
       style={
@@ -68,14 +82,15 @@ export function ClientSidebarWrapper({ children, user }: ClientSidebarWrapperPro
         } as SidebarStyle
       }
       open={true}
-      onOpenChange={(open: boolean) => {
-        const newCollapsible = open ? "icon" : "offcanvas";
-        setSidebarState((prev) => ({
-          ...prev,
-          collapsible: newCollapsible,
-        }));
-        localStorage.setItem("sidebar_state", newCollapsible);
-      }}
+      onOpenChange={handleOpenChange}
+      // onOpenChange={(open: boolean) => {
+      //   const newCollapsible = open ? "icon" : "offcanvas";
+      //   setSidebarState((prev) => ({
+      //     ...prev,
+      //     collapsible: newCollapsible,
+      //   }));
+      //   localStorage.setItem("sidebar_state", newCollapsible);
+      // }}
     >
       <AppSidebar collapsible={sidebarState.collapsible} user={user} />
       <SidebarInset>{children}</SidebarInset>

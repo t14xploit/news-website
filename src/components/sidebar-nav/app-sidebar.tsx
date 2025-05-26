@@ -37,6 +37,7 @@ export function AppSidebar({
 }: AppSidebarProps & 
 React.ComponentProps<typeof Sidebar>) {
   const { currentPlan } = usePlan();
+  console.log("AppSidebar rendered, collapsible:", collapsible, "user:", user);
 
   
   const data = {
