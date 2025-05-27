@@ -109,7 +109,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          // callbackURL: "/",
+          callbackURL: "/",
         },
         {
           onRequest: () => {
@@ -148,7 +148,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           },
           onSuccess: () => {
             toast.success("Signed in successfully!");
-            // router.push("/");
+            router.push("/");
           },
         }
       );
