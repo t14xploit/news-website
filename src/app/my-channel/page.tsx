@@ -4,20 +4,18 @@ import { useUser } from "@/lib/context/user-context";
 import Link from "next/link";
 
 export default function MyChannelTeaser() {
-  const { user, isLoading } = useUser();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { user } = useUser();
 
   return (
-    <div>
-      <h2>My Channel (Teaser)</h2>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">My Channel</h2>
       <p>View titles and excerpts of your articles.</p>
-      {!user?.subscriptionId && ( // Check if not subscribed
+      {!user?.subscriptionId && (
         <p>
-          <Link href="/subscription">Upgrade to Elite</Link> to read full
-          content.
+          <Link href="/subscription" className="text-blue-500 hover:underline">
+            Upgrade to Elite
+          </Link>{" "}
+          to read full content.
         </p>
       )}
     </div>
