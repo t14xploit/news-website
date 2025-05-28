@@ -9,6 +9,8 @@ import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wr
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/lib/error-boundary";
+// import { UserProvider } from "@/lib/context/user-context";
+import { SidebarInset } from "@/components/ui/sidebar";
 
 
 export const metadata: Metadata = {
@@ -43,9 +45,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* <UserProvider> */}
           <PlanProvider initialUserData={user}>
             <ErrorBoundary>
             <ClientSidebarWrapper user={user}>
+              <SidebarInset> 
                 <SiteHeader />
                 <main className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height))] w-full">
                   <div className="flex flex-1 flex-col max-w-full md:max-w-full mx-auto px-4  lg:px-8 w-full">
@@ -55,9 +59,11 @@ export default function RootLayout({
                   </div>
                 </main>
                 <Toaster />
+              </SidebarInset>
             </ClientSidebarWrapper>
             </ErrorBoundary>
           </PlanProvider>
+          {/* </UserProvider> */}
         </ThemeProvider>
       </body>
     </html>
