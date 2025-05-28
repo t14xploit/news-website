@@ -16,8 +16,7 @@ import { RealisticCardPreview } from "./realistic-card-preview";
 import { usePaymentForm } from "../hooks/use-payment-form";
 import { CardBackground, SavedCard, PaymentFormData } from "../types";
 import { Toaster } from "react-hot-toast";
-import { UseFormRegister } from "react-hook-form";
-import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
+
 
 interface CardPreviewProps {
   initialCards?: SavedCard[];
@@ -32,7 +31,6 @@ export function CardPreview({
 }: CardPreviewProps) {
   const {
     form: {
-      register,
       handleSubmit,
       formState: { errors },
     },
