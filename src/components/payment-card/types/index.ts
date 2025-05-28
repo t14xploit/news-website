@@ -6,6 +6,7 @@ export type PaymentFormData = {
 }
 
 export type SavedCard = {
+  isDefault: any;
   id: string;
   cardNumber: string;
   cardHolder: string;

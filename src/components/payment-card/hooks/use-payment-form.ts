@@ -81,6 +81,10 @@ export const usePaymentForm = ({ initialCards = [], defaultTheme = "gradient" }:
           cvv: data.cvv,
           cardType,
           isDefault: savedCards.length === 0,
+          cardBackground: "gradient",
+          plan: "",
+          price: 0,
+          lastUsed: ""
         }
         setSavedCards((prev) => [...prev, newCard])
         if (formMode === "add") {
