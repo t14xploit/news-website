@@ -220,3 +220,19 @@ model Invitation {
   @@unique([email, organizationId])
   @@map("invitation")
 }
+
+model Receipt {
+  id           String   @id @default(cuid())
+  cardId       String
+  cardNumber   String
+  cardHolder   String
+  cardType     String
+  plan         String
+  price        Float
+  startDate    DateTime
+  endDate      DateTime
+  transactionId String
+  userEmail    String
+  userAddress  String
+  createdAt    DateTime @default(now())
+}
