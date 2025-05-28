@@ -1,78 +1,130 @@
-// // components/MyChannel/InviteUser.tsx
-// "use client";
+"use client";
 
-// import { useState } from "react";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { toast } from "sonner";
-// import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { useUser } from "@/lib/context/user-context";
+import { User } from "lucide-react";
+import { usePlan } from "@/components/subscribe/plan-context";
 
-// interface InviteUserProps {
-//   organizationId: string; // Pass the organizationId to this component
-// }
+export default function InviteUser() {
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"member" | "admin" | "owner">("member");
+  const [isInviting, setIsInviting] = useState(false);
+  const { data: activeOrganization } = authClient.useActiveOrganization();
+  const { user, isLoading: isSessionLoading } = useUser();
+  const { currentPlan, isLoading: isPlanLoading } = usePlan();
 
-// export default function InviteUser({ organizationId }: InviteUserProps) {
-//   const [email, setEmail] = useState("");
-//   const [role, setRole] = useState<"member" | "admin" | "owner">("member"); // Corrected: role is now string literal type
-//   const [isInviting, setIsInviting] = useState(false);
+  const isLoading = isSessionLoading || isPlanLoading;
 
-//   const handleInviteUser = async () => {
-//     setIsInviting(true);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-//     try {
-//       if (!email || !organizationId) {
-//         toast.error("Please enter an email and have an organization");
-//         return;
-//       }
+  if (!user || user.role !== "editor" || !activeOrganization) {
+    return <div>You are not authorized to view this page.</div>;
+  }
 
-//       await authClient.organization.inviteMember({
-//         email,
-//         role, // Use the selected role
-//         organizationId, // Pass the organization ID
-//       });
-//       toast.success("Invitation sent successfully!");
-//       setEmail(""); // Clear the email field
-//     } catch (error) {
-//       console.error("Failed to send invitation:", error);
-//       toast.error("Failed to send invitation. Please try again.");
-//     } finally {
-//       setIsInviting(false);
-//     }
-//   };
+  const canInviteMember = currentPlan === "Elite" || currentPlan === "Business";
+  const handleInviteUser = async () => {
+    setIsInviting(true);
 
-//   return (
-//     <div>
-//       <h3>Invite Users</h3>
-//       <div>
-//         <Input
-//           type="email"
-//           placeholder="Enter email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//         />
-//       </div>
-//       <div>
-//         <Select value={role} onValueChange={setRole}>
-//           <SelectTrigger className="w-[200px]">
-//             <SelectValue placeholder="Select role" />
-//           </SelectTrigger>
-//           <SelectContent>
-//             <SelectItem value="member">Co-editor</SelectItem>
-//             <SelectItem value="admin">Admin</SelectItem>
-//             <SelectItem value="owner">Owner</SelectItem>
-//           </SelectContent>
-//         </Select>
-//       </div>
-//       <Button onClick={handleInviteUser} disabled={isInviting}>
-//         {isInviting ? "Inviting..." : "Invite"}
-//       </Button>
-//     </div>
-//   );
-// }
+    try {
+      if (!email || !activeOrganization?.id) {
+        toast.error("Please enter an email and select an organization");
+        return;
+      }
+
+      if (role === "member" && !canInviteMember) {
+        toast.error(
+          "You need an Elite or Business subscription to invite members."
+        );
+        setIsInviting(false);
+        return;
+      }
+
+      await authClient.organization.inviteMember({
+        email,
+        role,
+        organizationId: activeOrganization.id,
+      });
+      toast.success("Invitation sent successfully!");
+      setEmail("");
+    } catch (error) {
+      console.error("Failed to send invitation:", error);
+      toast.error("Failed to send invitation. Please try again.");
+    } finally {
+      setIsInviting(false);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">
+          <User className="mr-2 h-4 w-4" />
+          Invite Member
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Invite User</DialogTitle>
+          <DialogDescription>
+            Invite a new member to your organization.
+          </DialogDescription>
+        </DialogHeader>
+        <div>
+          <div>
+            <Input
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="mt-4">
+            <Select
+              value={role}
+              onValueChange={(value) => setRole(value as "member" | "admin")} // Corrected Type Assertion
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="member">Member</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={handleInviteUser}
+              disabled={isInviting}
+              className="mt-4"
+            >
+              {isInviting ? "Inviting..." : "Invite"}
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
