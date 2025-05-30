@@ -21,7 +21,7 @@ interface ProcessPaymentResult {
   success: boolean;
   plan: string;
   price: number;
-  userId?: string;
+  userId?: userId;
   error?: string;
 }
 

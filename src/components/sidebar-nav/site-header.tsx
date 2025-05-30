@@ -27,7 +27,7 @@ import { authClient } from "@/lib/auth-client";
 import SignOutButton from "../auth/sign-out-button";
 
 export default function SiteHeader() {
-  const { data: session } = authClient.useSession();
+  const { data: session, status } = authClient.useSession();
   const pathname = usePathname();
 
   const breadcrumbRoutes = ["/dashboard", "/building-your-application"];
@@ -93,14 +93,10 @@ export default function SiteHeader() {
           </Breadcrumb>
         )}
       </div>
-      <div className="flex items-center gap-4 ml-auto">
-        {session ? (
-          <>
-            <span className="text-sm mr-2">
-              Hi, {session.user.name || session.user.email}
-            </span>
-            <SignOutButton />
-          </>
+
+      <div className="ml-auto flex items-center gap-4">
+        {status === "loading" ? null : session?.user ? (
+          <SignOutButton>Sign Out</SignOutButton>
         ) : (
           <Link
             href="/sign-in"
@@ -109,6 +105,7 @@ export default function SiteHeader() {
             Sign In
           </Link>
         )}
+
         <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

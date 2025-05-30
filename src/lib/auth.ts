@@ -202,6 +202,9 @@ export const auth = betterAuth({
     adminPlugin({
       defaultRole: "user",
       adminRoles: ["admin"],
+      defaultBanReason: "Violation of terms of service",
+      bannedUserMessage:
+        "Your account has been suspended. Please contact support for assistance.",
       ac,
       roles: { admin, user, editor },
     }),
