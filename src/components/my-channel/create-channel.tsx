@@ -34,7 +34,7 @@ export default function CreateChannel() {
     return <div>Please sign in to create a channel.</div>;
   }
 
-  if (user.role !== "editor" || user.role !== "admin") {
+  if (user.role !== "editor") {
     return <div>You are not authorized to create a channel.</div>;
   }
 
