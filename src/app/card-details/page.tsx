@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { usePlan } from "@/components/subscribe/plan-context";
 import { RealisticCardPreview } from "@/components/payment-card";
 import { CardBackground, CardType } from "@/components/payment-card/types";
@@ -10,7 +10,10 @@ import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-pr
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
-import { Trash2, Edit, CircleFadingPlus } from "lucide-react";
+import { Trash2, Edit, CircleFadingPlus, Receipt } from "lucide-react";
+import { SubscriptionReceipt } from "@/components/receipt/subscription-receipt";
+import { ReceiptData } from "@/components/receipt/types";
+import { generateReceiptData } from "@/actions/receipt-action";
 
 interface SavedCard {
   id: string;
@@ -31,6 +34,8 @@ export default function AccountPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [receiptCardId, setReceiptCardId] = useState<string | null>(null); 
+  const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<CardPreviewFormData>({
     resolver: zodResolver(cardPreviewSchema),
@@ -43,7 +48,7 @@ export default function AccountPage() {
       plan: "Free",
     },
   });
-
+  
   const generateUUID = () => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
       const r = Math.random() * 16 | 0;
@@ -51,7 +56,7 @@ export default function AccountPage() {
       return v.toString(16);
     });
   };
-
+  
   useEffect(() => {
     if (typeof window !== "undefined" && userId) {
       try {
@@ -97,6 +102,23 @@ export default function AccountPage() {
       }
     }
   }, [userId]);
+
+
+  useEffect(() => {
+    if (receiptCardId && userId) {
+      const card = savedCards.find((c) => c.id === receiptCardId);
+      if (card) {
+        generateReceiptData(card, userId)
+          .then((data: SetStateAction<ReceiptData | null>) => setReceiptData(data))
+          .catch((error: Error) => {
+            console.error("Error fetching receipt data:", error);
+            setReceiptData(null);
+          });
+      }
+    } else {
+      setReceiptData(null);
+    }
+  }, [receiptCardId, savedCards, userId]);
 
   const handleAddOrEditCard = (data: CardPreviewFormData) => {
     const priceMap: Record<string, number> = {
@@ -311,18 +333,32 @@ export default function AccountPage() {
                     >
                       <Trash2 className="w-4 h-4 mr-2" /> Delete
                     </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setReceiptCardId(card.id)}
+                    >
+                      <Receipt className="w-4 h-4 mr-2" /> View Receipt
+                    </Button>
                   </div>
                 </div>
                 <RealisticCardPreview
                   cardNumber={`**** **** **** ${card.cardNumber.slice(-4)}`}
                   cardHolder={card.cardHolder}
                   expiryDate={card.expiryDate}
-                  cvv="***"
+                  cvv={card.cvv}
                   cardType={card.cardType}
                   cardBackground={card.cardBackground}
                   isSubmitting={false}
-                  readOnly
+                  readOnly={true}
                 />
+                {receiptCardId === card.id && receiptData && (
+                  <SubscriptionReceipt
+                    receipt={receiptData}
+                    isOpen={receiptCardId === card.id}
+                    onOpenChange={(open) => !open && setReceiptCardId(null)}
+                  />
+                )}
               </div>
             ))}
           </div>
