@@ -9,9 +9,8 @@ import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wr
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/lib/error-boundary";
-import { SidebarInset } from "@/components/ui/sidebar";
+// import { SidebarInset } from "@/components/ui/sidebar";
 import { UserProvider } from "@/lib/context/user-context";
-
 
 export const metadata: Metadata = {
   title: "OpenNews",

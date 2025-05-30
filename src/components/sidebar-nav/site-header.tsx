@@ -27,7 +27,7 @@ import { authClient } from "@/lib/auth-client";
 import SignOutButton from "../auth/sign-out-button";
 
 export default function SiteHeader() {
-  const { data: session, status } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const pathname = usePathname();
 
   const breadcrumbRoutes = ["/dashboard", "/building-your-application"];
@@ -95,7 +95,7 @@ export default function SiteHeader() {
       </div>
 
       <div className="ml-auto flex items-center gap-4">
-        {status === "loading" ? null : session?.user ? (
+        {session?.user ? (
           <SignOutButton>Sign Out</SignOutButton>
         ) : (
           <Link
