@@ -6,12 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:admins": "tsx scripts/seed-admins.ts"
   },
   "dependencies": {
-    "@better-auth/stripe": "^1.2.7",
+
     "@google/genai": "^1.1.0",
+
     "@hookform/resolvers": "^5.0.1",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@radix-ui/react-avatar": "^1.1.7",
     "@radix-ui/react-checkbox": "^1.2.3",
     "@radix-ui/react-collapsible": "^1.1.8",
@@ -33,6 +36,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.27.2",
     "lucide-react": "^0.503.0",
@@ -58,16 +62,19 @@
     "@eslint/eslintrc": "^3",
     "@prisma/client": "^6.8.2",
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "bcrypt": "^6.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "i": "^0.3.7",
     "prisma": "^6.8.2",
     "tailwindcss": "^4",
+    "tsx": "^4.19.4",
     "typescript": "^5"
   }
 }
