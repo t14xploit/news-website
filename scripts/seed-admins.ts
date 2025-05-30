@@ -1,10 +1,10 @@
 import "dotenv/config";
-import path from "path";
-import { fileURLToPath } from "url";
+// import path from "path";
+// import { fileURLToPath } from "url";
 
 // __dirname shim so this can be run directly via tsx/ts-node
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 // import your built code via relative paths
 import { PrismaClient } from "../src/generated/prisma";
