@@ -7,6 +7,7 @@ import { Edit, XCircleIcon } from "lucide-react";
 import Link from "next/link";
 import DeleteArticleButton from "@/components/admin/articles/DeleteArticleButton";
 import { Button } from "@/components/ui/button";
+import ReactMarkdown from 'react-markdown'
 
 type Params = Promise<{
   articleId: string;
@@ -74,8 +75,11 @@ export default async function ArticlePage({ params, searchParams }: Props) {
       </div>
 
       {/* Article Content */}
-      <div className="prose max-w-none bg-background p-6 rounded-md border">
-        {article.content}
+      <div className="prose dark:prose-invert max-w-none bg-background p-6 rounded-md border">
+       
+       <ReactMarkdown>
+        {article.content} 
+        </ReactMarkdown> 
       </div>
 
       {/* Metadata */}

@@ -1,41 +1,85 @@
 "use client";
 
-import { generateArticle } from "@/actions/admin/ai-generate-news";
-import { useActionState } from "react";
+import React, { useActionState, useTransition } from "react";
+import { generateDraftArticle } from "@/actions/admin/generateDraftArticle";
+import { saveGeneratedArticle } from "@/actions/admin/saveArticle";
+import ReactMarkdown from "react-markdown";
 
 export default function NewsGenerator() {
-  const [state, formAction, isPending] = useActionState(generateArticle, null);
+  const [state, generateAction, isGenerating] = useActionState(generateDraftArticle, null);
 
-  const handleClear = () => {
-    window.location.reload();
-  };
+  const [isSaving, startSaving] = useTransition();
+  const [saveStatus, setSaveStatus] = React.useState<null | string>(null);
 
   return (
     <div>
-      <h1>News Generator</h1>
-      <form action={formAction} className="mt-5">
-        <div>
-          <label htmlFor="subject">Subject: </label>
-          <input type="text" id="subject" name="subject" disabled={isPending} />
-        </div>
-        <div className="flex gap-2">
-          <button type="submit" disabled={isPending}>
-            {isPending ? "Generating..." : "Generate Article"}
+      <h1 className="text-xl font-bold mb-4">News Generator</h1>
+
+      {/* Step 1: Generate Article */}
+      {!state?.success && (
+        <form action={generateAction} className="space-y-4">
+          <div>
+            <label htmlFor="subject">Subject:</label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              disabled={isGenerating}
+              className="border p-1 ml-2"
+            />
+          </div>
+          <button type="submit" disabled={isGenerating}>
+            {isGenerating ? "Generating..." : "Generate Article"}
           </button>
-          <button
-            onClick={() => {
-              handleClear();
-            }}
-          >
-            Clear
-          </button>
-        </div>
-      </form>
-      {state && !state.success && state.error && (
-        <div className="mt-3">Error: {state.error}</div>
+          {state?.error && <p className="text-red-500">{state.error}</p>}
+        </form>
       )}
-      {state && state.success && state.article && (
-        <div className="mt-3 whitespace-pre-wrap">{state.article}</div>
+
+      {/* Step 2: Preview + Save */}
+      {state?.success && (
+        <div className="mt-6 space-y-4">
+          <h2 className="font-semibold">Preview:</h2>
+          <div>
+            <strong>Headline:</strong>
+            <p>{state.headline}</p>
+          </div>
+          <div>
+            <strong>Summary:</strong>
+            <p>{state.summary}</p>
+          </div>
+          <div>
+            <strong>Content:</strong>
+            <div className="prose dark:prose-invert">
+              <ReactMarkdown>
+
+              {state.content}
+              </ReactMarkdown>
+              </div>
+          </div>
+
+          <button
+            onClick={() =>
+              startSaving(async () => {
+                const formData = new FormData();
+                formData.append("headline", state.headline!);
+                formData.append("summary", state.summary!);
+                formData.append("content", state.content!);
+                const result = await saveGeneratedArticle(formData);
+                if (result.success) {
+                  setSaveStatus("Article saved!");
+                } else {
+                  setSaveStatus("Failed to save article.");
+                }
+              })
+            }
+            className="bg-green-600 text-white px-4 py-1 rounded"
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Article"}
+          </button>
+
+          {saveStatus && <p className="mt-2">{saveStatus}</p>}
+        </div>
       )}
     </div>
   );
