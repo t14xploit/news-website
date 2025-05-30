@@ -15,6 +15,9 @@ import { CardBackground, CardType, SavedCard } from "@/components/payment-card/t
 import { authClient } from "@/lib/auth-client"; // Sophie
 
 
+    const session = await authClient.getSession(); // Sophie
+    const userId = session?.data?.user?.id; //Sophie
+
 type PlanType = "Free" | "Elite" | "Business";
 
 interface ProcessPaymentResult {
@@ -24,6 +27,15 @@ interface ProcessPaymentResult {
   userId?: userId;
   error?: string;
 }
+
+  const detectCardType = (cardNumber: string): CardType => {
+    const cleaned = cardNumber.replace(/\D/g, "");
+    if (/^4/.test(cleaned)) return "visa";
+    if (/^5[1-5]/.test(cleaned)) return "mastercard";
+    if (/^3[47]/.test(cleaned)) return "amex";
+    if (/^6(?:011|5)/.test(cleaned)) return "discover";
+    return "generic";
+  };
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -55,9 +67,6 @@ export default function PaymentPage() {
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
     console.log("Starting payment process for plan:", selectedPlan.name, { userId, data });
-
-    const session = await authClient.getSession(); // Sophie
-    const userId = session?.data?.user?.id; //Sophie
 
     if (!userId) {
       const errorMessage = "User ID not found. Please try again.";
@@ -140,6 +149,7 @@ export default function PaymentPage() {
           plan: data.plan,
           price: selectedPlan.price,
           lastUsed: new Date().toISOString(),
+          isDefault: undefined
         };
         const savedCards = JSON.parse(localStorage.getItem(`cards_${userId}`) || "[]");
         localStorage.setItem(`cards_${userId}`, JSON.stringify([...savedCards, cardDetails]));
@@ -183,83 +193,8 @@ export default function PaymentPage() {
         error: errorMessage,
       };
     }
+  }
 
-
-    if (subscriptionResult.subscriptionId) {
-      sessionStorage.setItem(
-        "subscriptionId",
-        subscriptionResult.subscriptionId
-      );
-      console.log(
-        "Stored subscriptionId in sessionStorage:",
-        subscriptionResult.subscriptionId
-      );
-    }
-
-    const paymentResult: ProcessPaymentResult = await processPayment(
-      data,
-      selectedPlan,
-      userId
-    );
-    if (paymentResult.success) {
-      console.log(
-        "Payment successful, setting currentPlan to:",
-        selectedPlan.name
-      );
-      setCurrentPlan(selectedPlan.name);
-      localStorage.setItem("currentPlan", selectedPlan.name);
-      // console.log("Storing userId in localStorage:", userId); // Sophie
-      // localStorage.setItem("userId", userId); // Sophie
-
-      const cardDetails = {
-        cardNumber: data.cardNumber.replace(/\s/g, ""),
-        cardHolder: data.cardHolder,
-        cardType: detectCardType(data.cardNumber),
-        cardBackground,
-        plan: selectedPlan.name,
-        lastUsed: new Date().toISOString(),
-      };
-      const savedCards = JSON.parse(
-        localStorage.getItem(`cards_${userId}`) || "[]"
-      );
-      localStorage.setItem(
-        `cards_${userId}`,
-        JSON.stringify([...savedCards, cardDetails])
-      );
-      console.log("Saved card details:", cardDetails);
-
-      setUserData((prev: UserData) => ({
-        ...prev,
-        name: data.cardHolder,
-        avatar: prev.avatar || "/alien/alien_1.jpg",
-      }));
-      console.log("Storing cardholder name in PlanContext:", data.cardHolder);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.log("Redirecting to /thank-you");
-      router.replace(
-        `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}
-        &price=${paymentResult.price}
-        &cardHolder=${encodeURIComponent(data.cardHolder)}
-        &cardNumber=${encodeURIComponent(data.cardNumber)}
-        &cardBackground=${encodeURIComponent(cardBackground)}`
-      );
-    } else {
-      console.error("Payment failed:", paymentResult.error);
-      setError(paymentResult.error || "Payment failed. Please try again.");
-    }
-    return paymentResult;
-
-  };
-
-  const detectCardType = (cardNumber: string): CardType => {
-    const cleaned = cardNumber.replace(/\D/g, "");
-    if (/^4/.test(cleaned)) return "visa";
-    if (/^5[1-5]/.test(cleaned)) return "mastercard";
-    if (/^3[47]/.test(cleaned)) return "amex";
-    if (/^6(?:011|5)/.test(cleaned)) return "discover";
-    return "generic";
-  };
 
   return (
     <div className="">

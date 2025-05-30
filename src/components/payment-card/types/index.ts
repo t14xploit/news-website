@@ -6,6 +6,8 @@ export type PaymentFormData = {
 }
 
 export type SavedCard = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  isDefault: any;
   id: string;
   cardNumber: string;
   cardHolder: string;

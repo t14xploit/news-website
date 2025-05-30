@@ -17,6 +17,7 @@ import { usePaymentForm } from "../hooks/use-payment-form";
 import { CardBackground, SavedCard, PaymentFormData } from "../types";
 import { Toaster } from "react-hot-toast";
 
+
 interface CardPreviewProps {
   initialCards?: SavedCard[];
   onCardAdded?: (card: SavedCard) => void;
@@ -30,7 +31,6 @@ export function CardPreview({
 }: CardPreviewProps) {
   const {
     form: {
-      register,
       handleSubmit,
       formState: { errors },
     },
@@ -53,6 +53,8 @@ export function CardPreview({
     defaultTheme,
   });
 
+  
+
   const handleFormSubmit = async (data: PaymentFormData) => {
     await onSubmit(data);
     if (
@@ -70,6 +72,10 @@ export function CardPreview({
         cvv: data.cvv,
         cardType,
         isDefault: savedCards.length === 0,
+        cardBackground: "blue",
+        plan: "",
+        price: 0,
+        lastUsed: ""
       };
       onCardAdded?.(newCard);
     }
@@ -117,7 +123,7 @@ export function CardPreview({
         >
           <div className="flex justify-center">
             <RealisticCardPreview
-              register={register}
+              
               errors={errors}
               onCardNumberChange={handleCardNumberChange}
               onExpiryDateChange={handleExpiryDateChange}
