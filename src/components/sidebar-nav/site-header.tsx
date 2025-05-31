@@ -25,12 +25,27 @@ import Link from "next/link";
 import { ModeToggle } from "../theme/mode-toggle";
 import { authClient } from "@/lib/auth-client";
 import SignOutButton from "../auth/sign-out-button";
+import { usePlan } from "@/components/subscribe/plan-context";
+import { useRouter } from "next/navigation";
 
 export default function SiteHeader() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
+  const { userData, isLoading } = usePlan();
+  const router = useRouter();
 
-  const breadcrumbRoutes = ["/dashboard", "/building-your-application"];
+  const name = userData.name || "Guest";
+  const email = userData.email || "";
+  const avatar = userData.avatar || "/alien/alien_1.jpg";
+  const initials = name
+    ? name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    : "ON";
+
+  const breadcrumbRoutes = ["/dashboard", "/"];
 
   const getBreadcrumbs = () => {
     if (!breadcrumbRoutes.some((route) => pathname.startsWith(route))) {
@@ -111,18 +126,43 @@ export default function SiteHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/alien/alien_11.jpg" alt="Alien" />
-                <AvatarFallback>ON</AvatarFallback>
+                {isLoading ? (
+                  <AvatarFallback className="rounded-full">...</AvatarFallback>
+                ) : (
+                  <>
+                    <AvatarImage src={avatar} alt={name} />
+                    <AvatarFallback className="rounded-full">
+                      {initials}
+                    </AvatarFallback>
+                  </>
+                )}
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">{name}</span>
+                  <span className="truncate text-xs">{email}</span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/my-page")}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/my-page")}>
+              Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <SignOutButton>Logout</SignOutButton>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
