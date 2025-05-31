@@ -5,8 +5,17 @@ import { usePlan } from "@/components/subscribe/plan-context";
 import { RealisticCardPreview } from "@/components/payment-card";
 import { CardBackground, CardType } from "@/components/payment-card/types";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-preview-schema";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  CardPreviewFormData,
+  cardPreviewSchema,
+} from "@/lib/validation/card-preview-schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -34,10 +43,15 @@ export default function AccountPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [receiptCardId, setReceiptCardId] = useState<string | null>(null); 
+  const [receiptCardId, setReceiptCardId] = useState<string | null>(null);
   const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CardPreviewFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CardPreviewFormData>({
     resolver: zodResolver(cardPreviewSchema),
     defaultValues: {
       cardNumber: "",
@@ -48,19 +62,21 @@ export default function AccountPage() {
       plan: "Free",
     },
   });
-  
+
   const generateUUID = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
   };
-  
+
   useEffect(() => {
     if (typeof window !== "undefined" && userId) {
       try {
-        const cards = JSON.parse(localStorage.getItem(`cards_${userId}`) || "[]");
+        const cards = JSON.parse(
+          localStorage.getItem(`cards_${userId}`) || "[]"
+        );
         const seenIds = new Set<string>();
         interface RawCard {
           id?: string;
@@ -78,7 +94,8 @@ export default function AccountPage() {
         const sanitizedCards = cards
           .filter((card: RawCard) => card && typeof card === "object")
           .map((card: RawCard) => {
-            const id = card.id && !seenIds.has(card.id) ? card.id : generateUUID();
+            const id =
+              card.id && !seenIds.has(card.id) ? card.id : generateUUID();
             seenIds.add(id);
             return {
               id,
@@ -103,13 +120,14 @@ export default function AccountPage() {
     }
   }, [userId]);
 
-
   useEffect(() => {
     if (receiptCardId && userId) {
       const card = savedCards.find((c) => c.id === receiptCardId);
       if (card) {
         generateReceiptData(card, userId)
-          .then((data: SetStateAction<ReceiptData | null>) => setReceiptData(data))
+          .then((data: SetStateAction<ReceiptData | null>) =>
+            setReceiptData(data)
+          )
           .catch((error: Error) => {
             console.error("Error fetching receipt data:", error);
             setReceiptData(null);
@@ -213,9 +231,14 @@ export default function AccountPage() {
             </DialogTrigger>
             <DialogContent className="bg-gray-900 text-white/90">
               <DialogHeader>
-                <DialogTitle>{editingCardId ? "Edit Card" : "Add New Card"}</DialogTitle>
+                <DialogTitle>
+                  {editingCardId ? "Edit Card" : "Add New Card"}
+                </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit(handleAddOrEditCard)} className="space-y-4">
+              <form
+                onSubmit={handleSubmit(handleAddOrEditCard)}
+                className="space-y-4"
+              >
                 <div>
                   <Input
                     {...register("cardNumber", {
@@ -230,7 +253,9 @@ export default function AccountPage() {
                     className="bg-gray-800 text-white/90 border-gray-700"
                   />
                   {errors.cardNumber && (
-                    <p className="text-red-400 text-xs mt-1">{errors.cardNumber.message}</p>
+                    <p className="text-red-400 text-xs mt-1">
+                      {errors.cardNumber.message}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -240,7 +265,9 @@ export default function AccountPage() {
                     className="bg-gray-800 text-white/90 border-gray-700"
                   />
                   {errors.cardHolder && (
-                    <p className="text-red-400 text-xs mt-1">{errors.cardHolder.message}</p>
+                    <p className="text-red-400 text-xs mt-1">
+                      {errors.cardHolder.message}
+                    </p>
                   )}
                 </div>
                 <div className="flex gap-4">
@@ -251,7 +278,9 @@ export default function AccountPage() {
                       className="bg-gray-800 text-white/90 border-gray-700"
                     />
                     {errors.expiryDate && (
-                      <p className="text-red-400 text-xs mt-1">{errors.expiryDate.message}</p>
+                      <p className="text-red-400 text-xs mt-1">
+                        {errors.expiryDate.message}
+                      </p>
                     )}
                   </div>
                   <div className="w-1/2">
@@ -261,7 +290,9 @@ export default function AccountPage() {
                       className="bg-gray-800 text-white/90 border-gray-700"
                     />
                     {errors.cvv && (
-                      <p className="text-red-400 text-xs mt-1">{errors.cvv.message}</p>
+                      <p className="text-red-400 text-xs mt-1">
+                        {errors.cvv.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -276,7 +307,9 @@ export default function AccountPage() {
                     <option value="gradient">Gradient</option>
                   </select>
                   {errors.cardBackground && (
-                    <p className="text-red-400 text-xs mt-1">{errors.cardBackground.message}</p>
+                    <p className="text-red-400 text-xs mt-1">
+                      {errors.cardBackground.message}
+                    </p>
                   )}
                 </div>
                 <div>
@@ -289,10 +322,15 @@ export default function AccountPage() {
                     <option value="Business">Business ($49.99)</option>
                   </select>
                   {errors.plan && (
-                    <p className="text-red-400 text-xs mt-1">{errors.plan.message}</p>
+                    <p className="text-red-400 text-xs mt-1">
+                      {errors.plan.message}
+                    </p>
                   )}
                 </div>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
                   {editingCardId ? "Update Card" : "Add Card"}
                 </Button>
               </form>
@@ -304,7 +342,10 @@ export default function AccountPage() {
         ) : (
           <div className="grid gap-6">
             {savedCards.map((card, index) => (
-              <div key={card.id || `card-${index}`} className="flex flex-col gap-4">
+              <div
+                key={card.id || `card-${index}`}
+                className="flex flex-col gap-4"
+              >
                 <div className="flex justify-between items-center">
                   <div className="text-white/90">
                     <h3 className="text-xl mb-2">Card Details</h3>
@@ -312,7 +353,10 @@ export default function AccountPage() {
                       Plan: <span className="text-blue-400">{card.plan}</span>
                     </p>
                     <p className="mb-2">
-                      Price: <span className="text-blue-400">${(card.price || 0).toFixed(2)}</span>
+                      Price:{" "}
+                      <span className="text-blue-400">
+                        ${(card.price || 0).toFixed(2)}
+                      </span>
                     </p>
                     <p className="text-white/60">
                       Last Used: {formatDate(new Date(card.lastUsed))}

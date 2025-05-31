@@ -4,19 +4,25 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import PaymentForm from "@/components/t-one-payment/payment-form";
 import { processPayment } from "@/actions/payment-actions";
-import { subscribeSchema, SubscribeFormData } from "@/lib/validation/subscribe-schema";
+import {
+  subscribeSchema,
+  SubscribeFormData,
+} from "@/lib/validation/subscribe-schema";
 import { usePlan, UserData } from "@/components/subscribe/plan-context";
 import { selectSubscription } from "@/actions/subscribe-action";
 import { z } from "zod";
 import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 
-import { CardBackground, CardType, SavedCard } from "@/components/payment-card/types";
+import {
+  CardBackground,
+  CardType,
+  SavedCard,
+} from "@/components/payment-card/types";
 
 import { authClient } from "@/lib/auth-client"; // Sophie
 
-
-    const session = await authClient.getSession(); // Sophie
-    const userId = session?.data?.user?.id; //Sophie
+const session = await authClient.getSession(); // Sophie
+const userId = session?.data?.user?.id; //Sophie
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -24,18 +30,18 @@ interface ProcessPaymentResult {
   success: boolean;
   plan: string;
   price: number;
-  userId?: userId;
+  userId?: string;
   error?: string;
 }
 
-  const detectCardType = (cardNumber: string): CardType => {
-    const cleaned = cardNumber.replace(/\D/g, "");
-    if (/^4/.test(cleaned)) return "visa";
-    if (/^5[1-5]/.test(cleaned)) return "mastercard";
-    if (/^3[47]/.test(cleaned)) return "amex";
-    if (/^6(?:011|5)/.test(cleaned)) return "discover";
-    return "generic";
-  };
+const detectCardType = (cardNumber: string): CardType => {
+  const cleaned = cardNumber.replace(/\D/g, "");
+  if (/^4/.test(cleaned)) return "visa";
+  if (/^5[1-5]/.test(cleaned)) return "mastercard";
+  if (/^3[47]/.test(cleaned)) return "amex";
+  if (/^6(?:011|5)/.test(cleaned)) return "discover";
+  return "generic";
+};
 
 export default function PaymentPage() {
   const router = useRouter();
@@ -66,7 +72,10 @@ export default function PaymentPage() {
 
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
-    console.log("Starting payment process for plan:", selectedPlan.name, { userId, data });
+    console.log("Starting payment process for plan:", selectedPlan.name, {
+      userId,
+      data,
+    });
 
     if (!userId) {
       const errorMessage = "User ID not found. Please try again.";
@@ -102,9 +111,14 @@ export default function PaymentPage() {
     }
 
     try {
-      const subscriptionResult = await selectSubscription(selectedPlan.id, userId);
+      const subscriptionResult = await selectSubscription(
+        selectedPlan.id,
+        userId
+      );
       if (!subscriptionResult.success) {
-        const errorMessage = subscriptionResult.error?.includes("Invalid plan ID")
+        const errorMessage = subscriptionResult.error?.includes(
+          "Invalid plan ID"
+        )
           ? "Selected plan is not available. Please choose another plan."
           : subscriptionResult.error || "Failed to select subscription.";
         console.error("Subscription selection failed:", errorMessage);
@@ -118,24 +132,40 @@ export default function PaymentPage() {
       }
 
       if (subscriptionResult.subscriptionId) {
-        sessionStorage.setItem("subscriptionId", subscriptionResult.subscriptionId);
-        console.log("Stored subscriptionId in sessionStorage:", subscriptionResult.subscriptionId);
+        sessionStorage.setItem(
+          "subscriptionId",
+          subscriptionResult.subscriptionId
+        );
+        console.log(
+          "Stored subscriptionId in sessionStorage:",
+          subscriptionResult.subscriptionId
+        );
       }
 
-      const paymentResult: ProcessPaymentResult = await processPayment(data, selectedPlan, userId);
+      const paymentResult: ProcessPaymentResult = await processPayment(
+        data,
+        selectedPlan,
+        userId
+      );
       if (paymentResult.success) {
-        console.log("Payment successful, setting currentPlan to:", selectedPlan.name);
+        console.log(
+          "Payment successful, setting currentPlan to:",
+          selectedPlan.name
+        );
         setCurrentPlan(selectedPlan.name);
         localStorage.setItem("currentPlan", selectedPlan.name);
         console.log("Storing userId in localStorage:", userId);
         localStorage.setItem("userId", userId);
 
         const generateUUID = () => {
-          return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-            const r = Math.random() * 16 | 0;
-            const v = c === 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-          });
+          return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+            /[xy]/g,
+            (c) => {
+              const r = (Math.random() * 16) | 0;
+              const v = c === "x" ? r : (r & 0x3) | 0x8;
+              return v.toString(16);
+            }
+          );
         };
 
         const cardDetails: SavedCard = {
@@ -149,10 +179,15 @@ export default function PaymentPage() {
           plan: data.plan,
           price: selectedPlan.price,
           lastUsed: new Date().toISOString(),
-          isDefault: undefined
+          isDefault: undefined,
         };
-        const savedCards = JSON.parse(localStorage.getItem(`cards_${userId}`) || "[]");
-        localStorage.setItem(`cards_${userId}`, JSON.stringify([...savedCards, cardDetails]));
+        const savedCards = JSON.parse(
+          localStorage.getItem(`cards_${userId}`) || "[]"
+        );
+        localStorage.setItem(
+          `cards_${userId}`,
+          JSON.stringify([...savedCards, cardDetails])
+        );
         console.log("Saved card details:", cardDetails);
 
         setUserData((prev: UserData) => ({
@@ -171,10 +206,10 @@ export default function PaymentPage() {
         });
         router.replace(
           `/thank-you?plan=${encodeURIComponent(paymentResult.plan)}` +
-          `&price=${paymentResult.price}` +
-          `&cardHolder=${encodeURIComponent(data.cardHolder)}` +
-          `&cardNumber=${encodeURIComponent(data.cardNumber)}` +
-          `&cardBackground=${encodeURIComponent(data.cardBackground)}`
+            `&price=${paymentResult.price}` +
+            `&cardHolder=${encodeURIComponent(data.cardHolder)}` +
+            `&cardNumber=${encodeURIComponent(data.cardNumber)}` +
+            `&cardBackground=${encodeURIComponent(data.cardBackground)}`
         );
         return paymentResult;
       } else {
@@ -183,7 +218,8 @@ export default function PaymentPage() {
         return paymentResult;
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
       console.error("Unexpected error during payment process:", errorMessage);
       setError(errorMessage);
       return {
@@ -193,8 +229,7 @@ export default function PaymentPage() {
         error: errorMessage,
       };
     }
-  }
-
+  };
 
   return (
     <div className="">

@@ -25,55 +25,89 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SignOutButton from "@/components/auth/sign-out-button";
-import toast from "react-hot-toast";
+import { usePlan } from "@/components/subscribe/plan-context";
 
-interface NavUserProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}
+// interface NavUserProps {
+//   user: {
+//     name: string;
+//     email: string;
+//     avatar: string;
+//   };
+// }
 
-export function NavUser({ user }: NavUserProps) {
+// export function NavUser({ user }: NavUserProps) {
+//   const { isMobile } = useSidebar();
+//   const [loadedUser, setLoadedUser] = useState(user);
+//   const [isLoaded, setIsLoaded] = useState(false);
+//   const router = useRouter();
+//   const initials = user.name
+//     ? user.name
+//         .split(" ")
+//         .map((n) => n[0])
+//         .join("")
+//         .toUpperCase()
+//     : "ON";
+
+// useEffect(() => {
+//   async function fetchUser() {
+//     try {
+//       const response = await fetch("/api/user");
+//       if (!response.ok) throw new Error("Failed to fetch user");
+//       const data = await response.json();
+//       setLoadedUser({
+//         name: data.name || "",
+//         email: data.email || "",
+//         avatar: data.avatar || "/alien/alien_1.jpg",
+//       });
+//     } catch (error) {
+//       console.error("Fetch user error:", error);
+//       toast.error("Failed to load user data");
+//       setLoadedUser(user);
+//     } finally {
+//       setIsLoaded(true);
+//     }
+//   }
+//   fetchUser();
+// }, [user]);
+
+// const displayUser = isLoaded ? loadedUser : user;
+
+export function NavUser() {
   const { isMobile } = useSidebar();
-  const [loadedUser, setLoadedUser] = useState(user);
-  const [isLoaded, setIsLoaded] = useState(false);
   const router = useRouter();
-  const initials = user.name
-    ? user.name
+  const { userData, isLoading } = usePlan();
+
+  const name = userData.name || "";
+  const email = userData.email || "";
+  const avatar = userData.avatar || "/alien/alien_1.jpg";
+  const initials = name
+    ? name
         .split(" ")
         .map((n) => n[0])
         .join("")
         .toUpperCase()
     : "ON";
 
-  // useEffect(() => {
-  //   async function fetchUser() {
-  //     try {
-  //       const response = await fetch("/api/user");
-  //       if (!response.ok) throw new Error("Failed to fetch user");
-  //       const data = await response.json();
-  //       setLoadedUser({
-  //         name: data.name || "",
-  //         email: data.email || "",
-  //         avatar: data.avatar || "/alien/alien_1.jpg",
-  //       });
-  //     } catch (error) {
-  //       console.error("Fetch user error:", error);
-  //       toast.error("Failed to load user data");
-  //       setLoadedUser(user);
-  //     } finally {
-  //       setIsLoaded(true);
-  //     }
-  //   }
-  //   fetchUser();
-  // }, [user]);
-
-  const displayUser = isLoaded ? loadedUser : user;
+  if (isLoading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" disabled>
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarFallback className="rounded-lg">...</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-semibold">Loading...</span>
+              <span className="truncate text-xs">Loading...</span>
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>
@@ -83,24 +117,20 @@ export function NavUser({ user }: NavUserProps) {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              aria-label={`User profile: ${displayUser.name} (${displayUser.email})`}
+              aria-label={`User profile: ${name} (${email})`}
+              // aria-label={`User profile: ${displayUser.name} (${displayUser.email})`}
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                {displayUser.avatar && (
-                  <AvatarImage
-                    src={displayUser.avatar}
-                    alt={displayUser.name}
-                  />
-                )}
+                {/* {displayUser.avatar && ( */}
+                <AvatarImage src={avatar} alt={name} />
+                {/* )} */}
                 <AvatarFallback className="rounded-lg">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {displayUser.name}
-                </span>
-                <span className="truncate text-xs">{displayUser.email}</span>
+                <span className="truncate font-semibold">{name}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -114,19 +144,14 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={displayUser.avatar}
-                    alt={displayUser.name}
-                  />
+                  <AvatarImage src={avatar} alt={name} />
                   <AvatarFallback className="rounded-lg">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {displayUser.name}
-                  </span>
-                  <span className="truncate text-xs">{displayUser.email}</span>
+                  <span className="truncate font-semibold">{name}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -168,7 +193,7 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuItem asChild className="gap-2">
               <SignOutButton
                 onSignOutSuccess={() => {
-                  router.push("/sign-in");
+                  router.push("/sign-out");
                 }}
               >
                 <LogOut className="size-5" />
