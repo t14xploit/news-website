@@ -27,14 +27,21 @@ import { authClient } from "@/lib/auth-client";
 import SignOutButton from "../auth/sign-out-button";
 import { usePlan } from "@/components/subscribe/plan-context";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SiteHeader() {
   const { data: session } = authClient.useSession();
   const pathname = usePathname();
-  const { userData, isLoading } = usePlan();
+  const { userData, isLoading: planLoading } = usePlan();
   const router = useRouter();
 
-  const name = userData.name || "Guest";
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const name = userData.name || "";
   const email = userData.email || "";
   const avatar = userData.avatar || "/alien/alien_1.jpg";
   const initials = name
@@ -79,6 +86,44 @@ export default function SiteHeader() {
   };
 
   const breadcrumbs = getBreadcrumbs();
+
+  if (!isMounted) {
+    return (
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4">
+        <div className="flex items-center gap-2">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          {breadcrumbs && (
+            <Breadcrumb>
+              <BreadcrumbList>
+                {breadcrumbs.map((crumb, index) => (
+                  <div key={crumb.href} className="flex items-center">
+                    <BreadcrumbItem className="hidden md:block">
+                      <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                    {index < breadcrumbs.length - 1 && (
+                      <BreadcrumbSeparator className="hidden md:block" />
+                    )}
+                  </div>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
+        </div>
+        <div className="ml-auto flex items-center gap-4">
+          <Button variant="ghost" disabled>
+            Loading...
+          </Button>
+          <ModeToggle />
+          <Button variant="secondary" size="icon" disabled>
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="rounded-full">...</AvatarFallback>
+            </Avatar>
+          </Button>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 px-4">
@@ -126,7 +171,7 @@ export default function SiteHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                {isLoading ? (
+                {planLoading ? (
                   <AvatarFallback className="rounded-full">...</AvatarFallback>
                 ) : (
                   <>

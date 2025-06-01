@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
-// import Footer from "@/components/Footer";
-
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import SiteHeader from "@/components/sidebar-nav/site-header";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
 import { ErrorBoundary } from "@/lib/error-boundary";
-// import { SidebarInset } from "@/components/ui/sidebar";
 import { UserProvider } from "@/lib/context/user-context";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "OpenNews",
@@ -18,16 +16,40 @@ export const metadata: Metadata = {
     "Transparent, real-time news and human-centric insights that keep you connected.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = {
-    name: "",
-    email: "",
-    avatar: "/alien/alien_1.jpg",
-  };
+  const incomingHeaders = await headers();
+  const nativeHeaders = new Headers();
+  for (const [key, value] of incomingHeaders.entries()) {
+    nativeHeaders.set(key, value ?? "");
+  }
+
+  const session = await auth.api.getSession({
+    headers: nativeHeaders,
+  });
+
+  const user = session?.user
+    ? {
+        id: session.user.id,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        name: (session.user as any).name ?? "",
+        email: session.user.email ?? "",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        avatar: (session.user as any).avatar ?? "/alien/alien_1.jpg",
+        role: session.user.role ?? "user",
+        subscriptionId: session.user.subscriptionId ?? null,
+      }
+    : {
+        id: "",
+        name: "",
+        email: "",
+        avatar: "/alien/alien_1.jpg",
+        role: "user",
+        subscriptionId: null,
+      };
 
   return (
     <html lang="en" suppressHydrationWarning>
