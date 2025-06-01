@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavSecondary } from "./nav-secondary";
 import { usePlan, PlanType } from "../subscribe/plan-context";
-// import { NavMainBottom } from "./nav-bottom";
+import { NavMainBottom } from "./nav-bottom";
 import { PlanSwitcher } from "./plan-switcher";
 import { useUser } from "@/lib/context/user-context";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -245,7 +245,7 @@ export function AppSidebar({
       <SidebarContent>
         <NavSecondary items={data.NavSecondary} />
         {authUser?.role !== "admin" && <NavMain items={userData.navMain} />}
-        {/* <NavMainBottom items={data.navMainBottom} className="mt-auto" /> */}
+        <NavMainBottom items={userData.navMainBottom} className="mt-auto" />
       </SidebarContent>
       {authUser?.role !== "admin" && (
         <SidebarFooter>

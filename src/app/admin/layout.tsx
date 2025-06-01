@@ -6,7 +6,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className=" h-screen overflow-hidden">
       <div className="flex-shrink-0">
         <AppSidebar
           user={{
