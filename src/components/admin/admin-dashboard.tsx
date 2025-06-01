@@ -1,53 +1,103 @@
 "use client";
 
 import Link from "next/link";
-import { UsersIcon, LayoutGrid, BriefcaseIcon } from "lucide-react";
+import React from "react";
+import { UsersIcon, LayoutGrid, BriefcaseIcon, UserIcon } from "lucide-react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
-const AdminDashboard = () => {
+export default function AdminDashboard() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Link
-          href="/admin/users"
-          className="p-4 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <div className="flex items-center space-x-2">
-            <UsersIcon className="h-6 w-6" />
-            <span>Manage Users</span>
-          </div>
+    <div className="p-6 space-y-8">
+      <div>
+        <h1 className="text-3xl font-semibold">Admin Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Choose a section to manage</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Manage Users */}
+        <Link href="/admin/users" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <UsersIcon className="h-8 w-8 text-blue-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Manage Users
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
         </Link>
-        <Link
-          href="/admin/articles"
-          className="p-4 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <div className="flex items-center space-x-2">
-            <LayoutGrid className="h-6 w-6" />
-            <span>Manage Articles</span>
-          </div>
+
+        {/* Manage Articles */}
+        <Link href="/admin/articles" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <LayoutGrid className="h-8 w-8 text-green-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Manage Articles
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
         </Link>
-        <Link
-          href="/admin/categories"
-          className="p-4 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <div className="flex items-center space-x-2">
-            <BriefcaseIcon className="h-6 w-6" />
-            <span>Manage Categories</span>
-          </div>
+
+        {/* Manage Categories */}
+        <Link href="/admin/categories" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <BriefcaseIcon className="h-8 w-8 text-orange-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Manage Categories
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
         </Link>
-        <Link
-          href="/admin/authors"
-          className="p-4 border rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
-        >
-          <div className="flex items-center space-x-2">
-            <BriefcaseIcon className="h-6 w-6" />
-            <span>Manage Authors</span>
-          </div>
+
+        {/* Manage Authors */}
+        <Link href="/admin/authors" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <UserIcon className="h-8 w-8 text-teal-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Manage Authors
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
         </Link>
-        {/* Add other links to manage subscription stats, etc. */}
+
+        {/* (Optional) Manage Subscriptions—placeholder for future */}
+        <Link href="/admin/subscriptions" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <BriefcaseIcon className="h-8 w-8 text-purple-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Subscription Stats
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
+        </Link>
+
+        {/* (Optional) Manage Channels—placeholder for future */}
+        <Link href="/admin/channels" passHref>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+            <a className="block h-full">
+              <CardHeader className="p-6">
+                <LayoutGrid className="h-8 w-8 text-red-500" />
+                <CardTitle className="mt-4 text-lg font-medium">
+                  Manage Channels
+                </CardTitle>
+              </CardHeader>
+            </a>
+          </Card>
+        </Link>
       </div>
     </div>
   );
-};
-
-export default AdminDashboard;
+}

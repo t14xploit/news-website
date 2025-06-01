@@ -66,7 +66,14 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
 
   useEffect(() => {
     authClient.getSession().then((session) => {
-      if (session.data?.user) router.replace("/");
+      const user = session.data?.user;
+      if (user) {
+        if (user.role === "admin") {
+          router.replace("/admin");
+        } else {
+          router.replace("/");
+        }
+      }
     });
   }, [router]);
 
@@ -109,7 +116,6 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           email: data.email,
           password: data.password,
           rememberMe: data.rememberMe,
-          callbackURL: "/",
         },
         {
           onRequest: () => {
@@ -146,9 +152,19 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               toast.error(ctx.error.message || "Failed to sign in");
             }
           },
-          onSuccess: () => {
+          onSuccess: async () => {
             toast.success("Signed in successfully!");
-            router.push("/");
+
+            const newSession = await authClient.getSession({
+              query: { disableCookieCache: true },
+            });
+            const user = newSession.data?.user;
+
+            if (user?.role === "admin") {
+              router.push("/admin");
+            } else {
+              router.push("/");
+            }
           },
         }
       );
