@@ -212,20 +212,32 @@ export const auth = betterAuth({
     nextCookies(),
 
     customSession(async ({ user, session }) => {
-      let role = "user";
+      const u = await prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+        include: {
+          subscription: {
+            include: {
+              type: true,
+            },
+          },
+        },
+      });
+
+      let role = u?.role === "admin" ? "admin" : "user";
       let subscriptionId: string | null = null;
       let subscriptionType = null;
-      if (user.id) {
-        const u = await prisma.user.findUnique({
-          where: { id: user.id },
-          include: { subscription: { include: { type: true } } },
-        });
-        if (u?.subscription) {
-          subscriptionId = u.subscriptionId;
-          subscriptionType = u.subscription.type?.name;
-          if (u.subscription.type?.name === "Business") role = "editor";
+
+      if (u?.subscription) {
+        subscriptionId = u.subscriptionId;
+        subscriptionType = u.subscription.type?.name;
+
+        if (subscriptionType === "Business" && role !== "admin") {
+          role = "editor";
         }
       }
+
       return {
         user: {
           id: user.id,
