@@ -36,7 +36,9 @@ interface NavUserProps {
     email: string;
     avatar: string;
   };
+
   collapsible: "none" | "icon" | "offcanvas" | undefined;
+
 }
 
 // export function NavUser({ user }: NavUserProps) {
@@ -76,8 +78,11 @@ interface NavUserProps {
 
 // const displayUser = isLoaded ? loadedUser : user;
 
+
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function NavUser({ user, collapsible }: NavUserProps) {
+
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { userData, isLoading } = usePlan();
@@ -119,7 +124,7 @@ export function NavUser({ user, collapsible }: NavUserProps) {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              aria-label={`User profile: ${name} (${email})`}
+              aria-label={`User profile: ${user.name} (${user.email})`}
               // aria-label={`User profile: ${displayUser.name} (${displayUser.email})`}
             >
               <Avatar className="h-8 w-8 rounded-lg">
@@ -131,8 +136,10 @@ export function NavUser({ user, collapsible }: NavUserProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
+
                 <span className="truncate font-semibold">{name}</span>
                 {email && <span className="truncate text-xs">{email}</span>}
+
               </div>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -146,14 +153,14 @@ export function NavUser({ user, collapsible }: NavUserProps) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="rounded-lg">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{name}</span>
-                  <span className="truncate text-xs">{email}</span>
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
