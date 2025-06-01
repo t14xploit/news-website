@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import * as React from "react";
 import {
@@ -10,17 +10,28 @@ import {
   Radio,
   Sparkles,
   Users,
-} from "lucide-react"
-import { NavMain } from "./nav-main"
-// import { NavProjects } from "./nav-projects"
-import { NavUser } from "./nav-user"
-// import { TeamSwitcher } from "./team-switcher"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
-import { NavSecondary } from "./nav-secondary"
-// import { NavSubscriptions } from "./nav-subscriptions"
-import { usePlan, PlanType } from "../subscribe/plan-context"
-import { NavMainBottom } from "./nav-bottom"
-import { PlanSwitcher } from "./plan-switcher"
+  CpuIcon,
+  // LayoutGrid,
+  BriefcaseIcon,
+  UserIcon,
+  FolderOpenIcon,
+} from "lucide-react";
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from "@/components/ui/sidebar";
+import { NavSecondary } from "./nav-secondary";
+import { usePlan, PlanType } from "../subscribe/plan-context";
+// import { NavMainBottom } from "./nav-bottom";
+import { PlanSwitcher } from "./plan-switcher";
+import { useUser } from "@/lib/context/user-context";
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface AppSidebarProps {
   user: {
     name: string;
@@ -30,54 +41,108 @@ interface AppSidebarProps {
   collapsible?: "none" | "icon" | "offcanvas";
 }
 
-export function AppSidebar({ 
+export function AppSidebar({
   user,
   collapsible,
-  ...props 
-}: AppSidebarProps & 
-React.ComponentProps<typeof Sidebar>) {
+  ...props
+}: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
   const { currentPlan } = usePlan();
+  const { user: authUser, isLoading } = useUser();
+
   console.log("AppSidebar rendered, collapsible:", collapsible, "user:", user);
 
-  
-  const data = {
-    PlanSwitcher: [
-        {
-            title: "Free" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Free",
-        },
-        {
-            title: "Elite" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Elite",
-        },
-        {
-            title: "Business" as PlanType,
-            url: "#",
-            icon: Sparkles,
-            isActive: currentPlan === "Business",
-        },
+  if (isLoading) {
+    return (
+      <Sidebar collapsible={collapsible} className="md:block" {...props}>
+        <SidebarHeader>
+          <div className="p-4">
+            <Skeleton className="h-8 w-32 mb-2" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <div className="p-4 space-y-3">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        </SidebarContent>
+        <SidebarRail />
+      </Sidebar>
+    );
+  }
+
+  const adminData = {
+    NavSecondary: [
+      // {
+      //   title: "Dashboard",
+      //   url: "admin/admin-dashboard",
+      //   icon: LayoutGrid,
+      // },
+      {
+        title: "Users",
+        url: "/admin/users",
+        icon: Users,
+      },
+      {
+        title: "Articles",
+        url: "/admin/articles",
+        icon: Newspaper,
+      },
+      {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: BriefcaseIcon,
+      },
+      {
+        title: "Authors",
+        url: "/admin/authors",
+        icon: UserIcon,
+      },
+      {
+        title: "AI Generation",
+        url: "/admin/ai",
+        icon: CpuIcon,
+      },
+      {
+        title: "Channels",
+        url: "/admin/channels",
+        icon: FolderOpenIcon,
+      },
     ],
-    // teams: [
+    // navMainBottom: [
     //   {
-    //     name: "Acme Inc",
-    //     logo: GalleryVerticalEnd,
-    //     plan: "Enterprise",
-    //   },
-    //   {
-    //     name: "Acme Corp.",
-    //     logo: AudioWaveform,
-    //     plan: "Startup",
-    //   },
-    //   {
-    //     name: "Evil Corp.",
-    //     logo: Command,
-    //     plan: "Free",
+    //     title: "Settings",
+    //     url: "/admin/settings",
+    //     icon: Info,
+    //     isActive: true,
+    //     items: [],
     //   },
     // ],
+  };
+
+  const userData = {
+    PlanSwitcher: [
+      {
+        title: "Free" as PlanType,
+        url: "#",
+        icon: Sparkles,
+        isActive: currentPlan === "Free",
+      },
+      {
+        title: "Elite" as PlanType,
+        url: "#",
+        icon: Sparkles,
+        isActive: currentPlan === "Elite",
+      },
+      {
+        title: "Business" as PlanType,
+        url: "#",
+        icon: Sparkles,
+        isActive: currentPlan === "Business",
+      },
+    ],
     NavSecondary: [
       {
         title: "Home",
@@ -94,7 +159,7 @@ React.ComponentProps<typeof Sidebar>) {
         url: "/authors",
         icon: Users,
       },
-       {
+      {
         title: "Live",
         url: "#",
         icon: Radio,
@@ -104,7 +169,7 @@ React.ComponentProps<typeof Sidebar>) {
       {
         title: "Explore",
         url: "#",
-        icon: Menu, //Eye,
+        icon: Menu,
         isActive: true,
         items: [
           {
@@ -129,42 +194,12 @@ React.ComponentProps<typeof Sidebar>) {
           },
           {
             title: "Business",
-            url: "cqategories/business",
+            url: "categories/business",
           },
         ],
       },
     ],
-    // NavSubscriptions: [
-    //   {
-    //     title: "Subscription",
-    //     url: "app/subscribe",
-    //     icon: CreditCard,
-    //     isActive: false,
-    //     items: [
-    //     //   {
-    //     //     title: `Manage plan: ${currentPlan}`,
-    //     //     url: "#",
-    //     //     isActive: false,
-    //     //   },
-    //       {
-    //         title: "Basic",
-    //         url: "#",
-    //         isActive: currentPlan === "Basic",
-    //       },
-    //       {
-    //         title: "Premium",
-    //         url: "#",
-    //         isActive: currentPlan === "Premium",
-    //       },
-    //       {
-    //         title: "Pro",
-    //         url: "#",
-    //         isActive: currentPlan === "Pro",
-    //       },
-    //     ],
-    //   },
-    // ],
-     navMainBottom: [
+    navMainBottom: [
       {
         title: "Info",
         url: "#",
@@ -180,70 +215,44 @@ React.ComponentProps<typeof Sidebar>) {
             url: "/contact",
           },
         ],
-        },
-        {
-            title: "Legal",
+      },
+      {
+        title: "Legal",
+        url: "#",
+        icon: FileText,
+        isActive: true,
+        items: [
+          {
+            title: "Privacy Policy",
             url: "#",
-            icon: FileText,    //Waypoints, //ShieldHalf
-            isActive: true,
-            items: [
-              {
-                title: "Privacy Policy",
-                url: "#",
-              },
-              {
-                title: "Terms of Use",
-                url: "#",
-              },
-            ],
-            },
+          },
+          {
+            title: "Terms of Use",
+            url: "#",
+          },
+        ],
+      },
     ],
-    
-    // projects: [
-    //   {
-    //     name: "Design Engineering",
-    //     url: "#",
-    //     icon: Frame,
-    //   },
-    //   {
-    //     name: "Sales & Marketing",
-    //     url: "#",
-    //     icon: PieChart,
-    //   },
-    //   {
-    //     name: "Travel",
-    //     url: "#",
-    //     icon: Map,
-    //   },
-    // ],
-  }
+  };
+
+  const data = authUser?.role === "admin" ? adminData : userData;
 
   return (
-    <Sidebar
-      collapsible={collapsible}
-      className="md:block"
-      {...props}
-    >
+    <Sidebar collapsible={collapsible} className="md:block" {...props}>
       <SidebarHeader>
-         <NavUser user={user} />
+        <NavUser user={user} collapsible={undefined} />
       </SidebarHeader>
       <SidebarContent>
         <NavSecondary items={data.NavSecondary} />
-        <NavMain items={data.navMain} />
-        {/* <NavSubscriptions items={data.NavSubscriptions} currentPlan={currentPlan} setCurrentPlan={setCurrentPlan} /> */}
-        <NavMainBottom items={data.navMainBottom} 
-        className="mt-auto"
-        />
+        {authUser?.role !== "admin" && <NavMain items={userData.navMain} />}
+        {/* <NavMainBottom items={data.navMainBottom} className="mt-auto" /> */}
       </SidebarContent>
-      <SidebarFooter>
-      <PlanSwitcher
-          items={data.PlanSwitcher}
-          // currentPlan={currentPlan}
-          // setCurrentPlan={setCurrentPlan}
-        />
-        {/* <TeamSwitcher teams={data.teams} /> */}
-      </SidebarFooter>
+      {authUser?.role !== "admin" && (
+        <SidebarFooter>
+          <PlanSwitcher items={userData.PlanSwitcher} />
+        </SidebarFooter>
+      )}
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

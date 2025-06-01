@@ -1,12 +1,4 @@
-import React from "react";
-import AdminSidebar from "@/components/admin/admin-sidebar";
-import { UserProvider } from "@/lib/context/user-context";
-import "@/app/globals.css";
-
-export const metadata = {
-  title: "Admin Dashboard",
-  description: "Administration area for site management",
-};
+import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
 
 export default function AdminLayout({
   children,
@@ -14,22 +6,23 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>{/* Any head tags if needed */}</head>
-      <body className="flex h-screen overflow-hidden">
-        {/* We wrap everything in UserProvider so any hooks inside can access user context */}
-        <UserProvider>
-          {/* Sidebar occupies fixed width on the left */}
-          <div className="flex-shrink-0">
-            <AdminSidebar />
-          </div>
-
-          {/* Main content: fill remaining width, allow vertical scrolling */}
-          <main className="flex-1 overflow-y-auto bg-background p-6">
+    <div className="flex h-screen overflow-hidden">
+      <div className="flex-shrink-0">
+        <AppSidebar
+          user={{
+            name: "",
+            email: "",
+            avatar: "",
+          }}
+        />
+      </div>
+      <main className="flex flex-1 flex-col min-h-[calc(100vh-var(--header-height))] w-full">
+        <div className="flex flex-1 flex-col max-w-full md:max-w-full mx-auto px-4 lg:px-8 w-full">
+          <div className="flex flex-1 flex-col gap-4 py-4 sm:gap-6 sm:py-6">
             {children}
-          </main>
-        </UserProvider>
-      </body>
-    </html>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
