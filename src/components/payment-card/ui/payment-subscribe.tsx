@@ -123,9 +123,9 @@ export function CardPreview({
               isSubmitting={isSubmitting}
             />
           </div>
-          <div className="grid gap-4 pt-4">
+          <div className="grid gap-4 pt-6">
             <div>
-              <h3 className="mb-2 text-lg font-medium">Card Theme</h3>
+              <h3 className="mb-10 text-lg font-medium">Card Theme</h3>
               <RadioGroup
                 defaultValue={defaultTheme}
                 value={cardBackground}
@@ -144,7 +144,7 @@ export function CardPreview({
                     />
                     <Label
                       htmlFor={theme}
-                      className={`flex h-12 cursor-pointer items-center justify-center rounded-md border-2 border-muted text-sm text-white peer-data-[state=checked]:border-primary ${
+                      className={`mx-auto flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border-2 border-muted text-sm text-white peer-data-[state=checked]:border-primary ${
                         theme === "gradient"
                           ? "bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600"
                           : theme === "blue"
@@ -154,7 +154,7 @@ export function CardPreview({
                           : "bg-gradient-to-br from-gray-900 via-black to-gray-900"
                       }`}
                     >
-                      {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                      {/* {theme.charAt(0).toUpperCase() + theme.slice(1)} */}
                     </Label>
                   </div>
                 ))}
@@ -163,7 +163,7 @@ export function CardPreview({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between pt-6">
         <Button
           variant="outline"
           onClick={handleCancel}
@@ -177,7 +177,7 @@ export function CardPreview({
           form="payment-form"
           onClick={handleSubmit(handleFormSubmit)}
           disabled={isSubmitting}
-          className="w-full max-w-[150px] relative"
+          className="w-full max-w-[150px] relative bg-blue-500 hover:bg-blue-600 text-white"
         >
           {isSubmitting && (
             <span className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -203,7 +203,7 @@ export function CardPreview({
               </svg>
             </span>
           )}
-          <span className={isSubmitting ? "pl-6" : ""}>
+          <span className={isSubmitting ? "pl-6 " : ""}>
             Pay ${selectedPlan?.price.toFixed(2)}
           </span>
         </Button>
