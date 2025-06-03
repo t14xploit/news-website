@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowBigRight, PawPrint } from "lucide-react";
 import { fetchCategoryData } from "@/actions/category";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
+import { FiAlertCircle } from "react-icons/fi";
 
 type Params = Promise<{ name: string }>;
 
@@ -35,8 +35,8 @@ const CategoryPage = async (props: Props) => {
 console.log(error)
     return (
       <div className="my-6">
-        <Alert>
-          <PawPrint className="w-6 h-6" />
+        <Alert variant={"destructive"}>
+          <FiAlertCircle/>
           <div>
             <AlertTitle>Category not found</AlertTitle>
             <AlertDescription>
@@ -52,14 +52,16 @@ console.log(error)
     <div className="container space-y-6 my-6">
       <h2 className="text-2xl font-semibold flex items-center">
         Articles in {categoryData.title}
-        <ArrowBigRight className="w-6 h-6 text-foreground ml-2" />
       </h2>
 
       {categoryData.articles.length === 0 ? (
-        <Alert>
-          <PawPrint className="w-6 h-6" />
+        <Alert variant={"destructive"}>
+
+          <FiAlertCircle/>
           <div>
-            <AlertTitle>No Articles in This Category</AlertTitle>
+            <AlertTitle className=" text-red-900 dark:text-red-300 font-bold">No Articles in This Category
+
+            </AlertTitle>
             <AlertDescription>
               Looks like there are no articles in this category. Check back later for new content!
             </AlertDescription>
