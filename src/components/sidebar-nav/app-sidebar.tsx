@@ -331,11 +331,11 @@ export function AppSidebar({
         items: [
           {
             title: "About Us",
-            url: "/about",
+            url: "/about-us",
           },
           {
             title: "Contact Us",
-            url: "/contact",
+            url: "/contact-us",
           },
         ],
       },
@@ -347,11 +347,11 @@ export function AppSidebar({
         items: [
           {
             title: "Privacy Policy",
-            url: "#",
+            url: "/privacy-policy",
           },
           {
             title: "Terms of Use",
-            url: "#",
+            url: "/terms-of-use",
           },
         ],
       },
