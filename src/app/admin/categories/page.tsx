@@ -1,29 +1,45 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 
-export default async function CategoriesPage() {
-  const categories = await prisma.category.findMany({
-    take: 20,
-  });
+interface PageProps {
+  searchParams: { page?: string };
+}
+
+export default async function CategoriesPage({ searchParams }: PageProps) {
+  const currentPage = parseInt(searchParams.page ?? "1", 10);
+  const pageSize = 10;
+
+  const [categories, totalCount] = await Promise.all([
+    prisma.category.findMany({
+      skip: (currentPage - 1) * pageSize,
+      take: pageSize,
+    }),
+    prisma.category.count(),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
-    <div className="max-w-lg">
+    <div className="max-w-2xl">
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
         <h1 className="text-2xl font-semibold">Categories</h1>
-        <Link
-          href="/admin/categories/new"
-        >
-          <Button variant={"outline"}>
-
-          + Add Category
-          </Button>
+        <Link href="/admin/categories/new">
+          <Button variant={"outline"}>+ Add Category</Button>
         </Link>
       </div>
 
       {/* Table */}
-      <div className="border rounded max-w-xl">
+      <div className="border rounded">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100 dark:bg-gray-800 text-left">
             <tr>
@@ -38,7 +54,7 @@ export default async function CategoriesPage() {
                   <td className="p-2">
                     <Link
                       href={`/admin/categories/${category.title}`}
-                      className=" hover:underline"
+                      className="hover:underline"
                     >
                       {category.title}
                     </Link>
@@ -67,6 +83,43 @@ export default async function CategoriesPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href={`?page=${Math.max(currentPage - 1, 1)}`}
+                  aria-disabled={currentPage === 1}
+                />
+              </PaginationItem>
+
+              {Array.from({ length: totalPages }).map((_, index) => {
+                const page = index + 1;
+                return (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href={`?page=${page}`}
+                      isActive={page === currentPage}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              })}
+
+              <PaginationItem>
+                <PaginationNext
+                  href={`?page=${Math.min(currentPage + 1, totalPages)}`}
+                  aria-disabled={currentPage === totalPages}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 }
