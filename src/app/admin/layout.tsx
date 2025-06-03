@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
+import { Toaster } from "@/components/ui/sonner"
 
 export default function AdminLayout({
   children,
@@ -6,7 +7,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className=" h-screen overflow-hidden">
+    <div className=" min-h-screen">
       <div className="flex-shrink-0">
         <AppSidebar
           user={{
@@ -21,6 +22,8 @@ export default function AdminLayout({
           <div className="flex flex-1 flex-col gap-4 py-4 sm:gap-6 sm:py-6">
             {children}
           </div>
+          <Toaster />
+
         </div>
       </main>
     </div>
