@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import DeleteCategoryButton from "@/components/admin/categories/DeleteCategoryButton";
-import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default async function CategoriesPage() {
@@ -10,7 +8,7 @@ export default async function CategoriesPage() {
   });
 
   return (
-    <div className="p-6 max-w-lg">
+    <div className="max-w-lg">
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
         <h1 className="text-2xl font-semibold">Categories</h1>
@@ -25,7 +23,7 @@ export default async function CategoriesPage() {
       </div>
 
       {/* Table */}
-      <div className="border rounded max-w-lg">
+      <div className="border rounded max-w-xl">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100 dark:bg-gray-800 text-left">
             <tr>
@@ -45,17 +43,17 @@ export default async function CategoriesPage() {
                       {category.title}
                     </Link>
                   </td>
-                  <td className="p-2 space-x-2">
-                    <Link
-                      href={`/admin/categories/${category.title}/edit`}
-                      className="  hover:underline"
-                    >
-                      <Button  className="cursor-pointer" variant={"link"}>
-
-                      <Edit/>
+                  <td className="p-3 space-x-3">
+                    <Link href={`/admin/categories/${category.title}`}>
+                      <Button variant="link" className="px-0 text-blue-600">
+                        View
                       </Button>
                     </Link>
-                    <DeleteCategoryButton name={category.title} />
+                    <Link href={`/admin/categories/${category.title}/edit`}>
+                      <Button variant="link" className="px-0 text-muted-foreground">
+                        Edit
+                      </Button>
+                    </Link>
                   </td>
                 </tr>
               ))
