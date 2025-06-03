@@ -38,7 +38,6 @@ interface NavUserProps {
   };
 
   collapsible: "none" | "icon" | "offcanvas" | undefined;
-
 }
 
 // export function NavUser({ user }: NavUserProps) {
@@ -78,11 +77,8 @@ interface NavUserProps {
 
 // const displayUser = isLoaded ? loadedUser : user;
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function NavUser({ user, collapsible }: NavUserProps) {
-
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { userData, isLoading } = usePlan();
@@ -136,10 +132,8 @@ export function NavUser({ user, collapsible }: NavUserProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-
                 <span className="truncate font-semibold">{name}</span>
                 {email && <span className="truncate text-xs">{email}</span>}
-
               </div>
               <EllipsisVertical className="ml-auto size-4" />
             </SidebarMenuButton>

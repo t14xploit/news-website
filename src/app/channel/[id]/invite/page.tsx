@@ -1,19 +1,17 @@
 "use client";
-
 import InviteUser from "@/components/my-channel/invite-user";
 import { useUser } from "@/lib/context/user-context";
 import { authClient } from "@/lib/auth-client";
 
 export default function InvitePage() {
-  const { user, isLoading: isSessionLoading } = useUser();
+  const { sessionUser, isLoading, isEditor } = useUser();
   const { data: activeOrganization } = authClient.useActiveOrganization();
-  const isLoading = isSessionLoading;
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!user || user.role !== "editor" || !activeOrganization) {
+  if (!sessionUser || !isEditor || !activeOrganization) {
     return <div>You are not authorized to view this page.</div>;
   }
 

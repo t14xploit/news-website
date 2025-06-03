@@ -17,24 +17,22 @@ import { useUser } from "@/lib/context/user-context";
 import { Plus } from "lucide-react";
 
 export default function CreateChannel() {
-  const { user, isLoading: isSessionLoading } = useUser();
+  const { sessionUser, isLoading, isEditor } = useUser();
   const { data: activeOrganization } = authClient.useActiveOrganization();
 
   const [channelName, setChannelName] = useState("");
   const [channelSlug, setChannelSlug] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
-  const isLoading = isSessionLoading;
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (!user) {
+  if (!sessionUser) {
     return <div>Please sign in to create a channel.</div>;
   }
 
-  if (user.role !== "editor") {
+  if (!isEditor) {
     return <div>You are not authorized to create a channel.</div>;
   }
 

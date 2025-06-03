@@ -1,6 +1,6 @@
 "use client";
-
 import ManageUsers from "@/components/admin/user/manage-users";
+import { useUser } from "@/lib/context/user-context";
 import { authClient } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,22 +8,18 @@ import { Loader2 } from "lucide-react";
 
 export default function AdminUsersPage() {
   const router = useRouter();
-  const [isChecking, setIsChecking] = useState(true);
+  const { sessionUser, isLoading, isAdmin } = useUser();
+  const [isCheckingPermissions, setIsCheckingPermissions] = useState(true);
 
   useEffect(() => {
+    if (isLoading) return;
+
+    if (!sessionUser || !isAdmin) {
+      router.replace("/sign-in");
+      return;
+    }
+
     (async () => {
-      const session = await authClient.getSession();
-      const currentUser = session.data?.user;
-      if (!currentUser) {
-        router.replace("/sign-in");
-        return;
-      }
-
-      if (currentUser.role !== "admin") {
-        router.replace("/sign-in");
-        return;
-      }
-
       const permResult = await authClient.admin.hasPermission({
         permissions: {
           user: ["list"],
@@ -35,11 +31,11 @@ export default function AdminUsersPage() {
         return;
       }
 
-      setIsChecking(false);
+      setIsCheckingPermissions(false);
     })();
-  }, [router]);
+  }, [sessionUser, isLoading, isAdmin, router]);
 
-  if (isChecking) {
+  if (isLoading || isCheckingPermissions) {
     return (
       <div className="flex h-full items-center justify-center">
         <Loader2 className="animate-spin h-8 w-8 text-gray-500" />

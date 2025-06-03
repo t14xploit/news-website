@@ -72,37 +72,20 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+
 import AccountSettingsForm from "@/components/my-page/profile/account-settings-form";
 import SubscriptionsList from "@/components/my-page/subscriptions-list";
 import NewsletterSettingsForm from "@/components/my-page/newsletter-settings-form";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { usePlan } from "@/components/subscribe/plan-context";
+import { useUser } from "@/lib/context/user-context";
 
 export default function MyPage() {
-  const [checking, setChecking] = useState(true);
-  const [sessionExists, setSessionExists] = useState(false);
-
+  const { sessionUser, isLoading: userLoading } = useUser();
   const { userId, isLoading: planLoading } = usePlan();
 
-  useEffect(() => {
-    authClient
-      .getSession()
-      .then((resp) => {
-        if (resp.data?.user) {
-          setSessionExists(true);
-        } else {
-          setSessionExists(false);
-        }
-      })
-      .finally(() => {
-        setChecking(false);
-      });
-  }, []);
-
-  if (checking || planLoading) {
+  if (userLoading || planLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading…
@@ -110,7 +93,7 @@ export default function MyPage() {
     );
   }
 
-  if (!sessionExists) {
+  if (!sessionUser) {
     redirect("/sign-in");
   }
 

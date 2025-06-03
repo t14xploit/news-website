@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import { CheckCircle } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { usePlan } from "@/components/subscribe/plan-context";
 import {
   profileSchema as baseProfileSchema,
   passwordChangeSchema,
@@ -25,6 +24,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/lib/context/user-context";
 
 const extendedProfileSchema = z.object({
   firstName: baseProfileSchema.shape.firstName,
@@ -36,7 +36,7 @@ type ProfileFormValues = z.infer<typeof extendedProfileSchema>;
 type PasswordFormValues = z.infer<typeof passwordChangeSchema>;
 
 export default function AccountSettingsForm() {
-  const { userData, setUserData, isLoading: contextLoading } = usePlan();
+  const { sessionUser, isLoading, refetchUser } = useUser();
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(extendedProfileSchema),
@@ -61,20 +61,21 @@ export default function AccountSettingsForm() {
   const [showProfileSuccess, setShowProfileSuccess] = useState(false);
 
   useEffect(() => {
-    if (userData && userData.name) {
-      const [firstName = "", lastName = ""] = userData.name.split(" ");
+    if (sessionUser && sessionUser.name) {
+      const [firstName = "", lastName = ""] = sessionUser.name.split(" ");
       setProfileValue("firstName", firstName);
       setProfileValue("lastName", lastName);
-      setProfileValue("avatarUrl", userData.avatar || "");
+      setProfileValue("avatarUrl", sessionUser.avatar || "");
     }
-  }, [userData, setProfileValue]);
+  }, [sessionUser, setProfileValue]);
 
   const [avatarPreview, setAvatarPreview] = useState<string>(
-    userData.avatar || ""
+    sessionUser?.avatar || ""
   );
+
   useEffect(() => {
-    setAvatarPreview(userData.avatar || "");
-  }, [userData.avatar]);
+    setAvatarPreview(sessionUser?.avatar || "");
+  }, [sessionUser?.avatar]);
 
   const passwordForm = useForm<PasswordFormValues>({
     resolver: zodResolver(passwordChangeSchema),
@@ -116,11 +117,8 @@ export default function AccountSettingsForm() {
       setShowProfileSuccess(true);
       setTimeout(() => setShowProfileSuccess(false), 3000);
 
-      setUserData({
-        ...userData,
-        name: fullName,
-        avatar: avatarToSet || "",
-      });
+      await refetchUser();
+
       setAvatarPreview(avatarToSet || "");
     } catch (err: unknown) {
       console.error(err);
@@ -158,8 +156,8 @@ export default function AccountSettingsForm() {
   const isPasswordFormValid =
     isPasswordDirty && Object.keys(passwordErrors).length === 0;
 
-  if (contextLoading) {
-    return <p className="text-gray-500">Loading account settings…</p>;
+  if (isLoading) {
+    return <p className="text-muted-foreground">Loading account settings…</p>;
   }
 
   return (
@@ -175,13 +173,15 @@ export default function AccountSettingsForm() {
               <AvatarImage src={avatarPreview} alt="Avatar" />
             ) : (
               <AvatarFallback>
-                {(userData.name || "U")[0].toUpperCase()}
+                {(sessionUser?.name || "U")[0].toUpperCase()}
               </AvatarFallback>
             )}
           </Avatar>
           <div>
-            <p className="font-semibold text-lg">{userData.name}</p>
-            <p className="text-sm text-gray-600">{userData.email}</p>
+            <p className="font-semibold text-lg">{sessionUser?.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {sessionUser?.email}
+            </p>
           </div>
         </div>
 

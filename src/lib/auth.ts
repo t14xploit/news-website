@@ -244,6 +244,8 @@ export const auth = betterAuth({
           email: user.email,
           role,
           subscriptionId,
+          name: user?.name ?? null,
+          avatar: user?.image ?? null,
         },
         session,
         subscriptionType,

@@ -38,6 +38,7 @@ import { authClient } from "@/lib/auth-client";
 import { SignInFormValues, signInSchema } from "@/lib/validation/auth-schema";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useEffect } from "react";
+import { useUser } from "@/lib/context/user-context";
 
 interface SignInProps {
   onSwitchTab?: () => void;
@@ -54,6 +55,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { sessionUser, isLoading, refetchUser } = useUser();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
@@ -65,17 +67,14 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
   });
 
   useEffect(() => {
-    authClient.getSession().then((session) => {
-      const user = session.data?.user;
-      if (user) {
-        if (user.role === "admin") {
-          router.replace("/admin");
-        } else {
-          router.replace("/");
-        }
+    if (!isLoading && sessionUser) {
+      if (sessionUser.role === "admin") {
+        router.replace("/admin");
+      } else {
+        router.replace("/");
       }
-    });
-  }, [router]);
+    }
+  }, [sessionUser, isLoading, router]);
 
   const handleResendVerification = async () => {
     if (!unverifiedEmail) return;
@@ -155,10 +154,8 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
           onSuccess: async () => {
             toast.success("Signed in successfully!");
 
-            const newSession = await authClient.getSession({
-              query: { disableCookieCache: true },
-            });
-            const user = newSession.data?.user;
+            await refetchUser();
+            const user = sessionUser;
 
             if (user?.role === "admin") {
               router.push("/admin");
