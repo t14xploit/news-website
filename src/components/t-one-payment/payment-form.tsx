@@ -29,6 +29,10 @@ interface PaymentFormProps {
   onSubmit: (data: CardPreviewFormData) => Promise<ProcessPaymentResult>;
   selectedPlan: { id: string; name: string; price: number };
   cardBackground?: string;
+  currentStep: number;
+  handleNextStep: () => void;
+  handlePreviousStep: () => void;
+  setCurrentStep: (step: number) => void;
 }
 // interface PaymentFormProps {
 //   onSubmit: (data: PaymentFormData) => Promise<ProcessPaymentResult>
@@ -38,7 +42,11 @@ interface PaymentFormProps {
 export default function PaymentForm({
   onSubmit,
   selectedPlan,
-  cardBackground = "gradient",
+  cardBackground,
+  currentStep,
+  handleNextStep,
+  handlePreviousStep,
+  setCurrentStep,
 }: PaymentFormProps) {
   // const { setCurrentPlan } = usePlan()
   const {
@@ -60,8 +68,6 @@ export default function PaymentForm({
       plan: selectedPlan.name as "Free" | "Elite" | "Business",
     },
   });
-
-  // const formData = watch()
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
@@ -110,9 +116,14 @@ export default function PaymentForm({
         isSubmitting={isSubmitting}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        handleNextStep={handleNextStep}
+        handlePreviousStep={handlePreviousStep}
       />
       <input type="hidden" {...register("cardBackground")} />
       <input type="hidden" {...register("plan")} />
+
       {/* <Button
         type="submit"
         disabled={isSubmitting}

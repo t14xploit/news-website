@@ -161,17 +161,17 @@ export function RealisticCardPreview({
         </TooltipProvider>
       )}
 
-        <div
+      <div
         className={cn(
           "relative w-full h-full transition-transform duration-700 transform-style-3d",
           isFlipped && !readOnly ? "rotate-y-180" : ""
         )}
 
-      // {/* <div
-      //   className={cn(
-      //     "relative w-full h-full transition-transform duration-700 transform-style-3d",
-      //     isFlipped && !readOnly ? "rotate-y-180" : ""
-      //   )} */}
+        // {/* <div
+        //   className={cn(
+        //     "relative w-full h-full transition-transform duration-700 transform-style-3d",
+        //     isFlipped && !readOnly ? "rotate-y-180" : ""
+        //   )} */}
       >
         <div
           className={cn(

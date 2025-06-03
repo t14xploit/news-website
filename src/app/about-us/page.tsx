@@ -174,7 +174,7 @@ export default function AboutUs() {
             <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-gray-800 dark:to-blue-900 p-6 shadow-md transform hover:rotate-1 transition-transform duration-300">
               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-400 rounded-full opacity-20 z-0 blur-3xl"></div>
 
-              <p className="text-lg leading-relaxed relative z-10">
+              <p className="text-lg leading-relaxed relative z-10 text-gray-700 dark:text-gray-200">
                 OpenNews&apos; mission is to provide the audience with
                 objective, timely, and reliable information about events around
                 the world. We strive to present diverse perspectives, analyze
