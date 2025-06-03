@@ -29,7 +29,7 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-xl">
       {/* Header */}
       <div className="flex justify-between items-center pb-4">
         <h1 className="text-2xl font-semibold">Categories</h1>
@@ -60,14 +60,15 @@ export default async function CategoriesPage({ searchParams }: PageProps) {
                     </Link>
                   </td>
                   <td className="p-3 space-x-3">
-                    <Link href={`/admin/categories/${category.title}`}>
+
+                    <Link href={`/admin/categories/${category.title}/edit`}>
                       <Button variant="link" className="px-0 text-blue-600">
-                        View
+                        Edit
                       </Button>
                     </Link>
-                    <Link href={`/admin/categories/${category.title}/edit`}>
-                      <Button variant="link" className="px-0 text-muted-foreground">
-                        Edit
+                    <Link href={`/admin/categories/${category.title}`}>
+                      <Button variant="link"  className="px-0 text-muted-foreground">
+                        View
                       </Button>
                     </Link>
                   </td>
