@@ -50,9 +50,17 @@ console.log(error)
 
   return (
     <div className="container space-y-6 my-6">
-      <h2 className="text-2xl font-semibold flex items-center">
-        Articles in {categoryData.title}
-      </h2>
+
+<div className="flex items-center gap-3">
+<h2 className="text-2xl font-semibold ">
+   Articles in category: 
+  </h2> 
+  <p>
+
+    {categoryData.title}
+  </p>
+</div>
+
 
       {categoryData.articles.length === 0 ? (
         <Alert variant={"destructive"}>
