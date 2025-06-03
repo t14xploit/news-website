@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { ArrowBigRight } from "lucide-react";
 import Link from "next/link";
 
 type Params = Promise<{
@@ -58,22 +57,26 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           <h1 className="text-xl font-semibold">{author.name}</h1>
         </div>
       </div>
-
+<hr />
       {/* Articles Section */}
       <h2 className="text-lg font-semibold flex items-center">
-        Author&apos;s Articles <ArrowBigRight className="w-6 h-6 text-foreground" />
+        {author.name}&apos;s Articles 
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {author.articles.map((article) => (
           <Card
             key={article.id}
-            className="p-4 space-y-4 shadow-lg hover:shadow-xl transition-all"
+            className="p-2 shadow-lg hover:shadow-xl transition-all"
           >
             <CardHeader>
               <Link href={`/articles/${article.id}`}>
-                <h3 className="text-xl font-bold line-clamp-1 hover:underline">
-                  {article.headline}
-                </h3>
+              <h3
+  className="text-lg font-bold line-clamp-2 hover:underline"
+  title={article.headline}
+>
+  {article.headline}
+</h3>
+
                 <p className="text-sm text-muted-foreground">
                   {formatDistanceToNow(new Date(article.createdAt), {
                     addSuffix: true,
@@ -82,7 +85,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
               </Link>
             </CardHeader>
             <CardContent>
-              <p className="text-sm line-clamp-3">{article.summary}</p>
+              <p className="text-sm line-clamp-4">{article.summary}</p>
               <div className="mt-4">
                 <p className="text-sm text-muted-foreground">Written by:</p>
                 <div className="flex flex-wrap space-x-2">
