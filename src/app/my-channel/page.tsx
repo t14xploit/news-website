@@ -4,13 +4,13 @@ import { useUser } from "@/lib/context/user-context";
 import Link from "next/link";
 
 export default function MyChannelTeaser() {
-  const { user } = useUser();
+  const { sessionUser } = useUser();
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">My Channel</h2>
       <p>View titles and excerpts of your articles.</p>
-      {!user?.subscriptionId && (
+      {!sessionUser?.subscriptionId && (
         <p>
           <Link href="/subscription" className="text-blue-500 hover:underline">
             Upgrade to Elite

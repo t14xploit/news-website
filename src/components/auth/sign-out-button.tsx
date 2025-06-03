@@ -1,10 +1,11 @@
 "use client";
 
-import { useTransition, ReactNode } from "react";
+import { useTransition, ReactNode, MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useUser } from "@/lib/context/user-context";
 
 interface SignOutButtonProps {
   redirectUrl?: string;
@@ -13,20 +14,28 @@ interface SignOutButtonProps {
 }
 
 export default function SignOutButton({
-  redirectUrl,
+  redirectUrl = "/sign-in",
   onSignOutSuccess,
   children,
   ...props
 }: SignOutButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { refetchUser } = useUser();
 
-  const handleSignOut = () => {
+  const handleSignOut = (e: MouseEvent) => {
+    e.stopPropagation();
+
+    e.preventDefault();
+
     startTransition(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
       try {
         await authClient.signOut({
           fetchOptions: {
             onSuccess: () => {
+              refetchUser();
               router.refresh();
 
               if (redirectUrl) {

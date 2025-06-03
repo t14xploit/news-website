@@ -27,17 +27,29 @@
 // }
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SignIn from "@/components/auth/sign-in";
 import SignUp from "@/components/auth/sign-up";
+import { useUser } from "@/lib/context/user-context";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("sign-in");
+  const { sessionUser, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && sessionUser) {
+      router.replace("/");
+    }
+  }, [sessionUser, isLoading, router]);
 
   const handleTabSwitch = (tabName: string) => {
     setActiveTab(tabName);
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="w-full max-w-md mx-auto py-6">

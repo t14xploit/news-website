@@ -14,8 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Check } from "lucide-react";
-import { authClient } from "@/lib/auth-client"; // Sophie
 import { useCallback } from "react";
+import { useUser } from "@/lib/context/user-context";
 
 interface SubscribePlanProps {
   id: string;
@@ -31,6 +31,7 @@ export default function SubscribePlan({
   features,
 }: SubscribePlanProps) {
   const router = useRouter();
+  const { sessionUser } = useUser();
   // const { userId } = usePlan();
 
   const handleSelect = useCallback(async () => {
@@ -40,8 +41,8 @@ export default function SubscribePlan({
         // userId, // Sophie - userId removed from here
       });
 
-      const session = await authClient.getSession(); //Sophie
-      const userId = session?.data?.user?.id; // Sophie
+      // Sophie
+      const userId = sessionUser?.id;
       if (!userId) {
         console.error("No userId available");
         alert("User ID not found. Please try again.");
@@ -66,7 +67,7 @@ export default function SubscribePlan({
     //     name
     //   )}&price=${price}&userId=${userId}`
     // );
-  }, [id, name, price, router]);
+  }, [id, name, price, router, sessionUser]);
 
   const isPopular = id === "2";
   const isFree = name === "Free";

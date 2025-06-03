@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import SiteHeader from "@/components/sidebar-nav/site-header";
+import SiteHeader from "@/components/sidebar-nav/site-header-2";
 import { ClientSidebarWrapper } from "@/components/sidebar-nav/client-sidebar-wrapper";
 import { PlanProvider } from "@/components/subscribe/plan-context";
 import { Toaster } from "sonner";
@@ -31,16 +31,25 @@ export default async function RootLayout({
     headers: nativeHeaders,
   });
 
-  const user = session?.user
+  interface ExtendedUser {
+    id: string;
+    email: string;
+    role?: string | null;
+    subscriptionId?: string | null;
+    name?: string | null;
+    avatar?: string | null;
+  }
+
+  const maybeUser = session?.user as ExtendedUser | undefined;
+
+  const user = maybeUser
     ? {
-        id: session.user.id,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        name: (session.user as any).name ?? "",
-        email: session.user.email ?? "",
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        avatar: (session.user as any).avatar ?? "/alien/alien_1.jpg",
-        role: session.user.role ?? "user",
-        subscriptionId: session.user.subscriptionId ?? null,
+        id: maybeUser.id,
+        name: maybeUser.name ?? "",
+        email: maybeUser.email ?? "",
+        avatar: maybeUser.avatar ?? "/alien/alien_1.jpg",
+        role: maybeUser.role ?? "user",
+        subscriptionId: maybeUser.subscriptionId ?? null,
       }
     : {
         id: "",
@@ -57,7 +66,7 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

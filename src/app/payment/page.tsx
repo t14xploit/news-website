@@ -17,12 +17,9 @@ import {
   CardType,
   SavedCard,
 } from "@/components/payment-card/types";
-import { authClient } from "@/lib/auth-client"; // Sophie
-import { FaCheck } from "react-icons/fa";
 
-const session = await authClient.getSession(); // Sophie
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const userId = session?.data?.user?.id; //Sophie
+import { useUser } from "@/lib/context/user-context";
+
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -53,6 +50,7 @@ export default function PaymentPage() {
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
   const { setCurrentPlan, setUserData } = usePlan(); // Sophie - userId removed from here
+  const { sessionUser } = useUser(); // Sophie
   const cardBackground = searchParams.get("cardBackground") || "gradient";
   const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
@@ -101,6 +99,7 @@ export default function PaymentPage() {
 
   const handlePaymentSubmit = async (data: CardPreviewFormData) => {
     setError(null);
+    const userId = sessionUser?.id;
     console.log("Starting payment process for plan:", selectedPlan.name, {
       userId,
       data,

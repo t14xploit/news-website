@@ -15,9 +15,12 @@ import {
   BriefcaseIcon,
   UserIcon,
   FolderOpenIcon,
+  BookOpen,
+  LucideIcon,
+  // MessageSquare,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
+// import { NavUser } from "./nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -37,8 +40,41 @@ interface AppSidebarProps {
     name: string;
     email: string;
     avatar: string;
+    role?: string;
   };
   collapsible?: "none" | "icon" | "offcanvas";
+}
+interface SidebarItem {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: Array<{ title: string; url: string }>;
+}
+
+interface AdminData {
+  NavSecondary: SidebarItem[];
+}
+
+interface BusinessData {
+  NavSecondary: SidebarItem[];
+  myChannelSection: SidebarItem;
+}
+
+interface EliteData {
+  NavSecondary: SidebarItem[];
+}
+
+interface UserData {
+  PlanSwitcher: Array<{
+    title: PlanType;
+    url: string;
+    icon: LucideIcon;
+    isActive: boolean;
+  }>;
+  NavSecondary: SidebarItem[];
+  navMain: SidebarItem[];
+  navMainBottom: SidebarItem[];
 }
 
 export function AppSidebar({
@@ -46,12 +82,19 @@ export function AppSidebar({
   collapsible,
   ...props
 }: AppSidebarProps & React.ComponentProps<typeof Sidebar>) {
-  const { currentPlan } = usePlan();
-  const { user: authUser, isLoading } = useUser();
+  const { currentPlan, isLoading: planLoading } = usePlan();
+  const { sessionUser, isLoading: userLoading } = useUser();
 
-  console.log("AppSidebar rendered, collapsible:", collapsible, "user:", user);
+  console.log(
+    "AppSidebar rendered, collapsible:",
+    collapsible,
+    "user:",
+    user,
+    "contextUser:",
+    sessionUser
+  );
 
-  if (isLoading) {
+  if (userLoading || planLoading) {
     return (
       <Sidebar collapsible={collapsible} className="md:block" {...props}>
         <SidebarHeader>
@@ -72,8 +115,7 @@ export function AppSidebar({
       </Sidebar>
     );
   }
-
-  const adminData = {
+  const adminData: AdminData = {
     NavSecondary: [
       // {
       //   title: "Dashboard",
@@ -122,7 +164,88 @@ export function AppSidebar({
     // ],
   };
 
-  const userData = {
+  // Business subscription
+  const businessData: BusinessData = {
+    NavSecondary: [
+      {
+        title: "Home",
+        url: "/",
+        icon: Home,
+      },
+      {
+        title: "Articles",
+        url: "/articles",
+        icon: Newspaper,
+      },
+      {
+        title: "Authors",
+        url: "/authors",
+        icon: Users,
+      },
+      {
+        title: "Live",
+        url: "#",
+        icon: Radio,
+      },
+    ],
+    myChannelSection: {
+      title: "My Channel",
+      url: "#",
+      icon: BookOpen,
+      isActive: true,
+      items: [
+        {
+          title: "Dashboard",
+          url: "/my-channel",
+        },
+        {
+          title: "Create Article",
+          url: "/my-channel/create",
+        },
+        {
+          title: "Invite Members",
+          url: "/my-channel/invite",
+        },
+        {
+          title: "Settings",
+          url: "/my-channel/settings",
+        },
+      ],
+    },
+  };
+
+  // Elite subscription
+  const eliteData: EliteData = {
+    NavSecondary: [
+      {
+        title: "Home",
+        url: "/",
+        icon: Home,
+      },
+      {
+        title: "Articles",
+        url: "/articles",
+        icon: Newspaper,
+      },
+      {
+        title: "Authors",
+        url: "/authors",
+        icon: Users,
+      },
+      {
+        title: "Live",
+        url: "#",
+        icon: Radio,
+      },
+      {
+        title: "My Channel",
+        url: "/my-channel",
+        icon: BookOpen,
+      },
+    ],
+  };
+
+  const userData: UserData = {
     PlanSwitcher: [
       {
         title: "Free" as PlanType,
@@ -235,23 +358,50 @@ export function AppSidebar({
     ],
   };
 
-  const data = authUser?.role === "admin" ? adminData : userData;
+  let sidebarData: AdminData | BusinessData | EliteData | UserData;
+  if (sessionUser?.role === "admin") {
+    sidebarData = adminData;
+  } else if (
+    sessionUser?.subscription?.type?.name === "Business" ||
+    sessionUser?.role === "editor"
+  ) {
+    sidebarData = businessData;
+  } else if (sessionUser?.subscription?.type?.name === "Elite") {
+    sidebarData = eliteData;
+  } else {
+    sidebarData = userData;
+  }
 
   return (
     <Sidebar collapsible={collapsible} className="md:block" {...props}>
       <SidebarHeader>
-        <NavUser user={user} collapsible={undefined} />
+        {/* <NavUser user={user} collapsible={undefined} /> */}
+        <div className="p-4 flex items-center">
+          <h1 className="text-2xl font-semibold transition-all duration-200 group-data-[collapsible=icon]/sidebar-wrapper:text-lg group-data-[collapsible=icon]/sidebar-wrapper:text-center group-data-[collapsible=icon]/sidebar-wrapper:overflow-hidden">
+            OpenNews
+          </h1>
+        </div>
       </SidebarHeader>
+
       <SidebarContent>
-        <NavSecondary items={data.NavSecondary} />
-        {authUser?.role !== "admin" && <NavMain items={userData.navMain} />}
-        <NavMainBottom items={userData.navMainBottom} className="mt-auto" />
+        <NavSecondary items={sidebarData.NavSecondary} />
+
+        {sidebarData === businessData && (
+          <NavMain items={[businessData.myChannelSection]} />
+        )}
+
+        {sessionUser?.role !== "admin" && <NavMain items={userData.navMain} />}
+        {sessionUser?.role !== "admin" && (
+          <NavMainBottom items={userData.navMainBottom} className="mt-auto" />
+        )}
       </SidebarContent>
-      {authUser?.role !== "admin" && (
+
+      {sessionUser?.role !== "admin" && (
         <SidebarFooter>
           <PlanSwitcher items={userData.PlanSwitcher} />
         </SidebarFooter>
       )}
+
       <SidebarRail />
     </Sidebar>
   );

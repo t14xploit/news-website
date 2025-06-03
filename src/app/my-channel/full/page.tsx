@@ -3,9 +3,9 @@
 import { useUser } from "@/lib/context/user-context";
 
 export default function MyChannelFull() {
-  const { user } = useUser();
+  const { sessionUser } = useUser();
 
-  if (!user?.subscriptionId) {
+  if (!sessionUser?.subscriptionId) {
     return (
       <div className="p-4">
         <p>You must have a subscription to view the full content.</p>

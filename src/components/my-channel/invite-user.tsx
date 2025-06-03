@@ -30,7 +30,7 @@ export default function InviteUser() {
   const [role, setRole] = useState<"member" | "admin" | "owner">("member");
   const [isInviting, setIsInviting] = useState(false);
   const { data: activeOrganization } = authClient.useActiveOrganization();
-  const { user, isLoading: isSessionLoading } = useUser();
+  const { sessionUser, isLoading: isSessionLoading } = useUser();
   const { currentPlan, isLoading: isPlanLoading } = usePlan();
 
   const isLoading = isSessionLoading || isPlanLoading;
@@ -39,7 +39,7 @@ export default function InviteUser() {
     return <div>Loading...</div>;
   }
 
-  if (!user || user.role !== "editor" || !activeOrganization) {
+  if (!sessionUser || sessionUser.role !== "editor" || !activeOrganization) {
     return <div>You are not authorized to view this page.</div>;
   }
 

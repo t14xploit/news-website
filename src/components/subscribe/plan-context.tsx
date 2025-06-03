@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { getActiveSubscription } from "@/actions/subscribe-action";
-import { authClient } from "@/lib/auth-client";
+import { useUser } from "@/lib/context/user-context";
 
 export type PlanType = "Free" | "Elite" | "Business" | "";
 
@@ -53,13 +53,13 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
   const [userId, setUserId] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState<UserData>(initialUserData);
+  const { sessionUser } = useUser();
 
   useEffect(() => {
     async function syncPlan() {
       //Sophie
       try {
-        const session = await authClient.getSession();
-        const sessionUserId = session?.data?.user?.id;
+        const sessionUserId = sessionUser?.id;
 
         if (!sessionUserId) {
           console.warn("No authenticated user found.");
@@ -137,7 +137,7 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
     }
 
     syncPlan();
-  }, []);
+  }, [sessionUser]);
 
   //Sophie
   //     setIsLoading(false);

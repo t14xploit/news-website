@@ -1,19 +1,30 @@
+"use client";
+
 import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
-import { Toaster } from "@/components/ui/sonner"
+
+import { useUser } from "@/lib/context/user-context";
+
+
+
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { sessionUser } = useUser();
+
   return (
-    <div className=" min-h-screen">
+
+    <div className="h-screen overflow-hidden">
+
       <div className="flex-shrink-0">
         <AppSidebar
           user={{
-            name: "",
-            email: "",
-            avatar: "",
+            name: sessionUser?.name || "",
+            email: sessionUser?.email || "",
+            avatar: sessionUser?.avatar || "",
+            role: sessionUser?.role || "",
           }}
         />
       </div>
