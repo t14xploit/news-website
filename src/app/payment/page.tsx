@@ -287,11 +287,11 @@ export default function PaymentPage() {
 
   return (
     <div className="">
-      <div className="mt-4 mb-6">
+       {/* <div className="mt-4 mb-6">   */}
         <div className="flex justify-center items-center relative">
           {/* {[...Array(2)].map((_, index) => ( */}
           {[...Array(totalSteps)].map((_, index) => (
-            <div key={index} className="flex flex-col items-center mx-90">
+            <div key={index} className="flex flex-col items-center mx-64">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
                   currentStep > index + 1
@@ -303,19 +303,18 @@ export default function PaymentPage() {
               >
                 {currentStep > index + 1 ? <FaCheck /> : index + 1}
               </div>
-              <span className="text-xs mt-1">
-                {index === 0 ? "Card Details" : "Confirm"}
+              <span className="text-xs mt-2">
+                {index === 0 ? "Card Details" : "Confirm Payment"}
               </span>
             </div>
           ))}
-          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-180 h-1 bg-gray-200 rounded-full">
+          <div className="absolute top-4 justify-center items-center transform w-143 h-1 bg-gray-200 rounded-full">
             <div
               className="h-1 bg-blue-500 transition-all duration-300 rounded-full"
               style={{ width: `${(currentStep / 2) * 100}%` }}
               //  style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             />
           </div>
-        </div>
       </div>
 
       <div className="text-center p-20">
@@ -324,7 +323,7 @@ export default function PaymentPage() {
           Subscribe to <span className="text-blue-400">{name}</span> News
         </h2>
 
-        <div className="text-gray-400 mb-20">
+        <div className="text-gray-400 ">
           <p>Enter your card details to complete the payment and</p>
           <p>Enjoy the Best Updates Every Month</p>
         </div>
