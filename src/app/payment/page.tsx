@@ -43,6 +43,7 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
+  // const [ setUserId] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const planId = searchParams.get("planId") || "";
   const nameFromParams = searchParams.get("name");

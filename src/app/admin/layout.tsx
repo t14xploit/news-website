@@ -1,9 +1,8 @@
 "use client";
 
 import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
-
-import { useUser } from "@/lib/context/user-context";
 import { Toaster } from "sonner";
+import { useUser } from "@/lib/context/user-context";
 
 export default function AdminLayout({
   children,
