@@ -377,9 +377,13 @@ export function AppSidebar({
       <SidebarHeader>
         {/* <NavUser user={user} collapsible={undefined} /> */}
         <div className="p-4 flex items-center">
-          <h1 className="text-2xl font-semibold transition-all duration-200 group-data-[collapsible=icon]/sidebar-wrapper:text-lg group-data-[collapsible=icon]/sidebar-wrapper:text-center group-data-[collapsible=icon]/sidebar-wrapper:overflow-hidden">
-            OpenNews
-          </h1>
+        <h1
+  className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis"
+  data-collapsible-hide
+>
+  OpenNews
+</h1>
+
         </div>
       </SidebarHeader>
 
