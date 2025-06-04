@@ -17,9 +17,8 @@ import {
   CardType,
   SavedCard,
 } from "@/components/payment-card/types";
-
 import { useUser } from "@/lib/context/user-context";
-
+import { FaCheck } from "react-icons/fa6";
 
 type PlanType = "Free" | "Elite" | "Business";
 
@@ -44,13 +43,13 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
-  const [userId, setUserId] = useState<string | null>(null);
+  // const [ setUserId] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const planId = searchParams.get("planId") || "";
   const nameFromParams = searchParams.get("name");
   const priceFromParams = searchParams.get("price");
   const { setCurrentPlan, setUserData } = usePlan(); // Sophie - userId removed from here
-  const { sessionUser } = useUser(); // Sophie
+  const { sessionUser, isLoading } = useUser(); // Sophie
   const cardBackground = searchParams.get("cardBackground") || "gradient";
   const validPlans: PlanType[] = ["Free", "Elite", "Business"];
   const name: PlanType = validPlans.includes(nameFromParams as PlanType)
@@ -73,16 +72,6 @@ export default function PaymentPage() {
 
   useEffect(() => {
     setIsClient(true);
-    const fetchSession = async () => {
-      try {
-        const session = await authClient.getSession();
-        setUserId(session?.data?.user?.id || null);
-      } catch (err) {
-        console.error("Failed to fetch session:", err);
-        setError("Unable to authenticate. Please log in again.");
-      }
-    };
-    fetchSession();
   }, []);
 
   const handleNextStep = () => {
@@ -246,7 +235,7 @@ export default function PaymentPage() {
     }
   };
 
-  if (!isClient) {
+  if (isLoading || !isClient) {
     return (
       <div className="text-center">
         <div>Loading...</div>
@@ -300,7 +289,8 @@ export default function PaymentPage() {
     <div className="">
       <div className="mt-4 mb-6">
         <div className="flex justify-center items-center relative">
-          {[...Array(2)].map((_, index) => (
+          {/* {[...Array(2)].map((_, index) => ( */}
+          {[...Array(totalSteps)].map((_, index) => (
             <div key={index} className="flex flex-col items-center mx-90">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${

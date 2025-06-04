@@ -30,6 +30,7 @@ interface ExtendedUser {
 
 interface UserContextType {
   sessionUser: ExtendedUser | null;
+  user: ExtendedUser | null;
   isLoading: boolean;
   isAdmin: boolean;
   isEditor: boolean;
@@ -41,6 +42,7 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType>({
   sessionUser: null,
+  user: null,
   isLoading: true,
   isAdmin: false,
   isEditor: false,
@@ -116,6 +118,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
       value={{
         sessionUser,
         isLoading,
+        user: sessionUser,
         isAdmin,
         isEditor,
         hasSubscription,
