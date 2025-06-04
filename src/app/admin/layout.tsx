@@ -3,9 +3,7 @@
 import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
 
 import { useUser } from "@/lib/context/user-context";
-
-
-
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
@@ -15,9 +13,7 @@ export default function AdminLayout({
   const { sessionUser } = useUser();
 
   return (
-
     <div className="h-screen overflow-hidden">
-
       <div className="flex-shrink-0">
         <AppSidebar
           user={{
@@ -34,7 +30,6 @@ export default function AdminLayout({
             {children}
           </div>
           <Toaster />
-
         </div>
       </main>
     </div>
