@@ -451,24 +451,24 @@ export default function AboutUs() {
                     <FaXTwitter size={20} className="relative z-10" />
                   </div>
                   <span className=" text-gray-700 dark:text-gray-300 group-hover:text-[#2c2d2e] transition-colors duration-300">
-                    @Open_NewsHQ
+                    @Alien_Tech_FusionHQ
                   </span>
                 </Link>
 
                 <Link
-                  href="https://facebook.com/opennews"
+                  href="https://facebook.com/AlienTechFusion"
                   className="flex items-center gap-3 group"
                 >
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#1877F2] hover:bg-[#0d65d9] text-white transition-all duration-300 shadow-lg hover:shadow-[#1877F2]/30 hover:-translate-y-1">
                     <FaFacebook size={20} />
                   </div>
                   <span className="text-gray-700 dark:text-gray-300 group-hover:text-[#1877F2] transition-colors duration-300">
-                    @OpenNews
+                    @AlienTechFusion
                   </span>
                 </Link>
 
                 <Link
-                  href="https://instagram.com/opennews"
+                  href="https://instagram.com/AlienTechFusion"
                   className="flex items-center gap-3 group"
                 >
                   <div className="relative flex items-center justify-center w-12 h-12 rounded-full text-white transition-all duration-300 shadow-lg hover:shadow-[#E1306C]/30 hover:-translate-y-1 overflow-hidden">
@@ -476,45 +476,45 @@ export default function AboutUs() {
                     <FaInstagram size={20} className="relative z-10" />
                   </div>
                   <span className="text-gray-700 dark:text-gray-300 group-hover:text-[#E1306C] transition-colors duration-300">
-                    @open.news
+                    @alien.tech.fusion
                   </span>
                 </Link>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Link
-                  href="https://tumblr.com/opennews"
+                  href="https://tumblr.com/AlienTechFusion"
                   className="flex items-center gap-3 group"
                 >
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#34526f] hover:bg-[#2a4259] text-white transition-all duration-300 shadow-lg hover:shadow-[#34526f]/30 hover:-translate-y-1">
                     <FaTumblr size={20} />
                   </div>
                   <span className="text-gray-700 dark:text-gray-300 group-hover:text-[#34526f] transition-colors duration-300">
-                    @opennews-tumblr
+                    @AlienTechFusion-tumblr
                   </span>
                 </Link>
 
                 <Link
-                  href="https://linkedin.com/company/opennews"
+                  href="https://linkedin.com/company/AlienTechFusion"
                   className="flex items-center gap-3 group"
                 >
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#0A66C2] hover:bg-[#0952a0] text-white transition-all duration-300 shadow-lg hover:shadow-[#0A66C2]/30 hover:-translate-y-1">
                     <FaLinkedinIn size={20} />
                   </div>
                   <span className="text-gray-700 dark:text-gray-300 group-hover:text-[#0A66C2] transition-colors duration-300">
-                    OpenNews
+                    AlienTechFusion
                   </span>
                 </Link>
 
                 <Link
-                  href="https://youtube.com/opennews"
+                  href="https://youtube.com/AlienTechFusion"
                   className="flex items-center gap-3 group"
                 >
                   <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FF0000] hover:bg-[#d90000] text-white transition-all duration-300 shadow-lg hover:shadow-[#FF0000]/30 hover:-translate-y-1">
                     <FaYoutube size={20} />
                   </div>
                   <span className="text-gray-700 dark:text-gray-300 group-hover:text-[#FF0000] transition-colors duration-300">
-                    @OpenNewsOfficial
+                    @AlienTechFusionOfficial
                   </span>
                 </Link>
               </div>
