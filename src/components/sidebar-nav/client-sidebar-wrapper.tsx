@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar-nav/app-sidebar";
 import React, { useEffect, useState } from "react";
 import { useUser } from "@/lib/context/user-context";
+import { usePathname } from "next/navigation";
 
 interface SidebarStyle extends React.CSSProperties {
   "--sidebar-width"?: string;
@@ -12,7 +13,6 @@ interface SidebarStyle extends React.CSSProperties {
 }
 
 interface ClientSidebarWrapperProps {
-  children: React.ReactNode;
   user: {
     id: string;
     name: string;
@@ -21,6 +21,7 @@ interface ClientSidebarWrapperProps {
     role: string;
     subscriptionId: string | null;
   };
+  children: React.ReactNode;
 }
 
 export function ClientSidebarWrapper({
@@ -28,6 +29,8 @@ export function ClientSidebarWrapper({
   user,
 }: ClientSidebarWrapperProps) {
   const { sessionUser } = useUser();
+  const hideSidebarRoutes = ["/sign-in", "/sign-up", "/sign-out"];
+  const pathname = usePathname();
   const [sidebarState, setSidebarState] = useState<{
     collapsible: "none" | "icon" | "offcanvas" | undefined;
     variant: string;
@@ -63,6 +66,8 @@ export function ClientSidebarWrapper({
   //       avatar: user.avatar,
   //       role: user.role,
   //     };
+
+  const shouldHideSidebar = hideSidebarRoutes.includes(pathname);
 
   const displayUser = sessionUser
     ? {
@@ -105,28 +110,15 @@ export function ClientSidebarWrapper({
         } as SidebarStyle
       }
     >
-      <AppSidebar
-        // collapsible={sidebarState.collapsible}
-        // user={{
-        //   name: "name" in effectiveUser ? effectiveUser.name : "",
-        //   email: effectiveUser.email || "",
-        //   avatar:
-        //     "avatar" in effectiveUser
-        //       ? effectiveUser.avatar
-        //       : "/alien/alien_1.jpg",
-        // }}
-
-        // collapsible={sidebarState.collapsible}
-        // user={{
-        //   name: effectiveUser.name,
-        //   email: effectiveUser.email,
-        //   avatar: effectiveUser.avatar,
-        // }}
-
+      <>
+      {!shouldHideSidebar && (
+        <AppSidebar
         collapsible={sidebarState.collapsible}
         user={displayUser}
-      />
-      <SidebarInset>{children}</SidebarInset>
+        />
+      )}
+        <SidebarInset>{children}</SidebarInset>
+        </>
     </SidebarProvider>
   );
 }
