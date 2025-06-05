@@ -10,6 +10,8 @@ export interface UserData {
   name: string;
   email: string;
   avatar: string;
+  role?: string;
+  subscriptionId?: string | null;
 }
 
 interface PlanContextType {

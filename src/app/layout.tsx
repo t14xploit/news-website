@@ -38,6 +38,7 @@ export default async function RootLayout({
     subscriptionId?: string | null;
     name?: string | null;
     avatar?: string | null;
+    subscriptionType?: string | null;
   }
 
   const maybeUser = session?.user as ExtendedUser | undefined;

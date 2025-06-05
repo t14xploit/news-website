@@ -33,20 +33,23 @@ import SignIn from "@/components/auth/sign-in";
 import SignUp from "@/components/auth/sign-up";
 import { useUser } from "@/lib/context/user-context";
 import { useRouter } from "next/navigation";
+// import Image from "next/image";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("sign-in");
   const { sessionUser, isLoading } = useUser();
   const router = useRouter();
+  // const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && sessionUser) {
-      router.replace("/");
+      // router.replace("/");
     }
   }, [sessionUser, isLoading, router]);
 
   const handleTabSwitch = (tabName: string) => {
     setActiveTab(tabName);
+    // router.push(tabName === "sign-in" ? "/sign-in" : "/sign-up");
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -70,5 +73,15 @@ export default function AuthPage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
-}
+      );
+    }
+      // <div className="relative hidden bg-muted lg:block">
+     {/* <Image
+          src="/placeholder.svg?height=800&width=600"
+          alt="Authentication background"
+          width={600}
+          height={800}
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        /> */}
+      {/* </div> */}
+    // </>
