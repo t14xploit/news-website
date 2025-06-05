@@ -10,13 +10,17 @@ export default function CreateChannelPage() {
     return <div>Loading...</div>;
   }
 
-  if (!sessionUser || sessionUser.role !== "editor") {
+  if (
+    !sessionUser ||
+    (sessionUser.role !== "editor" && sessionUser?.role !== "admin")
+  ) {
     return <div>You are not authorized to create a channel.</div>;
   }
 
   return (
     <div className="p-4">
       <CreateChannel />
+      {/* <YourCreateArticleComponent />; */}
     </div>
   );
 }
