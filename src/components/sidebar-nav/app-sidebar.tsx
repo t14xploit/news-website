@@ -19,7 +19,6 @@ import {
   FolderOpen,
   Globe,
   // MessageSquare,
-  FolderOpen,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 // import { NavUser } from "./nav-user";
