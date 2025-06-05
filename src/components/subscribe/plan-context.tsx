@@ -26,6 +26,8 @@ interface PlanProviderProps {
   initialUserData: UserData;
 }
 
+
+
 const PlanContext = createContext<PlanContextType>({
   currentPlan: "",
   setCurrentPlan: () => {},
