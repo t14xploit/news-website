@@ -37,10 +37,9 @@ import { useUser } from "@/lib/context/user-context";
 import { Skeleton } from "@/components/ui/skeleton";
 import { OpenChannelElite } from "./open-channel-elite";
 import { ManagementMyChannel } from "./management-my-channel";
-import { authClient } from "@/lib/auth-client";
+
 // import { OpenChannel } from "./open-channel"
 // import { MyChannel } from "./my-channel"
-
 
 interface AppSidebarProps {
   user: {
@@ -102,12 +101,6 @@ export function AppSidebar({
     "contextUser:",
     sessionUser
   );
-
-  React.useEffect(() => {
-  authClient.getSession().then((response) => {
-    console.log("getSession response:", JSON.stringify(response.data, null, 2));
-  });
-}, []);
 
   if (userLoading || planLoading) {
     return (
@@ -243,7 +236,7 @@ export function AppSidebar({
       },
     ],
   };
-  
+
   const adminData: AdminData = {
     NavSecondary: [
       {
@@ -278,7 +271,7 @@ export function AppSidebar({
       },
     ],
   };
-  
+
   // Elite subscription
   const eliteData: EliteData = {
     NavSecondary: userData.NavSecondary,
@@ -290,7 +283,7 @@ export function AppSidebar({
       },
     ],
   };
-  
+
   // Business subscription
   const businessData: BusinessData = {
     NavSecondary: userData.NavSecondary,
@@ -345,8 +338,6 @@ export function AppSidebar({
     // },
   };
 
-
-
   let sidebarData: AdminData | BusinessData | EliteData | UserData;
   if (sessionUser?.role === "admin") {
     sidebarData = adminData;
@@ -366,21 +357,16 @@ export function AppSidebar({
   }
   console.log("Selected sidebarData:", sidebarData);
 
-  function refetchUser(): void {
-    throw new Error("Function not implemented.");
-  }
-
   return (
     <Sidebar collapsible={collapsible} className="md:block" {...props}>
       <SidebarHeader>
         <div className="p-4 flex items-center">
-        <h1
-  className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis"
-  data-collapsible-hide
->
-  OpenNews
-</h1>
-
+          <h1
+            className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis"
+            data-collapsible-hide
+          >
+            OpenNews
+          </h1>
         </div>
       </SidebarHeader>
 
@@ -391,7 +377,7 @@ export function AppSidebar({
           <OpenChannelElite items={sidebarData.OpenChannelElite} />
         )}
 
-       {"ManagementMyChannel" in sidebarData && (
+        {"ManagementMyChannel" in sidebarData && (
           <ManagementMyChannel items={sidebarData.ManagementMyChannel} />
         )}
 

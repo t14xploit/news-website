@@ -65,8 +65,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       if (response.data?.user) {
         const sessionData = response.data;
         setSessionUser({
-        ...sessionData.user,
-        subscriptionType: sessionData.subscriptionType || null,
+          ...sessionData.user,
+          subscriptionType: sessionData.subscriptionType || null,
         } as ExtendedUser);
       } else {
         setSessionUser(null);
@@ -81,7 +81,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchUser();
-    console.log("Session user updated:", JSON.stringify(sessionUser));
 
     // Event listener for auth state changes
     const handleStorageChange = (event: StorageEvent) => {
