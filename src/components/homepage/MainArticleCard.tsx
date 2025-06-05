@@ -4,6 +4,7 @@ import { Article } from "@/generated/prisma/client";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
+import ReactMarkdown from 'react-markdown'
 
 interface ArticleCardProps {
   article: Article;
@@ -31,7 +32,12 @@ export default function MainArticleCard({ article }: ArticleCardProps) {
           height={600}
           className="w-full h-48 sm:h-64 md:h-80 lg:h-[300px] object-cover mb-4"
         />
-        <p className="text-md text-foreground">{article.content}</p>
+        <div className="text-md text-foreground prose dark:prose-invert line-clamp-10 max-w-full w-full">
+          <ReactMarkdown>
+
+          {article.content}
+           </ReactMarkdown>
+          </div>
       </CardContent>
     </Card>
   );

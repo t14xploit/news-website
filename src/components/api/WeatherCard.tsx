@@ -9,7 +9,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { MapPin } from "lucide-react";
+import { AlertCircleIcon, MapPin } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 type State = "pending" | "success" | "error";
 
@@ -96,8 +97,16 @@ export default function WeatherCard() {
 
     if (state === "error") {
         return (
-            <div className="text-center text-lg text-red-600 mt-6">
-                Something went wrong! Please try again later.
+            <div className="mt-6">
+
+            <Alert variant="destructive">
+            <AlertCircleIcon />
+            <AlertTitle>Error fetching weather data</AlertTitle>
+            <AlertDescription>
+              <p>Your location is not available!
+                Please change your settings and try again later.</p>
+            </AlertDescription>
+          </Alert>
             </div>
         );
     }

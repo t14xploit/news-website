@@ -3,6 +3,7 @@ import ArticleViewTracker from "@/components/ArticleViewTracker";
 import Image from "next/image";
 import { CalendarDays, Eye } from "lucide-react";
 import Link from "next/link";
+import ReactMarkdown from 'react-markdown'
 
 type Params = Promise<{
   id: string;
@@ -75,7 +76,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
 
       {/* Full content */}
-      <div className="mt-4">{article.content}</div>
+      <div className="mt-4 prose dark:prose-invert max-w-full w-full">
+        <ReactMarkdown>
+                {article.content} 
+                </ReactMarkdown>
+        </div>
 
       {/* View tracker */}
       <ArticleViewTracker articleId={article.id} />
