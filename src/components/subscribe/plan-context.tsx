@@ -70,6 +70,7 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
         return;
       }
       console.log("Authenticated user found:", sessionUserId);
+      console.log("Full sessionUser object:", JSON.stringify(sessionUser, null, 2));
 
       setUserId(sessionUserId);
       const { plan: backendPlan, subscriptionId } = await getActiveSubscription(sessionUserId);
