@@ -48,7 +48,7 @@ export default function SubscriptionCard({
       <CardFooter
         className={cn("justify-end font-bold text-md py-2", footerColor)}
       >
-        {price}/month
+        {price}$/month
       </CardFooter>
     </Card>
   );

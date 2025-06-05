@@ -12,7 +12,7 @@ export default function AdminLayout({
   const { sessionUser } = useUser();
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden">
       <div className="flex-shrink-0">
         <AppSidebar
           user={{
