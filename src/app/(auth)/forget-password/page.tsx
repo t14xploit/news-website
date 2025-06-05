@@ -258,7 +258,7 @@ export default function ForgotPasswordPage() {
                 />
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full btn-blue"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

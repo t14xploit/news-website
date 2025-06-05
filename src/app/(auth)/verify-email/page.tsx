@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Loader2,
-  CheckCircle,
   XCircle,
   ArrowRight,
   RefreshCw,
   Inbox,
   ExternalLink,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -163,8 +163,10 @@ export default function VerifyEmailPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-              <CheckCircle className="h-6 w-6" />
+            <div className="mb-6 flex justify-center">
+              <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                <Check className="h-6 w-6" />
+              </div>
             </div>
             <p className="text-center text-sm text-muted-foreground">
               You&apos;ve successfully verified your email address and can now
@@ -172,7 +174,7 @@ export default function VerifyEmailPage() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button asChild className="w-full">
+            <Button asChild className="btn-blue w-full">
               <Link href="/">Continue to Home</Link>
             </Button>
           </CardFooter>

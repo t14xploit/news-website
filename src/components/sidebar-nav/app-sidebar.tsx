@@ -15,9 +15,12 @@ import {
   BriefcaseIcon,
   UserIcon,
   FolderOpenIcon,
-  BookOpen,
   LucideIcon,
+  // PlusSquare,
+  // Share2,
+  Globe,
   // MessageSquare,
+  FolderOpen,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 // import { NavUser } from "./nav-user";
@@ -34,6 +37,8 @@ import { NavMainBottom } from "./nav-bottom";
 import { PlanSwitcher } from "./plan-switcher";
 import { useUser } from "@/lib/context/user-context";
 import { Skeleton } from "@/components/ui/skeleton";
+// import { OpenChannel } from "./open-channel"
+// import { MyChannel } from "./my-channel"
 
 interface AppSidebarProps {
   user: {
@@ -187,17 +192,18 @@ export function AppSidebar({
         url: "#",
         icon: Radio,
       },
+      {
+        title: "Open Channel",
+        url: "/open-channel",
+        icon: Globe,
+      },
     ],
     myChannelSection: {
       title: "My Channel",
       url: "#",
-      icon: BookOpen,
+      icon: FolderOpen,
       isActive: true,
       items: [
-        {
-          title: "Dashboard",
-          url: "/my-channel",
-        },
         {
           title: "Create Article",
           url: "/my-channel/create",
@@ -205,10 +211,6 @@ export function AppSidebar({
         {
           title: "Invite Members",
           url: "/my-channel/invite",
-        },
-        {
-          title: "Settings",
-          url: "/my-channel/settings",
         },
       ],
     },
@@ -238,9 +240,9 @@ export function AppSidebar({
         icon: Radio,
       },
       {
-        title: "My Channel",
-        url: "/my-channel",
-        icon: BookOpen,
+        title: "Open Channel",
+        url: "/open-channel",
+        icon: Globe,
       },
     ],
   };
@@ -366,7 +368,10 @@ export function AppSidebar({
     sessionUser?.role === "editor"
   ) {
     sidebarData = businessData;
-  } else if (sessionUser?.subscription?.type?.name === "Elite") {
+  } else if (
+    sessionUser?.subscription?.type?.name === "Elite" ||
+    sessionUser?.role === "reader"
+  ) {
     sidebarData = eliteData;
   } else {
     sidebarData = userData;
