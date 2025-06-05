@@ -17,6 +17,8 @@ import {
   FolderOpenIcon,
   BookOpen,
   LucideIcon,
+  FolderOpen,
+  Globe,
   // MessageSquare,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
@@ -34,6 +36,9 @@ import { NavMainBottom } from "./nav-bottom";
 import { PlanSwitcher } from "./plan-switcher";
 import { useUser } from "@/lib/context/user-context";
 import { Skeleton } from "@/components/ui/skeleton";
+import { OpenChannelElite } from "./open-channel-elite";
+import { ManagementMyChannel } from "./management-my-channel";
+import { authClient } from "@/lib/auth-client";
 
 interface AppSidebarProps {
   user: {
@@ -58,11 +63,13 @@ interface AdminData {
 
 interface BusinessData {
   NavSecondary: SidebarItem[];
-  myChannelSection: SidebarItem;
+  OpenChannelElite: SidebarItem[];
+  ManagementMyChannel: SidebarItem[];
 }
 
 interface EliteData {
   NavSecondary: SidebarItem[];
+  OpenChannelElite: SidebarItem[];
 }
 
 interface UserData {
@@ -94,6 +101,12 @@ export function AppSidebar({
     sessionUser
   );
 
+  React.useEffect(() => {
+  authClient.getSession().then((response) => {
+    console.log("getSession response:", JSON.stringify(response.data, null, 2));
+  });
+}, []);
+
   if (userLoading || planLoading) {
     return (
       <Sidebar collapsible={collapsible} className="md:block" {...props}>
@@ -115,135 +128,6 @@ export function AppSidebar({
       </Sidebar>
     );
   }
-  const adminData: AdminData = {
-    NavSecondary: [
-      // {
-      //   title: "Dashboard",
-      //   url: "admin/admin-dashboard",
-      //   icon: LayoutGrid,
-      // },
-      {
-        title: "Users",
-        url: "/admin/users",
-        icon: Users,
-      },
-      {
-        title: "Articles",
-        url: "/admin/articles",
-        icon: Newspaper,
-      },
-      {
-        title: "Categories",
-        url: "/admin/categories",
-        icon: BriefcaseIcon,
-      },
-      {
-        title: "Authors",
-        url: "/admin/authors",
-        icon: UserIcon,
-      },
-      {
-        title: "AI Generation",
-        url: "/admin/ai",
-        icon: CpuIcon,
-      },
-      {
-        title: "Channels",
-        url: "/admin/channels",
-        icon: FolderOpenIcon,
-      },
-    ],
-    // navMainBottom: [
-    //   {
-    //     title: "Settings",
-    //     url: "/admin/settings",
-    //     icon: Info,
-    //     isActive: true,
-    //     items: [],
-    //   },
-    // ],
-  };
-
-  // Business subscription
-  const businessData: BusinessData = {
-    NavSecondary: [
-      {
-        title: "Home",
-        url: "/",
-        icon: Home,
-      },
-      {
-        title: "Articles",
-        url: "/articles",
-        icon: Newspaper,
-      },
-      {
-        title: "Authors",
-        url: "/authors",
-        icon: Users,
-      },
-      {
-        title: "Live",
-        url: "#",
-        icon: Radio,
-      },
-    ],
-    myChannelSection: {
-      title: "My Channel",
-      url: "#",
-      icon: BookOpen,
-      isActive: true,
-      items: [
-        {
-          title: "Dashboard",
-          url: "/my-channel",
-        },
-        {
-          title: "Create Article",
-          url: "/my-channel/create",
-        },
-        {
-          title: "Invite Members",
-          url: "/my-channel/invite",
-        },
-        {
-          title: "Settings",
-          url: "/my-channel/settings",
-        },
-      ],
-    },
-  };
-
-  // Elite subscription
-  const eliteData: EliteData = {
-    NavSecondary: [
-      {
-        title: "Home",
-        url: "/",
-        icon: Home,
-      },
-      {
-        title: "Articles",
-        url: "/articles",
-        icon: Newspaper,
-      },
-      {
-        title: "Authors",
-        url: "/authors",
-        icon: Users,
-      },
-      {
-        title: "Live",
-        url: "#",
-        icon: Radio,
-      },
-      {
-        title: "My Channel",
-        url: "/my-channel",
-        icon: BookOpen,
-      },
-    ],
-  };
 
   const userData: UserData = {
     PlanSwitcher: [
@@ -357,25 +241,136 @@ export function AppSidebar({
       },
     ],
   };
+  
+  const adminData: AdminData = {
+    NavSecondary: [
+      {
+        title: "Users",
+        url: "/admin/users",
+        icon: Users,
+      },
+      {
+        title: "Articles",
+        url: "/admin/articles",
+        icon: Newspaper,
+      },
+      {
+        title: "Categories",
+        url: "/admin/categories",
+        icon: BriefcaseIcon,
+      },
+      {
+        title: "Authors",
+        url: "/admin/authors",
+        icon: UserIcon,
+      },
+      {
+        title: "AI Generation",
+        url: "/admin/ai",
+        icon: CpuIcon,
+      },
+      {
+        title: "Channels",
+        url: "/admin/channels",
+        icon: FolderOpenIcon,
+      },
+    ],
+  };
+  
+  // Elite subscription
+  const eliteData: EliteData = {
+    NavSecondary: userData.NavSecondary,
+    OpenChannelElite: [
+      {
+        title: "Open Channel",
+        url: "/my-channel",
+        icon: Globe,
+      },
+    ],
+  };
+  
+  // Business subscription
+  const businessData: BusinessData = {
+    NavSecondary: userData.NavSecondary,
+    OpenChannelElite: [
+      {
+        title: "Open Channel",
+        url: "/my-channel",
+        icon: Globe,
+      },
+    ],
+    ManagementMyChannel: [
+      {
+        title: "My Channel",
+        url: "/my-channel",
+        icon: FolderOpen,
+        isActive: true,
+        items: [
+          {
+            title: "Create Articles",
+            url: "/my-channel/create",
+          },
+          {
+            title: "Invite Members",
+            url: "/my-channel/invite",
+          },
+        ],
+      },
+    ],
+    // myChannelSection: {
+    //   title: "My Channel",
+    //   url: "#",
+    //   icon: BookOpen,
+    //   isActive: true,
+    //   items: [
+    //     {
+    //       title: "Dashboard",
+    //       url: "/my-channel",
+    //     },
+    //     {
+    //       title: "Create Article",
+    //       url: "/my-channel/create",
+    //     },
+    //     {
+    //       title: "Invite Members",
+    //       url: "/my-channel/invite",
+    //     },
+    //     {
+    //       title: "Settings",
+    //       url: "/my-channel/settings",
+    //     },
+    //   ],
+    // },
+  };
+
+
 
   let sidebarData: AdminData | BusinessData | EliteData | UserData;
   if (sessionUser?.role === "admin") {
     sidebarData = adminData;
+    console.log("sidebarData set to adminData");
   } else if (
-    sessionUser?.subscription?.type?.name === "Business" ||
+    sessionUser?.subscriptionType === "Business" ||
     sessionUser?.role === "editor"
   ) {
     sidebarData = businessData;
-  } else if (sessionUser?.subscription?.type?.name === "Elite") {
+    console.log("sidebarData set to businessData");
+  } else if (sessionUser?.subscriptionType === "Elite") {
     sidebarData = eliteData;
+    console.log("sidebarData set to eliteData");
   } else {
     sidebarData = userData;
+    console.log("sidebarData set to userData");
+  }
+  console.log("Selected sidebarData:", sidebarData);
+
+  function refetchUser(): void {
+    throw new Error("Function not implemented.");
   }
 
   return (
     <Sidebar collapsible={collapsible} className="md:block" {...props}>
       <SidebarHeader>
-        {/* <NavUser user={user} collapsible={undefined} /> */}
         <div className="p-4 flex items-center">
         <h1
   className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis"
@@ -390,8 +385,12 @@ export function AppSidebar({
       <SidebarContent>
         <NavSecondary items={sidebarData.NavSecondary} />
 
-        {sidebarData === businessData && (
-          <NavMain items={[businessData.myChannelSection]} />
+        {"OpenChannelElite" in sidebarData && (
+          <OpenChannelElite items={sidebarData.OpenChannelElite} />
+        )}
+
+       {"ManagementMyChannel" in sidebarData && (
+          <ManagementMyChannel items={sidebarData.ManagementMyChannel} />
         )}
 
         {sessionUser?.role !== "admin" && <NavMain items={userData.navMain} />}
@@ -405,7 +404,6 @@ export function AppSidebar({
           <PlanSwitcher items={userData.PlanSwitcher} />
         </SidebarFooter>
       )}
-
       <SidebarRail />
     </Sidebar>
   );

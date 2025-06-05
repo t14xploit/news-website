@@ -11,7 +11,7 @@ export async function selectSubscription(
 ) {
   try {
     console.log(
-      `Selecting plan with ID: ${planId} for user: ${userId} at 03:11 PM CEST, May 14, 2025`
+      `Selecting plan with ID: ${planId} for user: ${userId}`
     );
 
     const plan = plans.find((p) => p.id === planId)!;
@@ -117,6 +117,10 @@ export async function selectSubscription(
         where: { id: userId },
         data: { role: "editor" },
       });
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("auth-state-change"));
     }
 
     return {
