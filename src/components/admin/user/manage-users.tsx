@@ -215,7 +215,7 @@ export default function ManageUsers() {
         <Button
           onClick={() => fetchUsers()}
           disabled={isLoading}
-          className="mb-2"
+          className="mb-2 ие  btn-blue"
         >
           {isLoading ? "Loading..." : "Refresh Users"}
         </Button>
@@ -249,6 +249,7 @@ export default function ManageUsers() {
                   <Button
                     size="sm"
                     onClick={() => openRoleDialog(u.id, u.role)}
+                    variant="default"
                   >
                     Change Role
                   </Button>
@@ -264,7 +265,7 @@ export default function ManageUsers() {
                   ) : (
                     <Button
                       size="sm"
-                      variant="destructive"
+                      variant="secondary"
                       onClick={() => openBanDialog(u.id)}
                     >
                       Ban

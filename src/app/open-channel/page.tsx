@@ -3,7 +3,7 @@
 import { useUser } from "@/lib/context/user-context";
 import Link from "next/link";
 
-export default function MyChannelTeaser() {
+export default function OpenChannelTeaser() {
   const { sessionUser } = useUser();
 
   return (
