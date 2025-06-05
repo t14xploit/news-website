@@ -45,7 +45,8 @@ export function PlanSwitcher({
     icon: Sparkles,
     description: "Discover a lot of new things",
   };
-
+  console.log("Active plan in PlanSwitcher:", activePlan.name, "currentPlan:", currentPlan);
+  
   const planColors: Record<PlanType | "View plans", string> = {
     Free: "text-gray-100",
     Elite: "text-gray-100",

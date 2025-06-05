@@ -26,6 +26,7 @@ interface ExtendedUser {
   name?: string | null;
   avatar?: string | null;
   subscription?: Subscription | null;
+  subscriptionType?: string | null;
 }
 
 interface UserContextType {
@@ -62,7 +63,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const response = await authClient.getSession();
 
       if (response.data?.user) {
-        setSessionUser(response.data.user as ExtendedUser);
+        const sessionData = response.data;
+        setSessionUser({
+        ...sessionData.user,
+        subscriptionType: sessionData.subscriptionType || null,
+        } as ExtendedUser);
       } else {
         setSessionUser(null);
       }
@@ -76,6 +81,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchUser();
+    console.log("Session user updated:", JSON.stringify(sessionUser));
 
     // Event listener for auth state changes
     const handleStorageChange = (event: StorageEvent) => {

@@ -56,88 +56,131 @@ export function PlanProvider({ children, initialUserData }: PlanProviderProps) {
   const { sessionUser } = useUser();
 
   useEffect(() => {
-    async function syncPlan() {
-      //Sophie
-      try {
-        const sessionUserId = sessionUser?.id;
+  async function syncPlan() {
+    try {
+      const sessionUserId = sessionUser?.id;
 
-        if (!sessionUserId) {
-          console.warn("No authenticated user found.");
-          setIsLoading(false);
-          return;
-        }
-        console.log("Authenticated user found:", sessionUserId);
-        console.log("Authenticated user ID:", sessionUserId);
-
-        setUserId(sessionUserId);
-        const { plan: backendPlan, subscriptionId } =
-          await getActiveSubscription(sessionUserId);
-        console.log(
-          "Backend plan received:",
-          backendPlan,
-          "with subscription ID:",
-          subscriptionId
-        );
-        // Sophie
-
-        // let storedUserId = localStorage.getItem("userId");
-        // if (!storedUserId) {
-        //   storedUserId = `user_${Date.now()}`;
-        //   localStorage.setItem("userId", storedUserId);
-        //   console.log("Generated new userId:", storedUserId);
-        //   localStorage.setItem("currentPlan", "");
-        // }
-        // setUserId(storedUserId);
-
-        // console.log("Fetching backend plan for user", storedUserId);
-        // const { plan: backendPlan, subscriptionId } = await getActiveSubscription(
-        //   storedUserId
-        // );
-        // console.log(
-        //   "Backend plan received:",
-        //   backendPlan,
-        //   "with subscription ID:",
-        //   subscriptionId
-        // );
-
-        const storedSubscriptionId = sessionStorage.getItem("subscriptionId");
-        console.log(
-          "Stored subscription ID in sessionStorage:",
-          storedSubscriptionId
-        );
-
-        const isValidSubscription =
-          subscriptionId && storedSubscriptionId === subscriptionId;
-
-        const validBackendPlan =
-          isValidSubscription &&
-          // backendPlan && // Sophie
-          ["Free", "Elite", "Business"].includes(backendPlan)
-            ? (backendPlan as PlanType)
-            : "";
-
-        if (validBackendPlan) {
-          console.log("Setting currentPlan from backend:", validBackendPlan);
-          setCurrentPlan(validBackendPlan);
-          localStorage.setItem("currentPlan", validBackendPlan);
-        } else {
-          console.log(
-            "No valid backend plan or session mismatch, setting to ''"
-          );
-          setCurrentPlan("");
-          localStorage.setItem("currentPlan", "");
-          sessionStorage.removeItem("subscriptionId");
-        }
-      } catch (error) {
-        console.error("Sync plan failed:", error);
-        setCurrentPlan("");
-      } finally {
+      if (!sessionUserId) {
+        console.warn("No authenticated user found.");
         setIsLoading(false);
+        return;
       }
-    }
+      console.log("Authenticated user found:", sessionUserId);
 
-    syncPlan();
-  }, [sessionUser]);
+      setUserId(sessionUserId);
+      const { plan: backendPlan, subscriptionId } = await getActiveSubscription(sessionUserId);
+      console.log("Backend plan received:", backendPlan, "with subscription ID:", subscriptionId);
+
+      const validBackendPlan = ["Free", "Elite", "Business"].includes(backendPlan)
+        ? (backendPlan as PlanType)
+        : "";
+      
+      setCurrentPlan(validBackendPlan);
+      localStorage.setItem("currentPlan", validBackendPlan);
+      if (subscriptionId) {
+        sessionStorage.setItem("subscriptionId", subscriptionId);
+      } else {
+        sessionStorage.removeItem("subscriptionId");
+      }
+    } catch (error) {
+      console.error("Sync plan failed:", error);
+      setCurrentPlan("");
+      localStorage.setItem("currentPlan", "");
+      sessionStorage.removeItem("subscriptionId");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  syncPlan();
+}, [sessionUser]);
+
+  // // useEffect(() => {
+  // //   async function syncPlan() {
+  // //     //Sophie
+  // //     try {
+  // //       const sessionUserId = sessionUser?.id;
+
+  // //       if (!sessionUserId) {
+  // //         console.warn("No authenticated user found.");
+  // //         setIsLoading(false);
+  // //         return;
+  // //       }
+  // //       console.log("Authenticated user found:", sessionUserId);
+  // //       console.log("Full sessionUser object:", JSON.stringify(sessionUser));
+
+  // //       setUserId(sessionUserId);
+  // //       const { plan: backendPlan, subscriptionId } =
+  // //         await getActiveSubscription(sessionUserId);
+  // //       console.log(
+  // //         "Backend plan received:",
+  // //         backendPlan,
+  // //         "with subscription ID:",
+  // //         subscriptionId
+  // //       );
+  // //       // Sophie
+
+  // //       // let storedUserId = localStorage.getItem("userId");
+  // //       // if (!storedUserId) {
+  // //       //   storedUserId = `user_${Date.now()}`;
+  // //       //   localStorage.setItem("userId", storedUserId);
+  // //       //   console.log("Generated new userId:", storedUserId);
+  // //       //   localStorage.setItem("currentPlan", "");
+  // //       // }
+  // //       // setUserId(storedUserId);
+
+  // //       // console.log("Fetching backend plan for user", storedUserId);
+  // //       // const { plan: backendPlan, subscriptionId } = await getActiveSubscription(
+  // //       //   storedUserId
+  // //       // );
+  // //       // console.log(
+  // //       //   "Backend plan received:",
+  // //       //   backendPlan,
+  // //       //   "with subscription ID:",
+  // //       //   subscriptionId
+  // //       // );
+
+  // //       const storedSubscriptionId = sessionStorage.getItem("subscriptionId");
+  // //       console.log(
+  // //         "Stored subscription ID in sessionStorage:",
+  // //         storedSubscriptionId
+  // //       );
+
+  // //       const isValidSubscription =
+  // //         subscriptionId && storedSubscriptionId === subscriptionId;
+
+  // //       const validBackendPlan =
+  // //         isValidSubscription &&
+  // //         // backendPlan && // Sophie
+  // //         ["Free", "Elite", "Business"].includes(backendPlan)
+  // //           ? (backendPlan as PlanType)
+  // //           : "";
+
+  // //       if (validBackendPlan) {
+  // //         console.log("Setting currentPlan from backend:", validBackendPlan);
+  // //         setCurrentPlan(validBackendPlan);
+  // //         localStorage.setItem("currentPlan", validBackendPlan);
+  // //         sessionStorage.setItem("subscriptionId", subscriptionId || "");
+  // //       } else {
+  // //         console.log(
+  // //           "No valid backend plan or session mismatch, setting to ''"
+  // //         );
+  // //         setCurrentPlan("");
+  // //         localStorage.setItem("currentPlan", "");
+  // //         sessionStorage.removeItem("subscriptionId");
+  // //       }
+  // //     } catch (error) {
+  // //       console.error("Sync plan failed:", error);
+  // //       setCurrentPlan("");
+  // //       localStorage.setItem("currentPlan", "");
+  // //      sessionStorage.removeItem("subscriptionId");
+  // //     } finally {
+  // //       setIsLoading(false);
+  // //     }
+  // //   }
+
+  // //   syncPlan();
+  // // }, [sessionUser]);
 
   //Sophie
   //     setIsLoading(false);
