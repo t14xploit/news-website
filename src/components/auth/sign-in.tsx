@@ -301,7 +301,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               control={form.control}
               name="rememberMe"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-y-0">
+                <FormItem className="flex flex-row items-center space-y-0 ">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -321,7 +321,11 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
               )}
             />
 
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full btn-blue"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

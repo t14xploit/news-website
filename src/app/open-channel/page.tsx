@@ -3,12 +3,12 @@
 import { useUser } from "@/lib/context/user-context";
 import Link from "next/link";
 
-export default function MyChannelTeaser() {
+export default function OpenChannelTeaser() {
   const { sessionUser } = useUser();
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">My Channel</h2>
+      <h2 className="text-2xl font-bold mb-4">Open Channel</h2>
       <p>View titles and excerpts of your articles.</p>
       {!sessionUser?.subscriptionId && (
         <p>

@@ -15,11 +15,11 @@ import {
   BriefcaseIcon,
   UserIcon,
   FolderOpenIcon,
-  BookOpen,
   LucideIcon,
   FolderOpen,
   Globe,
   // MessageSquare,
+  FolderOpen,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
 // import { NavUser } from "./nav-user";
@@ -39,6 +39,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { OpenChannelElite } from "./open-channel-elite";
 import { ManagementMyChannel } from "./management-my-channel";
 import { authClient } from "@/lib/auth-client";
+// import { OpenChannel } from "./open-channel"
+// import { MyChannel } from "./my-channel"
+
 
 interface AppSidebarProps {
   user: {

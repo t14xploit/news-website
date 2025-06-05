@@ -235,6 +235,8 @@ export const auth = betterAuth({
 
         if (subscriptionType === "Business" && role !== "admin") {
           role = "editor";
+        } else if (subscriptionType === "Elite") {
+          role = "reader";
         }
       }
 
