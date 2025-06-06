@@ -12,7 +12,11 @@ export default function InvitePage() {
   }
 
   if (!sessionUser || !isEditor || !activeOrganization) {
-    return <div>You are not authorized to view this page.</div>;
+    return (
+      <div>
+        You have to create an channel first or have the Business subscription.
+      </div>
+    ); // You are not authorized to view this page.</div>;
   }
 
   return (

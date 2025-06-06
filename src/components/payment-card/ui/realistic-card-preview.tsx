@@ -133,7 +133,7 @@ export function RealisticCardPreview({
   };
 
   return (
-    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-8">
+    <div className="relative w-full max-w-[600px] h-[350px] max-h-[360px] perspective-1000 my-4">
       {!readOnly && (
         <TooltipProvider>
           <Tooltip>
