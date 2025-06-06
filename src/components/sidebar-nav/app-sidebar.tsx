@@ -278,7 +278,7 @@ export function AppSidebar({
     OpenChannelElite: [
       {
         title: "Open Channel",
-        url: "/my-channel",
+        url: "/open-channel",
         icon: Globe,
       },
     ],
@@ -290,7 +290,7 @@ export function AppSidebar({
     OpenChannelElite: [
       {
         title: "Open Channel",
-        url: "/my-channel",
+        url: "/open-channel",
         icon: Globe,
       },
     ],
@@ -307,7 +307,7 @@ export function AppSidebar({
           },
           {
             title: "Invite Members",
-            url: "/my-channel/invite",
+            url: "/my-channel/[id]/invite",
           },
         ],
       },

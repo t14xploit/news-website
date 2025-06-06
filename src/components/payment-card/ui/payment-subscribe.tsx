@@ -13,6 +13,7 @@ import { CardPreviewFormData } from "@/lib/validation/card-preview-schema";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FaLock, FaShieldAlt, FaCreditCard, FaCheck } from "react-icons/fa";
+// import { Separator } from "@/components/ui/separator";
 
 interface CardPreviewProps {
   defaultTheme?: CardBackground;
@@ -191,14 +192,10 @@ export function CardPreview({
           {currentStep === 1 ? "" : ""}
         </motion.h2>
         <motion.p
-          className={`text-gray-500 ${currentStep === 2 ? "mb-8" : ""}`}
+          className={`text-gray-500 ${currentStep === 2 ? "mb-0" : ""}`}
           variants={fadeInVariants}
         >
-          {currentStep === 1
-            ? "Your card details are secure and encrypted"
-            : `Confirm your ${
-                selectedPlan.name
-              } subscription for $${selectedPlan.price.toFixed(2)}`}
+          {currentStep === 1 ? "" : ``}
         </motion.p>
       </CardHeader>
 
@@ -206,7 +203,7 @@ export function CardPreview({
         {/* <div className="space-y-6">
           <div className="flex justify-center"> */}
         <motion.div
-          className="space-y-8"
+          className="space-y-4"
           variants={fadeInVariants}
           transition={{ staggerChildren: 0.1 }}
         >
@@ -231,9 +228,9 @@ export function CardPreview({
                 {/* </motion.div> */}
               </div>
 
-              <motion.div className="grid gap-4 pt-6" variants={fadeInVariants}>
+              <motion.div className="" variants={fadeInVariants}>
                 <div>
-                  <h3 className="mb-10 text-lg font-medium">
+                  <h3 className="mb-8 text-lg font-medium">
                     Select Card Theme
                   </h3>
                   <RadioGroup
@@ -243,7 +240,7 @@ export function CardPreview({
                       setCardBackground(value as CardBackground)
                     }
                     aria-label="Select card theme"
-                    className="grid grid-cols-2 sm:grid-cols-4 justify-center gap-4"
+                    className="grid grid-cols-2 sm:grid-cols-4 justify-center gap-0"
                   >
                     {[
                       { name: "gradient", label: "Gradient" },
@@ -263,7 +260,7 @@ export function CardPreview({
                         />
                         <Label
                           htmlFor={theme.name}
-                          className={`mx-auto flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-2 border-muted text-sm text-white peer-data-[state=checked]:border-black  ${
+                          className={`mx-auto  flex h-14 w-14 cursor-pointer  rounded-full border-2 border-muted text-sm  peer-data-[state=checked]:border-black  ${
                             theme.name === "gradient"
                               ? "bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600"
                               : theme.name === "blue"
@@ -378,7 +375,7 @@ export function CardPreview({
         </motion.div>
       </CardContent>
 
-      <CardFooter className="flex justify-between pt-8">
+      <CardFooter className="flex justify-around gap-104 pt-16">
         {currentStep === 1 ? (
           <>
             <Button

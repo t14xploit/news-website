@@ -1,6 +1,15 @@
 "use client";
 
-import { CheckCircle, Wifi, ArrowRight, Download, Mail, Home, Star, Gift } from "lucide-react";
+import {
+  CheckCircle,
+  Wifi,
+  ArrowRight,
+  Download,
+  Mail,
+  Home,
+  Star,
+  Gift,
+} from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import { RealisticCardPreview } from "@/components/payment-card";
@@ -8,10 +17,13 @@ import { CardBackground, CardType } from "@/components/payment-card";
 import { SubscriptionReceipt } from "@/components/receipt/subscription-receipt";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-
 
 const validPlans = ["Free", "Elite", "Business"];
 
@@ -35,8 +47,11 @@ export default function ThankYouPage() {
   const cardHolder = rawCardHolder.replace(/[<>]/g, "");
   const rawCardNumber = searchParams.get("cardNumber") || "";
   const cardNumber = rawCardNumber.replace(/\s/g, "");
-  const cardBackground = (searchParams.get("cardBackground") || "gradient") as CardBackground;
-  const price = parseFloat(searchParams.get("price") || priceMap[plan].toString());
+  const cardBackground = (searchParams.get("cardBackground") ||
+    "gradient") as CardBackground;
+  const price = parseFloat(
+    searchParams.get("price") || priceMap[plan].toString()
+  );
 
   const detectCardType = (cardNumber: string): CardType => {
     const cleaned = cardNumber.replace(/\D/g, "");
@@ -80,11 +95,19 @@ export default function ThankYouPage() {
   };
 
   const cardType = detectCardType(cardNumber);
-  const maskedCardNumber = cardNumber ? `**** **** **** ${cardNumber.slice(-4)}` : "**** **** **** ****";
+  const maskedCardNumber = cardNumber
+    ? `**** **** **** ${cardNumber.slice(-4)}`
+    : "**** **** **** ****";
 
   const planFeatures = {
     Free: ["Basic news access", "Limited articles per day", "Standard support"],
-    Elite: ["Unlimited news access", "Premium articles", "Ad-free experience", "Priority support", "Mobile app access"],
+    Elite: [
+      "Unlimited news access",
+      "Premium articles",
+      "Ad-free experience",
+      "Priority support",
+      "Mobile app access",
+    ],
     Business: [
       "All Elite features",
       "Team collaboration",
@@ -96,10 +119,22 @@ export default function ThankYouPage() {
   };
 
   const nextSteps = [
-    { icon: <Mail className="w-4 h-4" />, text: "Check your email for receipt and welcome guide" },
-    { icon: <Download className="w-4 h-4" />, text: "Download our mobile app for on-the-go access" },
-    { icon: <Star className="w-4 h-4" />, text: "Explore premium features in your dashboard" },
-    { icon: <Gift className="w-4 h-4" />, text: "Share with friends and get bonus credits" },
+    {
+      icon: <Mail className="w-4 h-4 " />,
+      text: "Check your email for receipt and welcome guide",
+    },
+    {
+      icon: <Download className="w-4 h-4" />,
+      text: "Download our mobile app for on-the-go access",
+    },
+    {
+      icon: <Star className="w-4 h-4" />,
+      text: "Explore premium features in your dashboard",
+    },
+    {
+      icon: <Gift className="w-4 h-4" />,
+      text: "Share with friends and get bonus credits",
+    },
   ];
 
   const receiptData = {
@@ -162,9 +197,13 @@ export default function ThankYouPage() {
         >
           <div
             className={`w-2 h-2 rounded-full ${
-              ["bg-blue-400", "bg-green-400", "bg-yellow-400", "bg-purple-400", "bg-pink-400"][
-                Math.floor(Math.random() * 5)
-              ]
+              [
+                "bg-blue-400",
+                "bg-green-400",
+                "bg-yellow-400",
+                "bg-purple-400",
+                "bg-pink-400",
+              ][Math.floor(Math.random() * 5)]
             }`}
           />
         </div>
@@ -186,9 +225,12 @@ export default function ThankYouPage() {
           <CheckCircle className="w-12 h-12 text-green-400" />
         </div>
         <h1 className="text-4xl text-white/90 mb-2">
-          Welcome to <span className="font-bold text-blue-400">{plan}</span>, {cardHolder}!
+          Welcome to <span className="font-bold text-blue-400">{plan}</span>,{" "}
+          {cardHolder}!
         </h1>
-        <p className="text-lg text-white/70">Your subscription is now active and ready to use</p>
+        <p className="text-lg text-white/70">
+          Your subscription is now active and ready to use
+        </p>
       </div>
 
       {/* Main Content */}
@@ -228,14 +270,20 @@ export default function ThankYouPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between items-center border-white/10">
                       <span className="text-sm opacity-80">Plan:</span>
-                      <span className="font-semibold text-blue-400">{plan}</span>
+                      <span className="font-semibold text-blue-400">
+                        {plan}
+                      </span>
                     </div>
                     <div className="flex justify-between items-center border-white/10">
                       <span className="text-sm opacity-80">Amount:</span>
-                      <span className="font-medium">${price.toFixed(2)}/month</span>
+                      <span className="font-medium">
+                        ${price.toFixed(2)}/month
+                      </span>
                     </div>
                     <div className="flex justify-between items-center border-white/10">
-                      <span className="text-sm opacity-80">Payment Method:</span>
+                      <span className="text-sm opacity-80">
+                        Payment Method:
+                      </span>
                       <span className="font-medium">{maskedCardNumber}</span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -256,26 +304,36 @@ export default function ThankYouPage() {
         <div className="space-y-4 mt-8 max-w-2xl w-lg mx-auto">
           {/* Plan Features */}
           <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm border-blue-500/20">
-            <Collapsible open={isPlanFeaturesOpen} 
-            onOpenChange={setIsPlanFeaturesOpen}>
+            <Collapsible
+              open={isPlanFeaturesOpen}
+              onOpenChange={setIsPlanFeaturesOpen}
+            >
               <CollapsibleTrigger asChild>
                 <CardHeader className="flex flex-row items-center justify-between cursor-pointer">
                   <div className="flex items-center gap-1 text-lg font-bold text-blue-400">
-                    Your <span className="text-blue-400">{plan}</span> Plan Features
+                    Your <span className="text-blue-400">{plan}</span> Plan
+                    Features
                   </div>
                   <ArrowRight
-                    className={`w-4 h-4 text-blue-400 transition-transform ${isPlanFeaturesOpen ? "rotate-90" : ""}`}
+                    className={`w-4 h-4 text-blue-400 transition-transform ${
+                      isPlanFeaturesOpen ? "rotate-90" : ""
+                    }`}
                   />
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent className="animate-slide-in">
                 <CardContent className="grid grid-cols-2 gap-3 text-xs p-4 pt-0">
-                  {planFeatures[plan as keyof typeof planFeatures].map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-white/80">
-                      <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
+                  {planFeatures[plan as keyof typeof planFeatures].map(
+                    (feature, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 text-white/80"
+                      >
+                        <CheckCircle className="w-3 h-3 text-green-400 flex-shrink-0" />
+                        <span>{feature}</span>
+                      </div>
+                    )
+                  )}
                 </CardContent>
               </CollapsibleContent>
             </Collapsible>
@@ -283,19 +341,24 @@ export default function ThankYouPage() {
 
           {/* Next Steps */}
           <Card className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm border-blue-500/20">
-            <Collapsible open={isNextStepsOpen} onOpenChange={setIsNextStepsOpen}>
+            <Collapsible
+              open={isNextStepsOpen}
+              onOpenChange={setIsNextStepsOpen}
+            >
               <CollapsibleTrigger asChild>
                 <CardHeader className="flex flex-row items-center justify-between cursor-pointer">
-                  <div className="flex items-center gap-1 text-lg font-bold text-blue-400">
+                  <div className=" p-0 flex items-center gap-1  text-lg font-bold text-blue-400">
                     What&apos;s Next?
                   </div>
                   <ArrowRight
-                    className={`w-4 h-4 text-blue-400 transition-transform ${isNextStepsOpen ? "rotate-90" : ""}`}
+                    className={`w-4 h-4 text-blue-400 transition-transform ${
+                      isNextStepsOpen ? "rotate-90" : ""
+                    }`}
                   />
                 </CardHeader>
               </CollapsibleTrigger>
               <CollapsibleContent className="animate-slide-in">
-                <CardContent className="space-y-3 p-4 pt-0">
+                <CardContent className="space-y-3 p-4 pt-4">
                   {nextSteps.map((step, index) => (
                     <div
                       key={index}
@@ -305,11 +368,21 @@ export default function ThankYouPage() {
                           : "bg-white/5 border border-transparent hover:bg-white/10"
                       }`}
                     >
-                      <div className={`p-2 rounded-md ${currentStep === index ? "bg-blue-500/30" : "bg-white/10"}`}>
+                      <div
+                        className={`p-2 rounded-md ${
+                          currentStep === index
+                            ? "bg-blue-500/30"
+                            : "bg-white/10"
+                        }`}
+                      >
                         {step.icon}
                       </div>
-                      <span className="text-xs text-white/90 flex-1">{step.text}</span>
-                      {currentStep === index && <ArrowRight className="w-3 h-3 text-blue-400 animate-pulse" />}
+                      <span className="text-xs text-white/90 flex-1">
+                        {step.text}
+                      </span>
+                      {currentStep === index && (
+                        <ArrowRight className="w-3 h-3 text-blue-400 animate-pulse" />
+                      )}
                     </div>
                   ))}
                 </CardContent>
@@ -321,7 +394,7 @@ export default function ThankYouPage() {
           <div className="flex flex-col sm:flex-row gap-3 mt-4">
             <Button
               onClick={() => router.push("/")}
-              className="flex-1 flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-full"
+              className="flex-1 flex items-center gap-2 rounded-full text-white"
             >
               <Home className="w-4 h-4" />
               Dashboard
@@ -340,7 +413,7 @@ export default function ThankYouPage() {
 
       {/* Receipt Dialog */}
       <Dialog open={isReceiptOpen} onOpenChange={setIsReceiptOpen}>
-        <DialogContent className="dialog-content max-w-md p-6 bg-gray-900 text-white/90">
+        <DialogContent className="dialog-content max-w-md p-6">
           <VisuallyHidden>
             <DialogTitle>Subscription Receipt</DialogTitle>
           </VisuallyHidden>
@@ -356,11 +429,14 @@ export default function ThankYouPage() {
       <section className="text-center pt-8 border-t mt-10">
         <p className="text-sm text-gray-400">
           Need help? Contact our support team at{" "}
-          <a href="mailto:support@opennews.com" className="text-blue-400 hover:text-blue-300 underline">
+          <a
+            href="mailto:support@opennews.com"
+            className="text-blue-400 hover:text-blue-300 underline"
+          >
             support@opennews.com
           </a>
         </p>
-        <section/>
+        <section />
         <style jsx>{`
           @keyframes fade-in-up {
             from {
