@@ -39,9 +39,7 @@ const detectCardType = (cardNumber: string): CardType => {
   return "generic";
 };
 
-
 export default function PaymentPage() {
-  const refetchUser = useUser().refetchUser;
   const searchParams = useSearchParams();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
@@ -64,22 +62,18 @@ export default function PaymentPage() {
     Business: 49.99,
   };
   const price =
-  priceFromParams && !isNaN(parseFloat(priceFromParams))
-  ? parseFloat(priceFromParams)
+    priceFromParams && !isNaN(parseFloat(priceFromParams))
+      ? parseFloat(priceFromParams)
       : priceMap[name];
 
   const [error, setError] = useState<string | null>(null);
 
   const selectedPlan = { id: planId, name, price };
-  
-  useEffect(() => {
-      refetchUser();
-    }, [refetchUser]);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
   const handleNextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
