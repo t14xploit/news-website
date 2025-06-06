@@ -3,7 +3,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { CardPreviewFormData, cardPreviewSchema } from "@/lib/validation/card-preview-schema";
+import {
+  CardPreviewFormData,
+  cardPreviewSchema,
+} from "@/lib/validation/card-preview-schema";
 import { CardPreview } from "./payment-subscribe";
 import { usePlan, PlanType } from "@/components/subscribe/plan-context";
 import { useRouter } from "next/navigation";
@@ -20,7 +23,10 @@ interface PaymentFormProps {
   selectedPlan: { id: string; name: PlanType; price: number };
 }
 
-export default function PaymentForm({ onSubmit, selectedPlan }: PaymentFormProps) {
+export default function PaymentForm({
+  onSubmit,
+  selectedPlan,
+}: PaymentFormProps) {
   const { setCurrentPlan } = usePlan();
   const router = useRouter();
 
@@ -78,10 +84,20 @@ export default function PaymentForm({ onSubmit, selectedPlan }: PaymentFormProps
         onExpiryDateChange={handleExpiryDateChange}
         onCvvChange={handleCvvChange}
         defaultTheme="gradient"
-        selectedPlan={selectedPlan} 
+        selectedPlan={selectedPlan}
         isSubmitting={isSubmitting}
         handleSubmit={handleSubmit}
         onSubmit={onSubmit}
+        currentStep={0}
+        setCurrentStep={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        handleNextStep={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        handlePreviousStep={function (): void {
+          throw new Error("Function not implemented.");
+        }}
       />
       <Button
         type="submit"
