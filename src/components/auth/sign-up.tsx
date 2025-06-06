@@ -11,7 +11,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Loader2, User, Mail, Lock, ArrowRight } from "lucide-react";
+import {
+  Loader2,
+  User,
+  Mail,
+  Lock,
+  ArrowRight,
+  EyeOff,
+  Eye,
+} from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { signUpSchema } from "@/lib/validation/auth-schema";
@@ -38,6 +46,8 @@ interface SignUpResponseData {
 
 export default function SignUp({ onSwitchTab }: SignUpProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [emailPreviewUrl, setEmailPreviewUrl] = useState<string | undefined>(
@@ -228,15 +238,29 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                 <FormItem className="grid gap-2">
                   <FormLabel htmlFor="password">Password</FormLabel>
                   <FormControl>
-                    <Input
-                      id="password"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder="••••••••"
-                      aria-describedby="password-error"
-                      icon={<Lock />}
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/50" />
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                        aria-describedby="password-error"
+                        icon={<Lock />}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white/70"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -251,15 +275,31 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
                     Confirm Password
                   </FormLabel>
                   <FormControl>
-                    <Input
-                      id="passwordConfirmation"
-                      type="password"
-                      autoComplete="new-password"
-                      placeholder="••••••••"
-                      aria-describedby="passwordConfirmation-error"
-                      icon={<Lock />}
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/50" />
+                      <Input
+                        id="passwordConfirmation"
+                        type={showConfirmPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                        aria-describedby="passwordConfirmation-error"
+                        icon={<Lock />}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/50 hover:text-white/70"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
