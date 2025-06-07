@@ -163,7 +163,7 @@ export function AppSidebar({
       },
       {
         title: "Live",
-        url: "#",
+        url: "/live",
         icon: Radio,
       },
     ],
