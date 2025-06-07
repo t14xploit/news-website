@@ -30,7 +30,7 @@ interface NewsCardProps {
     author: string;
     tags?: string[];
     aiGeneratedSummary?: string;
-    geoPosition?: [number, number];
+    geoPosition?: number[];
   };
 }
 
@@ -72,7 +72,7 @@ export default function NewsCard({ article }: NewsCardProps) {
     if (navigator.share) {
       navigator.share({
         title: article.title,
-        text: article.description,
+        text: article.title,
         url: article.source.url,
       });
     } else {
@@ -81,7 +81,7 @@ export default function NewsCard({ article }: NewsCardProps) {
     }
   };
 
-  const getGeoTags = (geoPosition?: [number, number]): string[] => {
+  const getGeoTags = (geoPosition?: number[]): string[] => {
     if (!geoPosition) return [];
     const [lat, lon] = geoPosition;
     const hemisphere = lat >= 0 ? "Northern" : "Southern";
@@ -93,6 +93,9 @@ export default function NewsCard({ article }: NewsCardProps) {
       `${Math.abs(lon).toFixed(2)}° ${lon >= 0 ? "E" : "W"}`,
     ];
   };
+
+  const fallbackImageUrl =
+    "https://via.placeholder.com/800x600.png?text=No+Image";
 
   return (
     <motion.div
@@ -113,6 +116,9 @@ export default function NewsCard({ article }: NewsCardProps) {
               alt={article.title}
               fill
               className="object-cover rounded-t-lg transition-transform duration-300 group-hover:scale-110"
+              onError={(e) => {
+                e.currentTarget.src = fallbackImageUrl;
+              }}
             />
           </div>
         )}
