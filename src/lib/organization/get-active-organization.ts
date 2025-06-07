@@ -14,14 +14,23 @@ export async function getActiveOrganization(
             type: true,
           },
         },
+        members: {
+          include: {
+            organization: true,
+          },
+          where: {
+            role: { in: ["owner", "admin"] },
+          },
+          take: 1,
+        },
       },
     });
 
-    if (!user) {
-      return null;
+    if (user?.members && user.members.length > 0) {
+      return { id: user.members[0].organization.id };
     }
 
-    if (user.subscription?.type?.name === "Business") {
+    if (user?.subscription?.type?.name === "Business") {
       const firstArticle = await prisma.article.findFirst({
         where: {
           authors: {
@@ -46,5 +55,3 @@ export async function getActiveOrganization(
     return null;
   }
 }
-
-//   return { id: "some-org-id" };

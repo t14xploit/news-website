@@ -243,6 +243,7 @@ export default function AccountSettingsForm() {
               <Button
                 type="submit"
                 disabled={!isProfileFormValid || isProfileSubmitting}
+                className="btn-blue"
               >
                 {isProfileSubmitting ? "Saving…" : "Save Changes"}
               </Button>
@@ -322,6 +323,7 @@ export default function AccountSettingsForm() {
               <div className="flex justify-end">
                 <Button
                   type="submit"
+                  className="btn-blue"
                   disabled={!isPasswordFormValid || isPasswordSubmitting}
                 >
                   {isPasswordSubmitting ? "Changing…" : "Change Password"}

@@ -106,7 +106,12 @@ export default function NewsletterSettingsForm({
       </div>
 
       <div className="flex justify-end">
-        <Button type="submit" disabled={isLoading || !isFormValid} size="sm">
+        <Button
+          type="submit"
+          disabled={isLoading || !isFormValid}
+          size="sm"
+          className="btn-blue"
+        >
           {isLoading ? "Saving…" : "Save Settings"}
         </Button>
       </div>
