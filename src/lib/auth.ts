@@ -116,14 +116,22 @@ export const auth = betterAuth({
     }),
     after: createAuthMiddleware(async (ctx) => {
       if (
-        (ctx.path === "/forget-password" ||
-          ctx.path === "/send-verification-email" ||
-          ctx.path === "/verify-email") &&
+        [
+          "/forget-password",
+          "/send-verification-email",
+          "/verify-email",
+        ].includes(ctx.path) &&
         ctx.context.returned
       ) {
         return ctx.json({
           ...ctx.context.returned,
-          previewUrl: lastPreviewUrl,
+          previewUrl: lastPreviewUrl || null,
+        });
+      }
+      if (ctx.path.includes("/organization/invite") && ctx.context.returned) {
+        return ctx.json({
+          ...ctx.context.returned,
+          previewUrl: lastPreviewUrl || null,
         });
       }
     }),
@@ -188,12 +196,18 @@ export const auth = betterAuth({
         },
       },
       sendInvitationEmail: async (data) => {
-        const link = `${process.env.NEXT_PUBLIC_APP_URL}/accept-invitation/${data.id}`;
-        await sendEmail({
+        const inviteLink = `${BASE_URL}/accept-invitation/${data.id}`;
+        const { previewUrl } = await sendEmail({
           to: data.email,
           subject: `Invitation to join ${data.organization.name}`,
-          html: `<p><a href="${link}">Accept invitation</a></p>`,
+          html: `
+      <h1>You've been invited to join ${data.organization.name}!</h1>
+      <p>Click the link below to accept the invitation:</p>
+      <a href="${inviteLink}">Accept Invitation</a>
+      <p>Invited by: ${data.inviter.user.name} (${data.inviter.user.email})</p>
+    `,
         });
+        lastPreviewUrl = previewUrl;
       },
       ac,
       roles: { owner, admin, member },

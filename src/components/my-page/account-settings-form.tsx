@@ -43,18 +43,16 @@ export default function AccountSettingsForm() {
     [key: string]: string;
   }>({});
 
-  // Pre-fill form with userData from PlanProvider
   useEffect(() => {
     if (userData && userData.name && userData.email) {
       try {
-        // Split name into firstName and lastName (assuming name is "First Last")
         const [firstName = "", lastName = ""] = userData.name.split(" ");
         const profileData = {
           firstName: firstName || "",
           lastName: lastName || "",
           email: userData.email || "",
         };
-        profileSchema.parse(profileData); // Validate data
+        profileSchema.parse(profileData);
         setUser(profileData);
       } catch (error) {
         console.error("Error parsing user data:", error);
@@ -68,7 +66,6 @@ export default function AccountSettingsForm() {
     }
   }, [userData]);
 
-  // Real-time validation for profile form
   useEffect(() => {
     if (isEditingProfile) {
       try {
@@ -86,7 +83,6 @@ export default function AccountSettingsForm() {
     }
   }, [user, isEditingProfile]);
 
-  // Real-time validation for password form
   useEffect(() => {
     if (
       passwordData.oldPassword ||
@@ -114,7 +110,6 @@ export default function AccountSettingsForm() {
     try {
       profileSchema.parse(user);
       setIsLoading(true);
-      // Simulate profile update (no API)
       setUserData({
         ...userData,
         name: `${user.firstName} ${user.lastName}`,

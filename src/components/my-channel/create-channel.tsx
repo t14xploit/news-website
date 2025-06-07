@@ -11,28 +11,35 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton"; // Replace loading state
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { useUser } from "@/lib/context/user-context";
 import { Plus } from "lucide-react";
 
 export default function CreateChannel() {
-  const { sessionUser, isLoading, isEditor } = useUser();
+  const { sessionUser, isLoading: isUserLoading } = useUser();
   const { data: activeOrganization } = authClient.useActiveOrganization();
 
   const [channelName, setChannelName] = useState("");
   const [channelSlug, setChannelSlug] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isUserLoading || !sessionUser) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+      </div>
+    );
   }
 
   if (!sessionUser) {
     return <div>Please sign in to create a channel.</div>;
   }
 
-  if (!isEditor) {
+  if (!sessionUser.role || sessionUser.role !== "editor") {
     return <div>You are not authorized to create a channel.</div>;
   }
 
@@ -44,10 +51,21 @@ export default function CreateChannel() {
         return;
       }
 
-      await authClient.organization.create({
+      const newOrganization = await authClient.organization.create({
         name: channelName,
         slug: channelSlug,
       });
+
+      const organizationId = newOrganization.data?.id;
+
+      if (!organizationId) {
+        throw new Error("Failed to create organization");
+      }
+
+      await authClient.organization.setActive({
+        organizationId,
+      });
+
       toast.success("Channel created successfully!");
       setChannelName("");
       setChannelSlug("");

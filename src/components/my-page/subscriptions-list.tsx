@@ -75,10 +75,7 @@ export default function SubscriptionsList({ userId }: { userId: string }) {
           </div>
           <div className="mt-45 flex-justify-end">
             <Link href="/card-details">
-              <Button
-                variant="outline"
-                className="text-white/90 border-gray-700"
-              >
+              <Button variant="default" className="btn-blue">
                 Manage
               </Button>
             </Link>

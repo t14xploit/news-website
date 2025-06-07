@@ -362,7 +362,7 @@ export function AppSidebar({
       <SidebarHeader>
         <div className="p-4 flex items-center">
           <h1
-            className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis"
+            className="text-2xl font-semibold transition-all duration-200 overflow-hidden whitespace-nowrap text-ellipsis "
             data-collapsible-hide
           >
             OpenNews

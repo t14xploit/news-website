@@ -77,10 +77,11 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
 
-  /* --primary: oklch(0.21 0.006 285.885); */
-  /* --primary-foreground: oklch(0.985 0 0); */
   --primary: #4081fc;
   --primary-foreground: oklch(0.97 0.014 254.604);
+
+  /* --primary-white: oklch(0.21 0.006 285.885);
+  --primary-foreground-white: oklch(0.985 0 0); */
 
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -134,9 +135,9 @@
   --popover: #1f2023;
   --popover-foreground: oklch(0.95 0 0);
 
-  /* --primary: oklch(0.86 0.003 286.32); */
-  /* --primary: oklch(0.74 0.113 254.308);
-  --primary-foreground: #1f2023; */
+  /* --primary-white: oklch(0.86 0.003 286.32); */
+  /* --primary: oklch(0.74 0.113 254.308); */
+  /* --primary-foreground-white: #1f2023; */
   --primary: #367de3;
   --primary-foreground: #1f2023;
 
@@ -283,7 +284,7 @@
   /* Button utility class with blue styling */
   .btn-blue {
     background-color: var(--blue-500); /* #4081FC */
-    color: #ffffff; /* белый текст */
+    color: #ffffff;
     border-radius: 0.375rem;
     padding: 0.5rem 1rem;
     font-weight: 500;
@@ -297,6 +298,26 @@
     outline: 2px solid transparent;
     outline-offset: 2px;
     box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--blue-500);
+  }
+
+  .btn-white {
+    background-color: #e5e5e5;
+    color: #181717;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition-property: background-color, box-shadow;
+    transition-duration: 150ms;
+  }
+
+  .btn-white:hover {
+    background-color: #eeeeee;
+  }
+
+  .btn-white:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
   }
 }
 
