@@ -56,22 +56,37 @@ export default function OpenNewsLivePage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages] = useState(10);
   const [realTimeUpdates, setRealTimeUpdates] = useState<NewsArticle[]>([]);
   const [filters, setFilters] = useState({
     category: null as NewsCategory | null,
     searchQuery: "",
     sentiment: null as NewsSentiment | null,
   });
+  const [lastFetchTime, setLastFetchTime] = useState(0);
 
-  const fetchNews = useCallback(async (page = 1) => {
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  const maxArticles = totalPages * 24;
+  const fetchCooldown = 5000;
 
-      const generateMockArticles = (count: number): NewsArticle[] =>
-        Array.from({ length: count }, (_, index) => {
-          const category = [
+  const fetchNews = useCallback(
+    async (page = 1) => {
+      const now = Date.now();
+      if (now - lastFetchTime < fetchCooldown) {
+        console.log("Fetch throttled: Waiting for cooldown");
+        return;
+      }
+      if (articles.length >= maxArticles && page !== 1) {
+        setIsLoading(false);
+        console.log("Max articles reached");
+        return;
+      }
+      setIsLoading(true);
+      console.log(`Fetching news for page ${page}`);
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const generateMockArticles = (count: number): NewsArticle[] => {
+          const categories: NewsCategory[] = [
             "global",
             "technology",
             "politics",
@@ -79,77 +94,117 @@ export default function OpenNewsLivePage() {
             "entertainment",
             "health",
             "sports",
-          ][Math.floor(Math.random() * 7)] as NewsCategory;
-          const sentiment = [
+          ];
+          const sentiments: NewsSentiment[] = [
             "positive",
             "negative",
             "neutral",
             "controversial",
-          ][Math.floor(Math.random() * 4)] as NewsSentiment;
+          ];
 
-          return {
-            id: crypto.randomUUID(),
-            title: `Breaking News: ${getArticleTitle(category, index + 1)}`,
-            description: `Detailed description of the news article ${page}-${
-              index + 1
-            }`,
-            content: getArticleContent(category, sentiment, page, index + 1),
-            url: `https://example.com/news/${page}-${index + 1}`,
-            publishedAt: new Date(
-              Date.now() - index * 24 * 60 * 60 * 1000
-            ).toISOString(),
-            author: `Author ${index + 1}`,
-            source: {
-              name: `News Source ${(index % 3) + 1}`,
-              url: `https://example.com/source${(index % 3) + 1}`,
-            },
-            category,
-            sentiment,
-            tags: ["trending", "breaking", "important"].slice(
-              0,
-              Math.floor(Math.random() * 3) + 1
-            ),
-            readTime: Math.floor(Math.random() * 10) + 2,
-            imageUrl: `https://picsum.photos/id/${index + page * 100}/800/600`, // Stable image URL
-            aiGeneratedSummary: `AI-generated summary for article ${page}-${
-              index + 1
-            }`,
-            geoPosition: [
-              (Math.random() * 180 - 90).toFixed(4),
-              (Math.random() * 360 - 180).toFixed(4),
-            ].map(Number) as [number, number],
-          };
+          const articlesPerCategory = Math.floor(count / categories.length);
+          const extraArticles = count % categories.length;
+          const result: NewsArticle[] = [];
+
+          categories.forEach((category, catIndex) => {
+            const numArticles =
+              articlesPerCategory + (catIndex < extraArticles ? 1 : 0);
+            for (let i = 0; i < numArticles; i++) {
+              const index = result.length + 1;
+              result.push({
+                id: crypto.randomUUID(),
+                title: `Breaking News: ${getArticleTitle(category, index)}`,
+                description: `Detailed description of the news article ${page}-${index}`,
+                content: getArticleContent(
+                  category,
+                  sentiments[Math.floor(Math.random() * 4)],
+                  page,
+                  index
+                ),
+                url: `https://example.com/news/${page}-${index}`,
+                publishedAt: new Date(
+                  Date.now() - index * 24 * 60 * 60 * 1000
+                ).toISOString(),
+                author: `Author ${index}`,
+                source: {
+                  name: `News Source ${(index % 3) + 1}`,
+                  url: `https://example.com/source${(index % 3) + 1}`,
+                },
+                category,
+                sentiment: sentiments[Math.floor(Math.random() * 4)],
+                tags: ["trending", "breaking", "important"].slice(
+                  0,
+                  Math.floor(Math.random() * 3) + 1
+                ),
+                readTime: Math.floor(Math.random() * 10) + 2,
+                imageUrl: `https://picsum.photos/id/${
+                  (index + page * 24) % 1000
+                }/800/600`,
+                aiGeneratedSummary: `AI-generated summary for article ${page}-${index}`,
+                geoPosition: [
+                  Number((Math.random() * 180 - 90).toFixed(4)),
+                  Number((Math.random() * 360 - 180).toFixed(4)),
+                ],
+              });
+            }
+          });
+
+          for (let i = result.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [result[i], result[j]] = [result[j], result[i]];
+          }
+
+          return result;
+        };
+
+        const mockNewsData = generateMockArticles(24);
+        const mockRealTimeUpdates = generateMockArticles(
+          Math.floor(Math.random() * 4) + 3
+        );
+
+        setArticles((prev) => {
+          const existingIds = new Set(prev.map((a) => a.id));
+          const newArticles = mockNewsData.filter(
+            (a) => !existingIds.has(a.id)
+          );
+          if (page === 1) {
+            return newArticles.slice(0, 24);
+          }
+          const remainingSlots = maxArticles - prev.length;
+          return [...prev, ...newArticles.slice(0, remainingSlots)];
         });
 
-      const mockNewsData = generateMockArticles(12);
-      const mockRealTimeUpdates = generateMockArticles(
-        Math.floor(Math.random() * 3) + 1
-      );
+        if (mockRealTimeUpdates.length > 0) {
+          setRealTimeUpdates((prev) => {
+            const existingIds = new Set(
+              [...articles, ...prev].map((a) => a.id)
+            );
+            const newUpdates = mockRealTimeUpdates.filter(
+              (a) => !existingIds.has(a.id)
+            );
+            return [...prev, ...newUpdates].slice(0, 6);
+          });
+          toast.info(`${mockRealTimeUpdates.length} new articles`, {
+            description: "Fresh news just arrived!",
+            icon: <Bell className="text-blue-500" />,
+          });
+        }
 
-      setArticles((prev) =>
-        page === 1 ? mockNewsData : [...prev, ...mockNewsData]
-      );
-      setTotalPages(5);
-
-      if (mockRealTimeUpdates.length > 0) {
-        setRealTimeUpdates(mockRealTimeUpdates);
-        toast.info(`${mockRealTimeUpdates.length} new articles`, {
-          description: "Fresh news just arrived!",
-          icon: <Bell className="text-blue-500" />,
+        setLastFetchTime(now);
+      } catch (error) {
+        console.error("News fetching error", error);
+        toast.error("Failed to load news", {
+          description: "Please try again later",
         });
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("News fetching error", error);
-      toast.error("Failed to load news", {
-        description: "Please try again later",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [maxArticles, lastFetchTime, articles]
+  );
 
   const filteredArticles = useMemo(() => {
-    return articles.filter((article) => {
+    const result = articles.filter((article) => {
       const matchesCategory =
         !filters.category || article.category === filters.category;
       const matchesSentiment =
@@ -164,18 +219,19 @@ export default function OpenNewsLivePage() {
           .includes(filters.searchQuery.toLowerCase());
       return matchesCategory && matchesSentiment && matchesSearch;
     });
+    console.log("Filters:", filters);
+    console.log(
+      "Filtered articles:",
+      result.map((a) => ({ id: a.id, category: a.category }))
+    );
+    return result;
   }, [articles, filters]);
 
   useEffect(() => {
-    fetchNews(currentPage);
-  }, [currentPage, fetchNews]);
-
-  useEffect(() => {
-    const updateInterval = setInterval(() => {
+    if (articles.length === 0) {
       fetchNews(1);
-    }, 5 * 60 * 1000);
-    return () => clearInterval(updateInterval);
-  }, [fetchNews]);
+    }
+  }, [fetchNews, articles.length]);
 
   const handleFilterChange = useCallback(
     (newFilters: {
@@ -204,13 +260,22 @@ export default function OpenNewsLivePage() {
   );
 
   const handleLoadMore = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
+    if (currentPage < totalPages && articles.length < maxArticles) {
+      setCurrentPage((prev) => {
+        const nextPage = prev + 1;
+        fetchNews(nextPage);
+        return nextPage;
+      });
     }
   };
 
   const mergeRealTimeUpdates = () => {
-    setArticles((prev) => [...realTimeUpdates, ...prev]);
+    setArticles((prev) => {
+      const existingIds = new Set(prev.map((a) => a.id));
+      const newUpdates = realTimeUpdates.filter((a) => !existingIds.has(a.id));
+      const remainingSlots = maxArticles - prev.length;
+      return [...newUpdates.slice(0, remainingSlots), ...prev];
+    });
     setRealTimeUpdates([]);
   };
 
@@ -265,7 +330,7 @@ export default function OpenNewsLivePage() {
         </motion.div>
       </AnimatePresence>
 
-      {currentPage < totalPages && (
+      {currentPage < totalPages && articles.length < maxArticles && (
         <div className="flex justify-center mt-8">
           <motion.button
             onClick={handleLoadMore}
