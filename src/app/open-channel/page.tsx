@@ -49,6 +49,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 ChartJS.register(
   RadarController,
@@ -1844,6 +1845,9 @@ const OpenChannelPage = () => {
             onOpenChange={() => setSelectedPost(null)}
           >
             <DialogContent className="max-w-md w-full text-white">
+              <VisuallyHidden>
+                <DialogTitle>{selectedPost.title}</DialogTitle>
+              </VisuallyHidden>
               <Card className="border-none shadow-none">
                 <CardHeader>
                   <CardTitle>{selectedPost.title}</CardTitle>
