@@ -38,6 +38,11 @@ export default async function RootLayout({
     subscriptionId?: string | null;
     name?: string | null;
     avatar?: string | null;
+    subscription?: {
+      type?: {
+        name?: string | null;
+      } | null;
+    } | null;
     subscriptionType?: string | null;
   }
 
@@ -51,6 +56,7 @@ export default async function RootLayout({
         avatar: maybeUser.avatar ?? "/alien/alien_1.jpg",
         role: maybeUser.role ?? "user",
         subscriptionId: maybeUser.subscriptionId ?? null,
+        subscriptionType: maybeUser.subscription?.type?.name ?? null,
       }
     : {
         id: "",
@@ -59,6 +65,7 @@ export default async function RootLayout({
         avatar: "/alien/alien_1.jpg",
         role: "user",
         subscriptionId: null,
+        subscriptionType: null,
       };
 
   return (
