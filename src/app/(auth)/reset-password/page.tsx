@@ -113,7 +113,6 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-md mx-auto py-6">
@@ -128,15 +127,18 @@ export default function ResetPasswordPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-8">
-                  <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-                    <CheckCircle className="h-6 w-6" />
+                  <div className="mb-6 mt-2 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center mb-4">
+                      <CheckCircle className="h-6 w-6" />
+                    </div>
                   </div>
+
                   <p className="text-center text-sm text-muted-foreground">
                     You can now sign in with your new password.
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button asChild className="w-full">
+                  <Button asChild className="w-full btn-blue">
                     <Link href="/sign-in">Continue to Sign In</Link>
                   </Button>
                 </CardFooter>
@@ -168,25 +170,32 @@ export default function ResetPasswordPage() {
             ) : (
               <Card className="max-w-md w-full">
                 <CardHeader>
-                  <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">
+                    Reset Password
+                  </CardTitle>
                   <CardDescription className="text-xs md:text-sm">
                     Enter your new password below
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-6 flex justify-center">
+                  <div className="mb-6 mt-6 flex justify-center">
                     <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
                       <KeyRound className="h-6 w-6" />
                     </div>
                   </div>
                   <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="grid gap-4"
+                    >
                       <FormField
                         control={form.control}
                         name="password"
                         render={({ field }) => (
                           <FormItem className="grid gap-2">
-                            <FormLabel htmlFor="password">New Password</FormLabel>
+                            <FormLabel htmlFor="password">
+                              New Password
+                            </FormLabel>
                             <FormControl>
                               <div className="relative">
                                 <Input

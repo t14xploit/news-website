@@ -83,7 +83,6 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-md mx-auto py-6">
@@ -97,7 +96,11 @@ export default function VerifyEmailPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center py-8">
-                  <Inbox className="h-12 w-12 text-blue-600 mb-4" />
+                  <div className="mb-6 mt-6 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                      <Inbox className="h-6 w-6" />
+                    </div>
+                  </div>
                   <p className="text-center text-sm text-muted-foreground">
                     Please click the link in your inbox to verify your email.
                   </p>
@@ -109,7 +112,7 @@ export default function VerifyEmailPage() {
                         href={previewUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center"
+                        className="flex items-center justify-center btn-blue"
                       >
                         <ExternalLink className="mr-2 h-4 w-4" />
                         Open E-mailbox
@@ -150,19 +153,19 @@ export default function VerifyEmailPage() {
                     Email Verified Successfully!
                   </CardTitle>
                   <CardDescription className="text-xs md:text-sm">
-                    Thank you for confirming your email. You&apos;re fully connected
-                    now.
+                    Thank you for confirming your email. You&apos;re fully
+                    connected now.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-8">
-                  <div className="mb-6 flex justify-center">
+                  <div className="mb-8 flex justify-center">
                     <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
                       <Check className="h-6 w-6" />
                     </div>
                   </div>
                   <p className="text-center text-sm text-muted-foreground">
-                    You&apos;ve successfully verified your email address and can now
-                    access all features of OpenNews.
+                    You&apos;ve successfully verified your email address and can
+                    now access all features of OpenNews.
                   </p>
                 </CardContent>
                 <CardFooter>
@@ -177,7 +180,9 @@ export default function VerifyEmailPage() {
                   <CardTitle className="text-destructive">
                     Verification Failed
                   </CardTitle>
-                  <CardDescription>The link may be invalid or expired.</CardDescription>
+                  <CardDescription>
+                    The link may be invalid or expired.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="flex justify-center py-8">
                   <XCircle className="h-12 w-12 text-red-600" />
