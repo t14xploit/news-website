@@ -138,7 +138,6 @@ export default function ArticlePage({
 
   if (!sessionUser) {
     console.warn("Redirecting: No session user");
-    router.push("/sign-in");
     return null;
   }
 
