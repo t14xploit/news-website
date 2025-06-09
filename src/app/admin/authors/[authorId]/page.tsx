@@ -49,9 +49,9 @@ export default async function AuthorPage(props:Props) {
             <Image
               src={author.picture}
               alt={author.name}
-              width={64}
-              height={64}
-              className="rounded-full object-cover"
+              width={400}
+              height={400}
+              className=" w-30 h-30 rounded-full object-cover"
             />
           ) : (
             <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center font-bold text-xl">
