@@ -20,7 +20,6 @@ export default function CreateChannelPage() {
   return (
     <div className="p-4">
       <CreateChannel />
-      {/* <YourCreateArticleComponent />; */}
     </div>
   );
 }

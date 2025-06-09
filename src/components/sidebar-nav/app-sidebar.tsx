@@ -14,7 +14,7 @@ import {
   // LayoutGrid,
   BriefcaseIcon,
   UserIcon,
-  FolderOpenIcon,
+  // FolderOpenIcon,
   LucideIcon,
   FolderOpen,
   Globe,
@@ -264,11 +264,11 @@ export function AppSidebar({
         url: "/admin/ai",
         icon: CpuIcon,
       },
-      {
-        title: "Channels",
-        url: "/admin/channels",
-        icon: FolderOpenIcon,
-      },
+      // {
+      //   title: "Channels",
+      //   url: "/admin/channels",
+      //   icon: FolderOpenIcon,
+      // },
     ],
   };
 
@@ -302,12 +302,16 @@ export function AppSidebar({
         isActive: true,
         items: [
           {
-            title: "Create Articles",
-            url: "/my-channel/create",
+            title: "Create Channel",
+            url: "/my-channel/create-channel",
           },
           {
             title: "Invite Members",
             url: "/my-channel/[id]/invite",
+          },
+          {
+            title: "Articles Management",
+            url: "/my-channel/articles",
           },
         ],
       },

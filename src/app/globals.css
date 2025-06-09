@@ -285,7 +285,7 @@
   .btn-blue {
     background-color: var(--blue-500); /* #4081FC */
     color: #ffffff;
-    border-radius: 0.375rem;
+    border-radius: sm;
     padding: 0.5rem 1rem;
     font-weight: 500;
     transition-property: background-color, box-shadow;
@@ -303,7 +303,7 @@
   .btn-white {
     background-color: #e5e5e5;
     color: #181717;
-    border-radius: 0.375rem;
+    border-radius: sm;
     padding: 0.5rem 1rem;
     font-weight: 500;
     transition-property: background-color, box-shadow;

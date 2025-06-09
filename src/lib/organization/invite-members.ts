@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { authClient } from "@/lib/auth-client";
 
-// Global variable to store preview URL
 const lastPreviewUrl: string | null = null;
 
 const InviteMemberSchema = z.object({
@@ -21,7 +20,6 @@ export async function inviteMemberAction(formData: FormData) {
   }
 
   try {
-    // Temporarily store preview URL before invitation
     const previewUrlBefore = lastPreviewUrl;
 
     const apiResult = await authClient.organization.inviteMember({
@@ -34,7 +32,6 @@ export async function inviteMemberAction(formData: FormData) {
       return { success: false, error: apiResult.error.message };
     }
 
-    // Check if a new preview URL was generated
     const newPreviewUrl =
       lastPreviewUrl !== previewUrlBefore ? lastPreviewUrl : null;
 
