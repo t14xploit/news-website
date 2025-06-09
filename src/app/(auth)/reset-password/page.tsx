@@ -38,6 +38,7 @@ import {
   resetPasswordSchema,
   ResetPasswordFormValues,
 } from "@/lib/validation/auth-schema";
+import Component from "@/components/auth/3D-earth";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -110,156 +111,159 @@ export default function ResetPasswordPage() {
     }
   };
 
-  if (resetSuccess) {
-    return (
-      <div className="w-full max-w-md mx-auto py-6">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl text-success">
-              Password Reset Successful
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Your password has been reset successfully
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
-              <CheckCircle className="h-6 w-6" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              You can now sign in with your new password.
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link href="/sign-in">Continue to Sign In</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!token) {
-    return (
-      <div className="w-full max-w-md mx-auto py-6">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl text-destructive">
-              Invalid Reset Link
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              The password reset link is invalid or has expired
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
-              <AlertTriangle className="h-6 w-6" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              Please request a new password reset link to continue.
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link href="/forget-password">Request New Reset Link</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full max-w-md mx-auto py-6">
-      <Card className="max-w-md w-full">
-        <CardHeader>
-          <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
-          <CardDescription className="text-xs md:text-sm">
-            Enter your new password below
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6 flex justify-center">
-            <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
-              <KeyRound className="h-6 w-6" />
-            </div>
-          </div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="password">New Password</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          id="password"
-                          type="password"
-                          placeholder="••••••••"
-                          autoComplete="new-password"
-                          className="pl-10"
-                          {...field}
-                        />
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel htmlFor="confirmPassword">
-                      Confirm New Password
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          id="confirmPassword"
-                          type="password"
-                          placeholder="••••••••"
-                          autoComplete="new-password"
-                          className="pl-10"
-                          {...field}
-                        />
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {resetError && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
-                  <XCircle className="h-4 w-4" />
-                  <span>{resetError}</span>
-                </div>
-              )}
+    <div className="grid min-h-screen lg:grid-cols-2">
 
-              <Button
-                type="submit"
-                className="w-full btn-blue"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Resetting Password...
-                  </>
-                ) : (
-                  "Reset Password"
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-md mx-auto py-6">
+            {resetSuccess ? (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl text-success">
+                    Password Reset Successful
+                  </CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    Your password has been reset successfully
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center py-8">
+                  <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 mx-auto flex items-center justify-center mb-4">
+                    <CheckCircle className="h-6 w-6" />
+                  </div>
+                  <p className="text-center text-sm text-muted-foreground">
+                    You can now sign in with your new password.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full">
+                    <Link href="/sign-in">Continue to Sign In</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ) : !token ? (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl text-destructive">
+                    Invalid Reset Link
+                  </CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    The password reset link is invalid or has expired
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center py-8">
+                  <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
+                    <AlertTriangle className="h-6 w-6" />
+                  </div>
+                  <p className="text-center text-sm text-muted-foreground">
+                    Please request a new password reset link to continue.
+                  </p>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full">
+                    <Link href="/forget-password">Request New Reset Link</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            ) : (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    Enter your new password below
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-6 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                      <KeyRound className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className="grid gap-2">
+                            <FormLabel htmlFor="password">New Password</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  id="password"
+                                  type="password"
+                                  placeholder="••••••••"
+                                  autoComplete="new-password"
+                                  className="pl-10"
+                                  {...field}
+                                />
+                                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem className="grid gap-2">
+                            <FormLabel htmlFor="confirmPassword">
+                              Confirm New Password
+                            </FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  id="confirmPassword"
+                                  type="password"
+                                  placeholder="••••••••"
+                                  autoComplete="new-password"
+                                  className="pl-10"
+                                  {...field}
+                                />
+                                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {resetError && (
+                        <div className="flex items-center gap-2 text-sm text-destructive">
+                          <XCircle className="h-4 w-4" />
+                          <span>{resetError}</span>
+                        </div>
+                      )}
+
+                      <Button
+                        type="submit"
+                        className="w-full btn-blue"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Resetting Password...
+                          </>
+                        ) : (
+                          "Reset Password"
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden lg:block w-full h-full">
+        <div className="relative w-full h-full">
+          <Component />
+        </div>
+      </div>
     </div>
   );
 }
