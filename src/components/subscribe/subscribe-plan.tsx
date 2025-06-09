@@ -97,24 +97,21 @@ export default function SubscribePlan({
             name === "Business" &&
             "Unlimited news access with premium features"}
         </p>
-        <Button
-          onClick={handleSelect}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white/90 font-semibold"
-        >
+        <Button onClick={handleSelect} className="btn-blue w-full">
           Get {name}
         </Button>
       </CardContent>
-      <CardFooter>
-        <ul className="space-y-2 text-sm">
+      <CardFooter className="">
+        <ul className="space-y-2 text-sm text-left">
           {!isFree && (
-            <li className="flex items-center">
-              <Check className="mr-2 h-4 w-4" />
+            <li className="flex justify-items-center-safe">
+              <Check className="flex-shrink-0 mr-2 h-4 w-4  text-blue-400" />
               Everything in {name === "Business" ? "Elite" : "Free"}
             </li>
           )}
           {features.map((feature, index) => (
-            <li key={index} className="flex items-center">
-              <Check className="mr-2 h-4 w-4" />
+            <li key={index} className="flex justify-items-center-safe">
+              <Check className="flex-shrink-0 mr-2 h-4 w-4 text-blue-400" />
               {feature}
             </li>
           ))}

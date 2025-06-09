@@ -208,14 +208,15 @@ export default function ManageUsers() {
   };
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-2xl font-semibold">User Management</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-semibold">User Management</h2>
 
-      <div className="flex justify-end">
+        {/* <div className="flex justify-end"> */}
         <Button
           onClick={() => fetchUsers()}
           disabled={isLoading}
-          className="mb-2 ие  btn-blue"
+          variant={"outline"}
         >
           {isLoading ? "Loading..." : "Refresh Users"}
         </Button>
@@ -249,7 +250,7 @@ export default function ManageUsers() {
                   <Button
                     size="sm"
                     onClick={() => openRoleDialog(u.id, u.role)}
-                    variant="default"
+                    className="btn-white"
                   >
                     Change Role
                   </Button>
@@ -265,7 +266,7 @@ export default function ManageUsers() {
                   ) : (
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="destructive"
                       onClick={() => openBanDialog(u.id)}
                     >
                       Ban
@@ -298,6 +299,7 @@ export default function ManageUsers() {
         <Button
           size="sm"
           onClick={prevPage}
+          variant={"secondary"}
           disabled={currentPage <= 1 || isLoading}
         >
           Previous
@@ -308,6 +310,7 @@ export default function ManageUsers() {
         <Button
           size="sm"
           onClick={nextPage}
+          variant={"secondary"}
           disabled={currentPage >= totalPages || isLoading}
         >
           Next

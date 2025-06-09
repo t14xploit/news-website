@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 export async function getActiveOrganization(
   userId: string
-): Promise<{ id: string } | null> {
+): Promise<{ id: string; name: string } | null> {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -16,7 +16,9 @@ export async function getActiveOrganization(
         },
         members: {
           include: {
-            organization: true,
+            organization: {
+              select: { id: true, name: true },
+            },
           },
           where: {
             role: { in: ["owner", "admin"] },
@@ -27,7 +29,10 @@ export async function getActiveOrganization(
     });
 
     if (user?.members && user.members.length > 0) {
-      return { id: user.members[0].organization.id };
+      return {
+        id: user.members[0].organization.id,
+        name: user.members[0].organization.name,
+      };
     }
 
     if (user?.subscription?.type?.name === "Business") {
@@ -39,13 +44,18 @@ export async function getActiveOrganization(
             },
           },
         },
-        select: {
-          organizationId: true,
+        include: {
+          organization: {
+            select: { id: true, name: true },
+          },
         },
       });
 
-      if (firstArticle?.organizationId) {
-        return { id: firstArticle.organizationId };
+      if (firstArticle?.organization) {
+        return {
+          id: firstArticle.organization.id,
+          name: firstArticle.organization.name,
+        };
       }
     }
 

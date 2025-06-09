@@ -144,14 +144,14 @@ export const auth = betterAuth({
     cookieCache: { enabled: true, maxAge: 5 * 60 },
   },
   advanced: {
-    useSecureCookies: process.env.NODE_ENV === "production",
+    useSecureCookies: false,
     cookies: {
       session_token: {
         name: "auth.session",
         attributes: {
           httpOnly: true,
           sameSite: "lax",
-          secure: process.env.NODE_ENV === "production",
+          secure: false,
           path: "/",
         },
       },
