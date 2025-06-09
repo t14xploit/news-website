@@ -93,7 +93,7 @@ export default function EmailVerificationSent({
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-8">
-          <div className="mb-6 flex justify-center">
+          <div className="mb-8 mt-0 flex justify-center">
             <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
               <Inbox className="h-6 w-6" />
             </div>
@@ -110,7 +110,7 @@ export default function EmailVerificationSent({
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
           {(localPreviewUrl || previewUrl) && (
-            <Button asChild variant="default" className="btn-blue w-full">
+            <Button asChild className="btn-blue w-full">
               <a
                 href={(localPreviewUrl || previewUrl)?.toString() || "#"}
                 onClick={(e) => {

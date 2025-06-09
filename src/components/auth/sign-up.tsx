@@ -157,7 +157,7 @@ export default function SignUp({ onSwitchTab }: SignUpProps) {
       </CardHeader>
 
       {/* Hz, posmotrim */}
-      <div className="mb-6 flex justify-center">
+      <div className="mb-6 mt-6 flex justify-center">
         <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
           <Mail className="h-6 w-6" />
         </div>

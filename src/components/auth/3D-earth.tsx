@@ -12,7 +12,9 @@ function Loader() {
     <Html center>
       <div className="flex flex-col items-center space-y-4">
         <div className="w-32 h-32 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-white text-lg font-medium">Loading Earth... {Math.round(progress)}%</p>
+        <p className="text-white text-lg font-medium">
+          Loading Earth... {Math.round(progress)}%
+        </p>
       </div>
     </Html>
   );
@@ -22,8 +24,12 @@ export default function Component() {
   const controlsRef = useRef<React.ComponentRef<typeof OrbitControls>>(null);
 
   return (
-    <div className="w-full h-full">
-      <Canvas camera={{ position: [0, 0, 3], fov: 45 }} gl={{ antialias: true, alpha: true }} dpr={[1, 2]}>
+    <div className="w-full h-[500px] lg:h-full">
+      <Canvas
+        camera={{ position: [0, 0, 3], fov: 45 }}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
+      >
         <Suspense fallback={<Loader />}>
           {/* Enhanced Lighting */}
           <ambientLight intensity={0.15} color="#4a90e2" />
@@ -76,7 +82,13 @@ function Earth() {
   return (
     <mesh ref={meshRef} castShadow receiveShadow>
       <sphereGeometry args={[1, 128, 128]} />
-      <meshStandardMaterial map={earthTexture} roughness={0.7} metalness={0.1} bumpScale={0.05} transparent={false} />
+      <meshStandardMaterial
+        map={earthTexture}
+        roughness={0.7}
+        metalness={0.1}
+        bumpScale={0.05}
+        transparent={false}
+      />
     </mesh>
   );
 }
@@ -85,7 +97,12 @@ function Atmosphere() {
   return (
     <mesh scale={[1.02, 1.02, 1.02]}>
       <sphereGeometry args={[1, 64, 64]} />
-      <meshBasicMaterial color="#4a90e2" transparent={true} opacity={0.1} side={2} />
+      <meshBasicMaterial
+        color="#4a90e2"
+        transparent={true}
+        opacity={0.1}
+        side={2}
+      />
     </mesh>
   );
 }

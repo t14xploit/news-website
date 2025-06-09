@@ -131,7 +131,6 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-md mx-auto py-6">
@@ -146,17 +145,24 @@ export default function ForgotPasswordPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-6">
-                  <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
-                    <AlertCircle className="h-6 w-6" />
+                  <div className="mb-6 mt-6 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                      <AlertCircle className="h-6 w-6" />
+                    </div>
                   </div>
                   <p className="text-center text-sm text-muted-foreground mb-4">
-                    The email <span className="font-medium">{emailAttempted}</span>{" "}
-                    doesn&apos;t seem to be registered in our system. Please check for
-                    typos or use a different email address.
+                    The email{" "}
+                    <span className="font-medium">{emailAttempted}</span>{" "}
+                    doesn&apos;t seem to be registered in our system. Please
+                    check for typos or use a different email address.
                   </p>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
-                  <Button variant="default" className="w-full" onClick={resetState}>
+                  <Button
+                    variant="default"
+                    className="w-full"
+                    onClick={resetState}
+                  >
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Try with a different email
                   </Button>
@@ -183,26 +189,36 @@ export default function ForgotPasswordPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center py-8">
-                  <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 mx-auto flex items-center justify-center mb-4">
-                    <Mail className="h-6 w-6" />
+                  <div className="mb-6 mt-6 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                      <Mail className="h-6 w-6" />
+                    </div>
                   </div>
                   <p className="text-center text-sm text-muted-foreground mb-4">
                     Please check your inbox at{" "}
-                    <span className="font-medium">{emailAttempted}</span>. If the
-                    email doesn&apos;t appear within a few minutes, check your spam
-                    folder.
+                    <span className="font-medium">{emailAttempted}</span>. If
+                    the email doesn&apos;t appear within a few minutes, check
+                    your spam folder.
                   </p>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
                   {previewUrl && (
-                    <Button asChild variant="outline" className="w-full">
-                      <a href={previewUrl} target="_blank" rel="noopener noreferrer">
+                    <Button asChild className="w-full btn-blue">
+                      <a
+                        href={previewUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         <ExternalLink className="mr-2 h-4 w-4" />
                         Open E-mailbox
                       </a>
                     </Button>
                   )}
-                  <Button variant="secondary" className="w-full" onClick={resetState}>
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    onClick={resetState}
+                  >
                     Try with a different email
                   </Button>
                   <p className="text-sm text-center text-muted-foreground">
@@ -228,7 +244,7 @@ export default function ForgotPasswordPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="mb-6 flex justify-center">
+                  <div className="mb-6 mt-6 flex justify-center">
                     <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
                       <KeyRound className="h-6 w-6" />
                     </div>
