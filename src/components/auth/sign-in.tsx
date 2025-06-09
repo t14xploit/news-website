@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -176,7 +177,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
   };
 
   return (
-    // <Card className="max-w-md w-full">
+    <Card className="max-w-md w-full">
     <>
       <div className="max-w-md w-full">
         <CardHeader>
@@ -241,7 +242,7 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
             </Alert>
           )}
 
-          <div className="mb-6 flex justify-center">
+          <div className="mb-6 mt-6 flex justify-center">
             <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
               <Mail className="h-6 w-6" />
             </div>
@@ -372,6 +373,6 @@ export default function SignIn({ onSwitchTab }: SignInProps) {
         </CardFooter>
       </div>
     </>
-    // </Card>
+    </Card>
   );
 }

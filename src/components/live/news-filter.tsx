@@ -191,7 +191,7 @@ export default function NewsFilter({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="text-sm text-gray-400 flex items-center"
+            className="mb-4 text-sm text-gray-400 flex items-center"
           >
             <Sliders className="mr-2 w-4 h-4" />
             Active Filters:
