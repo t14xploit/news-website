@@ -93,7 +93,7 @@ export function PlanSwitcher({
               aria-label={`Go to subscription page, current plan: ${activePlan.name}`}            
             >
               <div className="flex aspect-square size-10 items-center justify-center rounded-lg backdrop-blur-md border">
-                <activePlan.icon className="size-5" />
+                {React.createElement(activePlan.icon, { className: "size-5" })}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight ">
                 <span

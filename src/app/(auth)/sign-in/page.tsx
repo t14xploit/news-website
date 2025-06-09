@@ -34,7 +34,8 @@ import SignIn from "@/components/auth/sign-in";
 import SignUp from "@/components/auth/sign-up";
 import { useUser } from "@/lib/context/user-context";
 import { usePathname, useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
+import Component from "@/components/auth/3D-earth";
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("sign-in");
@@ -91,15 +92,16 @@ export default function AuthPage() {
       </div>
 
       <div className="hidden lg:block w-full h-full">
-        <div className="relative w-full h-full">
-          <Image
+        <div className="relative w-full h-full ">
+          <Component />
+          {/* <Image
             src={imageSrc}
             width={960}
             height={1080}
             alt="Authentication background"
             className="w-full h-full object-cover dark:brightness-[0.2] dark:grayscale"
             priority
-          />
+          /> */}
         </div>
       </div>
     </div>
