@@ -29,7 +29,14 @@ export function ClientSidebarWrapper({
   user,
 }: ClientSidebarWrapperProps) {
   const { sessionUser } = useUser();
-  const hideSidebarRoutes = ["/sign-in", "/sign-up", "/sign-out"];
+  const hideSidebarRoutes = [
+    "/sign-in",
+    "/sign-up", 
+    "/sign-out", 
+    "/reset-password",
+    "/forget-password",
+    "/verify-email",
+  ];
   const pathname = usePathname();
   const [sidebarState, setSidebarState] = useState<{
     collapsible: "none" | "icon" | "offcanvas" | undefined;

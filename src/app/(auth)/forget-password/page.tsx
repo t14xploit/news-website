@@ -38,6 +38,7 @@ import {
   forgotPasswordSchema,
   ForgotPasswordFormValues,
 } from "@/lib/validation/auth-schema";
+import Component from "@/components/auth/3D-earth";
 
 interface AuthError extends Error {
   code?: string;
@@ -129,167 +130,180 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto py-6">
-      {userNotFound ? (
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl text-destructive">
-              No Account Found
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              We couldn&apos;t find an account with this email address
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-6">
-            <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
-              <AlertCircle className="h-6 w-6" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground mb-4">
-              The email <span className="font-medium">{emailAttempted}</span>{" "}
-              doesn&apos;t seem to be registered in our system. Please check for
-              typos or use a different email address.
-            </p>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button variant="default" className="w-full" onClick={resetState}>
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Try with a different email
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/sign-up"
-                className="text-primary hover:underline inline-flex items-center"
-              >
-                Sign Up
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
-      ) : isEmailSent ? (
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl text-success">
-              Check Your Email
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              We&apos;ve sent a password reset link to your email
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 mx-auto flex items-center justify-center mb-4">
-              <Mail className="h-6 w-6" />
-            </div>
-            <p className="text-center text-sm text-muted-foreground mb-4">
-              Please check your inbox at{" "}
-              <span className="font-medium">{emailAttempted}</span>. If the
-              email doesn&apos;t appear within a few minutes, check your spam
-              folder.
-            </p>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            {previewUrl && (
-              <Button asChild variant="outline" className="w-full">
-                <a href={previewUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Open E-mailbox
-                </a>
-              </Button>
+    <div className="grid min-h-screen lg:grid-cols-2">
+
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-md mx-auto py-6">
+            {userNotFound ? (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl text-destructive">
+                    No Account Found
+                  </CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    We couldn&apos;t find an account with this email address
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center py-6">
+                  <div className="h-12 w-12 rounded-full bg-destructive/20 text-destructive mx-auto flex items-center justify-center mb-4">
+                    <AlertCircle className="h-6 w-6" />
+                  </div>
+                  <p className="text-center text-sm text-muted-foreground mb-4">
+                    The email <span className="font-medium">{emailAttempted}</span>{" "}
+                    doesn&apos;t seem to be registered in our system. Please check for
+                    typos or use a different email address.
+                  </p>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4">
+                  <Button variant="default" className="w-full" onClick={resetState}>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Try with a different email
+                  </Button>
+                  <p className="text-sm text-center text-muted-foreground">
+                    Don&apos;t have an account?{" "}
+                    <Link
+                      href="/sign-up"
+                      className="text-primary hover:underline inline-flex items-center"
+                    >
+                      Sign Up
+                      <ArrowRight className="ml-1 h-3 w-3" />
+                    </Link>
+                  </p>
+                </CardFooter>
+              </Card>
+            ) : isEmailSent ? (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl text-success">
+                    Check Your Email
+                  </CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    We&apos;ve sent a password reset link to your email
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center py-8">
+                  <div className="h-12 w-12 rounded-full bg-blue-100 text-blue-600 mx-auto flex items-center justify-center mb-4">
+                    <Mail className="h-6 w-6" />
+                  </div>
+                  <p className="text-center text-sm text-muted-foreground mb-4">
+                    Please check your inbox at{" "}
+                    <span className="font-medium">{emailAttempted}</span>. If the
+                    email doesn&apos;t appear within a few minutes, check your spam
+                    folder.
+                  </p>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4">
+                  {previewUrl && (
+                    <Button asChild variant="outline" className="w-full">
+                      <a href={previewUrl} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        Open E-mailbox
+                      </a>
+                    </Button>
+                  )}
+                  <Button variant="secondary" className="w-full" onClick={resetState}>
+                    Try with a different email
+                  </Button>
+                  <p className="text-sm text-center text-muted-foreground">
+                    Remember your password?{" "}
+                    <Link
+                      href="/sign-in"
+                      className="text-primary hover:underline inline-flex items-center"
+                    >
+                      Sign In
+                      <ArrowRight className="ml-1 h-3 w-3" />
+                    </Link>
+                  </p>
+                </CardFooter>
+              </Card>
+            ) : (
+              <Card className="max-w-md w-full">
+                <CardHeader>
+                  <CardTitle className="text-lg md:text-xl">
+                    Forgot Password
+                  </CardTitle>
+                  <CardDescription className="text-xs md:text-sm">
+                    Enter your email to receive a password reset link
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="mb-6 flex justify-center">
+                    <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                      <KeyRound className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className="grid gap-4"
+                    >
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="grid gap-2">
+                            <FormLabel htmlFor="email">Email</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  id="email"
+                                  type="email"
+                                  placeholder="m@example.com"
+                                  autoComplete="email"
+                                  className="pl-10"
+                                  {...field}
+                                />
+                                <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <Button
+                        type="submit"
+                        className="w-full btn-blue"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending Reset Link...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="mr-2 h-4 w-4" />
+                            Send Reset Link
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                  <p className="text-sm text-muted-foreground">
+                    Remember your password?{" "}
+                    <Link
+                      href="/sign-in"
+                      className="text-primary hover:underline inline-flex items-center"
+                    >
+                      Sign In
+                      <ArrowRight className="ml-1 h-3 w-3" />
+                    </Link>
+                  </p>
+                </CardFooter>
+              </Card>
             )}
-            <Button variant="secondary" className="w-full" onClick={resetState}>
-              Try with a different email
-            </Button>
-            <p className="text-sm text-center text-muted-foreground">
-              Remember your password?{" "}
-              <Link
-                href="/sign-in"
-                className="text-primary hover:underline inline-flex items-center"
-              >
-                Sign In
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle className="text-lg md:text-xl">
-              Forgot Password
-            </CardTitle>
-            <CardDescription className="text-xs md:text-sm">
-              Enter your email to receive a password reset link
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-6 flex justify-center">
-              <div className="h-12 w-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
-                <KeyRound className="h-6 w-6" />
-              </div>
-            </div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="grid gap-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            id="email"
-                            type="email"
-                            placeholder="m@example.com"
-                            autoComplete="email"
-                            className="pl-10"
-                            {...field}
-                          />
-                          <AtSign className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  className="w-full btn-blue"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Sending Reset Link...
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="mr-2 h-4 w-4" />
-                      Send Reset Link
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <p className="text-sm text-muted-foreground">
-              Remember your password?{" "}
-              <Link
-                href="/sign-in"
-                className="text-primary hover:underline inline-flex items-center"
-              >
-                Sign In
-                <ArrowRight className="ml-1 h-3 w-3" />
-              </Link>
-            </p>
-          </CardFooter>
-        </Card>
-      )}
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden lg:block w-full h-full">
+        <div className="relative w-full h-full">
+          <Component />
+        </div>
+      </div>
     </div>
   );
 }

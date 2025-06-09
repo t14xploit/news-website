@@ -43,8 +43,8 @@ export default function AuthPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const imageSrc =
-    activeTab === "sign-in" ? "/alien/alien_10.jpg" : "/alien/alien_11.jpg";
+  // const imageSrc =
+  //   activeTab === "sign-in" ? "/alien/alien_10.jpg" : "/alien/alien_11.jpg";
 
   useEffect(() => {
     if (!isLoading && sessionUser) {
